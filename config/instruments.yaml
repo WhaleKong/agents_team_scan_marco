@@ -1,0 +1,97 @@
+# Instrument Universe for Quant Macro Agent Team
+# Organized by asset class with Yahoo Finance tickers
+
+equities:
+  - symbol: "^GSPC"
+    name: SPX
+    description: S&P 500 Index
+    category: US Large Cap
+  - symbol: "^NDX"
+    name: NDX
+    description: Nasdaq 100 Index
+    category: US Tech/Growth
+  - symbol: "^SET.BK"
+    name: SET
+    description: Thai SET Index
+    category: Thai Market
+  - symbol: "EEM"
+    name: EEM
+    description: iShares MSCI Emerging Markets ETF
+    category: Emerging Markets
+
+rates:
+  - symbol: "^IRX"
+    name: US2Y
+    description: 2-Year US Treasury Yield
+    category: Short-term Rates
+  - symbol: "^TNX"
+    name: US10Y
+    description: 10-Year US Treasury Yield
+    category: Benchmark Rate
+  - symbol: "^TYX"
+    name: US30Y
+    description: 30-Year US Treasury Yield
+    category: Long-term Rates
+  - symbol: "TH10Y"
+    name: TH10Y
+    description: Thai 10-Year Government Bond
+    category: Thai Rates
+
+fx:
+  - symbol: "DX-Y.NYB"
+    name: DXY
+    description: US Dollar Index
+    category: Dollar Strength
+  - symbol: "USDTHB=X"
+    name: USDTHB
+    description: US Dollar / Thai Baht
+    category: EM FX
+  - symbol: "USDJPY=X"
+    name: USDJPY
+    description: US Dollar / Japanese Yen
+    category: Carry Trade
+  - symbol: "EURUSD=X"
+    name: EURUSD
+    description: Euro / US Dollar
+    category: Major FX
+
+commodities:
+  - symbol: "GC=F"
+    name: Gold
+    description: Gold Futures
+    category: Safe Haven / Inflation Hedge
+  - symbol: "CL=F"
+    name: Crude
+    description: WTI Crude Oil Futures
+    category: Energy
+  - symbol: "HG=F"
+    name: Copper
+    description: Copper Futures (Dr. Copper)
+    category: Industrial / Growth Proxy
+  - symbol: "NG=F"
+    name: NatGas
+    description: Natural Gas Futures
+    category: Energy
+
+crypto:
+  - symbol: "BTC-USD"
+    name: BTC
+    description: Bitcoin
+    category: Liquidity Proxy / Risk Appetite
+  - symbol: "ETH-USD"
+    name: ETH
+    description: Ethereum
+    category: Liquidity Proxy / Risk Appetite
+
+# Cross-asset ratios for signal generation
+cross_asset_ratios:
+  - name: "Copper/Gold"
+    numerator: "HG=F"
+    denominator: "GC=F"
+    signal: "Rising = Growth, Falling = Defensive"
+  - name: "US10Y-US2Y"
+    calculation: "spread"
+    signal: "Steepening = Growth/Inflation, Inverting = Recession risk"
+  - name: "HY Spread"
+    description: "ICE BofA US High Yield OAS"
+    signal: "Widening = Stress, Tightening = Risk-on"

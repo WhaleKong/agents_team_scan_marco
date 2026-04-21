@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "mcp__macro-news-feed__get_economic_calendar",
+      "mcp__macro-news-feed__get_breaking_news",
+      "mcp__macro-news-feed__get_rss_feeds",
+      "mcp__macro-news-feed__get_news_sentiment",
+      "mcp__macro-news-feed__search_news",
+      "mcp__macro-news-feed__get_earnings_calendar",
+      "WebFetch(domain:www.federalreserve.gov)",
+      "WebFetch(domain:www.cnbc.com)",
+      "WebFetch(domain:cryptoslate.com)",
+      "WebFetch(domain:economictimes.indiatimes.com)",
+      "WebFetch(domain:www.thehindubusinessline.com)",
+      "WebFetch(domain:oilprice.com)",
+      "mcp__macro-news-feed__google_market_overview",
+      "mcp__macro-news-feed__google_finance_quote",
+      "mcp__macro-news-feed__google_macro_search"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "macro-news-feed"
+  ]
+}

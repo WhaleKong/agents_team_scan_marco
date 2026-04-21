@@ -1,0 +1,26 @@
+# Environment & Secrets
+.env
+.env.local
+*.key
+credentials.json
+.mcp.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Session logs (generated, can be large)
+data/sessions/*.md
+
+# MCP server build output
+mcp-news-server/dist/
+mcp-news-server/node_modules/
+
+# Keep directory structure
+!data/sessions/.gitkeep

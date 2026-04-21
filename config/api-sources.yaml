@@ -1,0 +1,86 @@
+# API & Data Sources Configuration
+# Note: Store actual API keys in environment variables, NOT in this file
+
+market_data:
+  yahoo_finance:
+    type: free
+    url: "https://query1.finance.yahoo.com/v8/finance"
+    usage: "Real-time quotes, historical OHLCV, options chain"
+    rate_limit: "2000 req/hour"
+    api_key_env: null  # No key needed for basic
+
+  alpha_vantage:
+    type: freemium
+    url: "https://www.alphavantage.co/query"
+    usage: "Macro indicators, forex, crypto, technical indicators"
+    rate_limit: "5 req/min (free), 75 req/min (premium)"
+    api_key_env: "ALPHA_VANTAGE_API_KEY"
+
+  fred:
+    type: free
+    url: "https://api.stlouisfed.org/fred/series/observations"
+    usage: "Fed data, yield curves, M2, GDP, CPI, employment"
+    rate_limit: "120 req/min"
+    api_key_env: "FRED_API_KEY"
+    key_series:
+      - "WALCL"       # Fed Balance Sheet
+      - "M2SL"        # M2 Money Supply
+      - "RRPONTSYD"   # Reverse Repo
+      - "TOTRESNS"    # Bank Reserves
+      - "DGS2"        # 2-Year Treasury
+      - "DGS10"       # 10-Year Treasury
+      - "DGS30"       # 30-Year Treasury
+      - "T10Y2Y"      # 10Y-2Y Spread
+      - "BAMLH0A0HYM2" # HY OAS Spread
+      - "CPIAUCSL"    # CPI
+      - "PCEPILFE"    # Core PCE
+      - "PAYEMS"      # Nonfarm Payrolls
+      - "GDP"         # GDP
+      - "MANEMP"      # Manufacturing Employment
+      - "T5YIE"       # 5Y Breakeven Inflation
+
+news:
+  newsapi:
+    type: freemium
+    url: "https://newsapi.org/v2"
+    usage: "Aggregated news from 150k+ sources"
+    rate_limit: "100 req/day (free)"
+    api_key_env: "NEWSAPI_API_KEY"
+    categories: ["business", "technology"]
+
+  finnhub:
+    type: freemium
+    url: "https://finnhub.io/api/v1"
+    usage: "Earnings, SEC filings, company news, economic calendar"
+    rate_limit: "60 req/min (free)"
+    api_key_env: "FINNHUB_API_KEY"
+
+alternative_data:
+  cftc_cot:
+    type: free
+    url: "https://www.cftc.gov/dea/futures/deacmesf.htm"
+    usage: "Commitment of Traders positioning data"
+    frequency: "Weekly (Tuesday data, Friday release)"
+
+  cme_fedwatch:
+    type: free
+    url: "https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html"
+    usage: "Fed Funds rate expectations"
+    frequency: "Real-time"
+
+  economic_calendar:
+    type: free
+    sources:
+      - "https://www.forexfactory.com/calendar"
+      - "https://www.investing.com/economic-calendar/"
+    usage: "Upcoming economic events and expectations"
+
+# Web search for real-time data
+web_search:
+  usage: "Fallback for real-time news and data when APIs unavailable"
+  queries:
+    - "Federal Reserve balance sheet latest"
+    - "ISM PMI latest release"
+    - "CPI inflation latest"
+    - "CFTC COT report latest"
+    - "VIX term structure"
