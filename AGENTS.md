@@ -22,7 +22,7 @@ npm run dev
 `npm run build` compiles TypeScript into `dist/` and is the main validation command currently in use. `npm start` runs the compiled MCP server. `npm run dev` starts `tsc --watch` for iterative development; it recompiles on change but does not auto-run the server.
 
 ## Coding Style & Naming Conventions
-Follow the existing TypeScript style: ES modules, strict typing, named exports, and 2-space indentation. Keep filenames kebab-cased (`breaking-news.ts`, `economic-calendar.ts`), functions camelCased (`getBreakingNews`), and config files descriptive and lowercase (`risk-params.yaml`). Prefer small modules with one clear responsibility and keep MCP tool descriptions actionable because they surface directly to clients.
+Follow the existing TypeScript style: ES modules, strict typing, named exports, and 2-space indentation. Keep filenames kebab-cased (`breaking-news.ts`, `economic-calendar.ts`), functions camelCased (`getBreakingNews`), and config files descriptive and lowercase (`instruments.yaml`). Prefer small modules with one clear responsibility and keep MCP tool descriptions actionable because they surface directly to clients.
 
 ## Testing Guidelines
 There is no committed automated test suite yet. Until one is added, treat `npm run build` as the required gate and manually smoke-test affected MCP tools after changes. If you add tests, use `*.test.ts` naming and place them near the feature or under `mcp-news-server/src/__tests__/` so they stay close to the server code.

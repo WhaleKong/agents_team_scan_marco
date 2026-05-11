@@ -152,41 +152,26 @@ output_format: |
 ```
 
 ### Agent 4: `risk-manager`
-**Role:** Position Sizing & Risk Control — THE MOST IMPORTANT AGENT
+**Role:** Trade-Idea Risk Evaluator
 **Trigger:** ก่อนทุก trade decision
 
 ```yaml
 name: risk-manager
 goal: |
-  Enforce Druckenmiller risk discipline:
-  1. NEVER risk more than 2% of portfolio on a single idea (stop loss level)
-  2. TOTAL portfolio heat max 6% (sum of all position risks)
-  3. When conviction is HIGH (regime + quant aligned) → size UP to 20-30% of book
-  4. When conviction is LOW or signals conflict → size DOWN to 2-5% or FLAT
-  5. ALWAYS define: entry, stop, target BEFORE entering
-  6. Kelly Criterion for optimal sizing: f* = (bp - q) / b
-  7. Correlation-adjusted VaR — don't stack correlated bets
-rules:
-  position_sizing:
-    max_single_position: "30% of NAV (Druckenmiller concentrated style)"
-    normal_position: "5-10% of NAV"
-    low_conviction: "1-3% of NAV"
-    stop_loss: "Mandatory. No exceptions. Cut when thesis is invalidated."
-  portfolio_rules:
-    max_gross_exposure: "150% (allows moderate leverage)"
-    max_net_exposure: "±100%"
-    max_sector_concentration: "40%"
-    max_correlated_cluster: "50%"
-    drawdown_circuit_breaker: "-5% MTD → reduce all positions 50%"
-    drawdown_halt: "-10% MTD → go to cash, reassess everything"
-  druckenmiller_sizing_logic: |
-    CONVICTION HIGH + REGIME CLEAR + SIGNALS ALIGNED:
-      → "Bet the ranch" — 20-30% position, tight risk management
-    CONVICTION MEDIUM + REGIME CLEAR:
-      → Standard 5-10% position
-    CONVICTION LOW OR REGIME TRANSITION:
-      → 1-3% "probe" position or sit in cash
-      → "When you don't know, do nothing"
+  Evaluate any single trade idea through Druckenmiller's per-trade discipline:
+  1. ALWAYS define: entry, stop, target BEFORE entering
+  2. Stop is mandatory. Cut when the THESIS is invalidated, not when P&L turns red.
+  3. Require Risk/Reward ≥ 3:1 for normal conviction; ≥ 5:1 for low conviction.
+  4. Conviction = function of regime clarity + signal confluence + catalyst quality.
+  5. Never average down on a losing macro thesis.
+  6. "When you don't know, do nothing" — CASH is a valid output.
+conviction_sizing_bias:
+  HIGH (regime clear + 3+ signals aligned + strong catalyst):
+    → "Bet the ranch" — concentrated bias, tight invalidation
+  MEDIUM (regime clear + partial signal confirmation):
+    → Standard bias
+  LOW (mixed signals or TRANSITION regime):
+    → Probe-sized bias, or stand aside
 output_format: |
   ## Risk Assessment — {trade_idea}
   ### PRE-TRADE CHECKLIST ✅
@@ -195,22 +180,20 @@ output_format: |
   - [ ] News catalyst identified?
   - [ ] Clear invalidation level defined?
   - [ ] Risk/Reward ratio ≥ 3:1?
-  - [ ] Portfolio heat within limits?
-  - [ ] Correlation check passed?
-  ### POSITION SIZING
+  - [ ] Stop loss set?
+  ### TRADE SPEC
   | Parameter        | Value              |
   |------------------|--------------------|
   | Conviction Level | HIGH / MEDIUM / LOW |
-  | Recommended Size | X% of NAV          |
+  | Size Bias        | Concentrated / Standard / Probe / Stand aside |
   | Entry Price      | $XXXX              |
   | Stop Loss        | $XXXX (-X%)        |
   | Target 1         | $XXXX (+X%)        |
   | Target 2         | $XXXX (+X%)        |
   | Risk/Reward      | X.X : 1            |
-  | Portfolio Heat After | X.X%           |
   ### ⚠️ KILL SWITCH CONDITIONS
   - If [condition] → exit immediately
-  - If [condition] → reduce 50%
+  - If [condition] → tighten stop / reduce
 ```
 
 ---
@@ -221,12 +204,11 @@ output_format: |
 1. [news-scanner]    → Morning scan → produce News Digest
 2. [macro-researcher]→ Update regime dashboard with new data
 3. [quant-signal]    → Run signals, check confluence with macro view
-4. [risk-manager]    → Size any new trades, review open positions
-5. [ORCHESTRATOR]    → Final decision: TRADE / WAIT / CUT
+4. [risk-manager]    → Validate any trade ideas (entry/stop/target, R:R, invalidation)
+5. [ORCHESTRATOR]    → Final decision: TRADE / WAIT / CASH
 
 Evening:
 6. [news-scanner]    → End-of-day scan, after-hours catalysts
-7. [risk-manager]    → P&L review, adjust stops, portfolio rebalance
 ```
 
 ---
@@ -252,13 +234,11 @@ Evening:
 > {specific, measurable conditions}
 
 ### TRADE EXPRESSION:
-| Leg         | Direction | Size    | Entry  | Stop   | Target |
-|-------------|-----------|---------|--------|--------|--------|
-| {instrument}| LONG/SHORT| X% NAV | $XXXX  | $XXXX  | $XXXX  |
+| Leg         | Direction | Conviction | Entry  | Stop   | Target |
+|-------------|-----------|------------|--------|--------|--------|
+| {instrument}| LONG/SHORT| HIGH/MED/LOW | $XXXX | $XXXX  | $XXXX  |
 
 ### RISK/REWARD PROFILE:
-- Max loss: X% of NAV
-- Expected gain: X% of NAV
 - R:R ratio: X.X : 1
 - Timeframe: X weeks/months
 
@@ -299,8 +279,7 @@ Score from -5 (strong short) to +5 (strong long).
 ### `/risk {trade_idea}` — Pre-Trade Risk Check
 ```
 Run risk-manager agent for {trade_idea}.
-Complete pre-trade checklist. Calculate position size.
-Check portfolio heat and correlation.
+Complete pre-trade checklist. Define entry/stop/target and R:R.
 Output go/no-go recommendation.
 ```
 
@@ -310,16 +289,6 @@ Run ALL agents in sequence:
 1. news-scanner → 2. macro-researcher → 3. quant-signal → 4. risk-manager
 Synthesize into a TRADE DECISION using the decision template.
 Apply Druckenmiller framework: conviction, asymmetry, concentration.
-```
-
-### `/review` — Portfolio Review
-```
-Review all open positions:
-- Is the original thesis still intact?
-- Have quant signals changed?
-- Any new catalysts or risks?
-- Should we add, reduce, or cut?
-- Portfolio-level heat check
 ```
 
 ---
@@ -382,21 +351,11 @@ claude "/decide"
 - Regime: {current}
 - Key overnight moves: {summary}
 
-### Actions Taken
-- [OPENED] {trade} — size X%, thesis: {reason}
-- [CLOSED] {trade} — P&L: +/-X%, reason: {reason}
-- [ADJUSTED] {trade} — new stop/target: {values}
-
-### Open Positions
-| Trade | Direction | Size | Entry | Current | P&L | Stop | Status |
-|-------|-----------|------|-------|---------|-----|------|--------|
-
-### Portfolio Summary
-- NAV: $XXXXX
-- Gross Exposure: XX%
-- Net Exposure: XX%
-- Portfolio Heat: X.X%
-- MTD P&L: +/-X.X%
+### Agent Reports Summary
+- news-scanner: {key highlights}
+- macro-researcher: {regime + thesis}
+- quant-signal: {top signals}
+- risk-manager: {trade ideas validated / rejected}
 
 ### Notes / Lessons
 > {what went right, what went wrong, what to watch}

@@ -14,7 +14,6 @@
 - [Daily Workflow](#daily-workflow)
 - [Project Structure](#project-structure)
 - [Configuration](#configuration)
-- [Portfolio Management](#portfolio-management)
 - [Druckenmiller Principles](#druckenmiller-principles)
 
 ---
@@ -37,7 +36,7 @@
 | **news-scanner** | สแกนข่าวและ sentiment | ทุก session / event สำคัญ |
 | **macro-researcher** | วิเคราะห์ regime (Goldilocks/Reflation/Stagflation/Deflation) | Weekly / regime shift |
 | **quant-signal** | สร้าง signal เชิงปริมาณ score -5 ถึง +5 | หลัง regime assessment |
-| **risk-manager** | Position sizing & risk control | ก่อนทุก trade decision |
+| **risk-manager** | ประเมิน trade idea (entry/stop/target/R:R/invalidation) | ก่อนทุก trade decision |
 
 ---
 
@@ -148,13 +147,15 @@ claude
 /risk Long Crude Oil breakout
 ```
 
-**Output:** Pre-trade checklist (7 items), position sizing recommendation, kill switch conditions
+**Output:** Pre-trade checklist (6 items), conviction + size bias, entry/stop/target, kill switch conditions
 
 **ต้องผ่านทุกข้อ:**
 - [x] Macro regime supports direction?
 - [x] Quant signals confirm (3+ aligned)?
+- [x] News catalyst identified?
+- [x] Clear invalidation level defined?
 - [x] Risk/Reward >= 3:1?
-- [x] Portfolio heat within 6% limit?
+- [x] Stop loss set?
 
 ---
 
@@ -178,20 +179,6 @@ claude
 
 ---
 
-### `/review` — Portfolio Review
-
-รีวิว portfolio และ open positions ทั้งหมด
-
-```
-/review
-```
-
-**สำหรับแต่ละ position จะแนะนำ:**
-- **ADD** — thesis แข็งแกร่งขึ้น เพิ่มขนาด
-- **HOLD** — thesis ยังใช้ได้ คงไว้
-- **REDUCE** — take profit บางส่วน หรือ thesis อ่อนลง
-- **CUT** — thesis invalidated ออกทันที
-
 ---
 
 ## Daily Workflow
@@ -210,14 +197,12 @@ claude
 
 ```
 6. /scan          ← สแกน after-hours catalysts
-7. /review        ← รีวิว P&L, ปรับ stops, rebalance
 ```
 
 ### Weekly (ทุกวันจันทร์)
 
 ```
 /regime           ← deep dive macro regime
-/review           ← full portfolio review
 ```
 
 ---
@@ -231,8 +216,7 @@ agents_team_scan_marco/
 │   ├── regime.md               # /regime
 │   ├── signal.md               # /signal {asset}
 │   ├── risk.md                 # /risk {trade_idea}
-│   ├── decide.md               # /decide
-│   └── review.md               # /review
+│   └── decide.md               # /decide
 │
 ├── agents/                     # Agent definitions & prompts
 │   ├── news-scanner.md
@@ -242,17 +226,13 @@ agents_team_scan_marco/
 │
 ├── config/
 │   ├── instruments.yaml        # Instrument universe & tickers
-│   ├── api-sources.yaml        # API endpoints & data sources
-│   └── risk-params.yaml        # Risk limits & parameters
+│   └── api-sources.yaml        # API endpoints & data sources
 │
 ├── data/
-│   ├── portfolio/
-│   │   └── portfolio-state.json  # Portfolio state (NAV, positions)
 │   └── sessions/               # Session logs
 │
 ├── templates/
-│   ├── decision.md             # Trade Decision template
-│   └── session-log.md          # Session Log template
+│   └── decision.md             # Trade Decision template
 │
 ├── CLAUDE.md                   # Master system prompt
 ├── .env.example                # API key template
@@ -277,54 +257,11 @@ Assets ที่ระบบติดตาม:
 
 เพิ่ม/ลบ instruments ได้ในไฟล์ `config/instruments.yaml`
 
-### Risk Parameters (`config/risk-params.yaml`)
-
-| Parameter | Default |
-|-----------|---------|
-| Max single position | 30% NAV |
-| Normal position | 5-10% NAV |
-| Max portfolio heat | 6% |
-| Max gross exposure | 150% |
-| Drawdown circuit breaker | -5% MTD |
-| Emergency halt | -10% MTD |
-
-แก้ไขค่าเหล่านี้ได้ตามสไตล์การเทรดของคุณ
-
----
-
-## Portfolio Management
-
-Portfolio state ถูกเก็บใน `data/portfolio/portfolio-state.json`
-
-### Initial State
-
-```json
-{
-  "nav": 1000000,
-  "currency": "USD",
-  "positions": [],
-  "portfolio_metrics": {
-    "gross_exposure_pct": 0,
-    "net_exposure_pct": 0,
-    "portfolio_heat_pct": 0
-  },
-  "regime": {
-    "current": "TRANSITION"
-  }
-}
-```
-
-### ปรับ NAV เริ่มต้น
-
-แก้ไข `nav` ในไฟล์ `portfolio-state.json` ให้ตรงกับขนาด portfolio ของคุณ
-
 ### Session Logs
 
 ทุก session จะบันทึกใน `data/sessions/` ตาม template:
 - Market context & regime
-- Actions taken (OPENED/CLOSED/ADJUSTED)
-- Open positions table
-- Portfolio summary
+- Agent reports summary (news / macro / signal / risk)
 - Notes & lessons learned
 
 ---

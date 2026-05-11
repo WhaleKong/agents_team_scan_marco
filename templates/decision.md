@@ -13,13 +13,11 @@
 > {specific, measurable conditions that would break the thesis}
 
 ### TRADE EXPRESSION:
-| Leg          | Direction  | Size     | Entry  | Stop   | Target |
-|--------------|------------|----------|--------|--------|--------|
-| {instrument} | LONG/SHORT | X% NAV  | $XXXX  | $XXXX  | $XXXX  |
+| Leg          | Direction  | Conviction   | Entry  | Stop   | Target |
+|--------------|------------|--------------|--------|--------|--------|
+| {instrument} | LONG/SHORT | HIGH/MED/LOW | $XXXX  | $XXXX  | $XXXX  |
 
 ### RISK/REWARD PROFILE:
-- Max loss: X% of NAV
-- Expected gain: X% of NAV
 - R:R ratio: X.X : 1
 - Timeframe: X weeks/months
 
