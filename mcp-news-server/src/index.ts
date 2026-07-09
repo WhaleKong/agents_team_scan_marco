@@ -4,13 +4,15 @@ import { z } from "zod";
 
 import { getBreakingNews } from "./tools/breaking-news.js";
 import { getMarketNewsForSymbol } from "./tools/market-news.js";
-import { getEconomicEvents } from "./tools/economic-calendar.js";
+import { getReleaseCalendar } from "./tools/release-calendar.js";
 import { getNewsSentimentForTickers } from "./tools/news-sentiment.js";
 import { searchNews } from "./tools/search-news.js";
 import { getEarnings } from "./tools/earnings-calendar.js";
 import { getRssFeeds } from "./tools/rss-feeds.js";
 import { googleNewsSearch, googleMacroSearch } from "./tools/google-search.js";
 import { getGoogleFinanceQuote, getGoogleMarketOverview } from "./tools/google-finance.js";
+import { getFredMacroData } from "./tools/fred-macro.js";
+import { getCotPositioning } from "./tools/cot-positioning.js";
 
 const server = new McpServer({
   name: "macro-news-feed",
@@ -72,31 +74,23 @@ server.tool(
   }
 );
 
-// Tool 3: Economic Calendar
+// Tool 3: US Economic Release Calendar (FRED release dates + FOMC schedule)
 server.tool(
-  "get_economic_calendar",
-  "Get upcoming economic events (FOMC, CPI, NFP, GDP, PMI etc.) via Google Search. Returns links to economic calendars with event schedules and data releases.",
+  "get_release_calendar",
+  "Get upcoming US economic release dates (CPI, NFP/Employment Situation, Core PCE, GDP, PPI) from the FRED release calendar plus scheduled FOMC decision dates with times (ET). Use to check event risk inside a swing-trade holding window. Requires FRED_API_KEY.",
   {
-    from_date: z
+    days_ahead: z
+      .number()
+      .optional()
+      .describe("How many days ahead to look (default: 14, max: 90)"),
+    events: z
       .string()
       .optional()
-      .describe("Start date YYYY-MM-DD (default: today)"),
-    to_date: z
-      .string()
-      .optional()
-      .describe("End date YYYY-MM-DD (default: 7 days ahead)"),
-    country: z
-      .string()
-      .optional()
-      .describe("Filter by country code (e.g., US, EU, JP)"),
-    importance: z
-      .enum(["low", "medium", "high"])
-      .optional()
-      .describe("Minimum importance level"),
+      .describe('Optional comma-separated event filter, e.g. "CPI,FOMC" or "NFP". Omit for all tracked events.'),
   },
-  async ({ from_date, to_date, country, importance }) => {
+  async ({ days_ahead, events }) => {
     try {
-      const result = await getEconomicEvents(from_date, to_date, country, importance);
+      const result = await getReleaseCalendar(days_ahead ?? 14, events);
       return { content: [{ type: "text" as const, text: result }] };
     } catch (err) {
       return {
@@ -330,6 +324,74 @@ server.tool(
   async () => {
     try {
       const result = await getGoogleMarketOverview();
+      return { content: [{ type: "text" as const, text: result }] };
+    } catch (err) {
+      return {
+        content: [{ type: "text" as const, text: `Error: ${err}` }],
+        isError: true,
+      };
+    }
+  }
+);
+
+// Tool 12: FRED Macro Data
+server.tool(
+  "get_fred_macro_data",
+  "Get FRED macro series with trend context: latest value, Δ vs previous, 3M change, 1Y change, YoY %, and rate-of-change acceleration (second derivative) per series. Categories: liquidity, rates/credit, growth/inflation, and markets (Broad USD, VIX, 10Y real yield, 10Y-3M, IG OAS, NFCI). Primary hard-data source for macro regime and bias analysis. Requires FRED_API_KEY.",
+  {
+    category: z
+      .enum(["all", "liquidity", "rates_credit", "growth_inflation", "markets"])
+      .optional()
+      .describe("Macro category to fetch (default: all). 'markets' = daily USD/VIX/real-rates/curve/credit series for bias checks."),
+    series_ids: z
+      .string()
+      .optional()
+      .describe("Optional comma-separated FRED series IDs. Overrides category."),
+    limit: z
+      .number()
+      .optional()
+      .describe("Override observations fetched per series (default: auto by series frequency, enough for 1Y trend analysis)"),
+    observation_start: z
+      .string()
+      .optional()
+      .describe("Optional FRED observation_start date YYYY-MM-DD"),
+    observation_end: z
+      .string()
+      .optional()
+      .describe("Optional FRED observation_end date YYYY-MM-DD"),
+  },
+  async ({ category, series_ids, limit, observation_start, observation_end }) => {
+    try {
+      const result = await getFredMacroData(
+        category ?? "all",
+        series_ids,
+        limit,
+        observation_start,
+        observation_end
+      );
+      return { content: [{ type: "text" as const, text: result }] };
+    } catch (err) {
+      return {
+        content: [{ type: "text" as const, text: `Error: ${err}` }],
+        isError: true,
+      };
+    }
+  }
+);
+
+// Tool 13: CFTC COT Positioning
+server.tool(
+  "get_cot_positioning",
+  "Get CFTC Commitments of Traders (COT) non-commercial futures positioning for Gold, Euro FX, Japanese Yen, USD Index, E-mini S&P 500, and Nasdaq-100: net position, weekly change, % of open interest, and 52-week percentile (crowdedness — >=90 crowded long, <=10 crowded short). Free CFTC public API, no key required. Data as-of Tuesday, published Friday ~15:30 ET.",
+  {
+    markets: z
+      .string()
+      .optional()
+      .describe('Optional comma-separated market filter, e.g. "gold,euro" or "s&p,nasdaq". Omit for all six markets.'),
+  },
+  async ({ markets }) => {
+    try {
+      const result = await getCotPositioning(markets);
       return { content: [{ type: "text" as const, text: result }] };
     } catch (err) {
       return {

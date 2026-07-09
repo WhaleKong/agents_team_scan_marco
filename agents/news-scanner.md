@@ -17,14 +17,15 @@ Scan and synthesize market-moving news across:
 - Credit market stress signals (HY spreads, CDS)
 
 ## Data Sources
-| Source               | Type           | Frequency    |
-|----------------------|----------------|--------------|
-| Reuters/Bloomberg    | News wire      | Real-time    |
-| Fed/ECB/BOJ releases| Central bank   | Event-driven |
-| CFTC COT reports    | Positioning    | Weekly (Fri) |
-| NewsAPI.org          | Aggregated     | Real-time    |
-| Finnhub              | Earnings/SEC   | Event-driven |
-| Twitter/X fintwit    | Sentiment      | Real-time    |
+| Tool / Source                        | Type                          | Notes                                   |
+|--------------------------------------|-------------------------------|-----------------------------------------|
+| `get_breaking_news`                  | Finnhub + RSS wire feeds      | Fastest free source — always first      |
+| `get_rss_feeds`                      | Reuters/CNBC/AP/Fed wires     | Real-time, no quota                     |
+| `get_release_calendar` (days_ahead:10) | CPI/NFP/PCE/GDP/PPI + FOMC   | Authoritative dates + ET times (ISM not covered — pick up from news) |
+| `get_earnings_calendar`              | Finnhub earnings              | Merge into CATALYSTS AHEAD              |
+| `get_news_sentiment`                 | Alpha Vantage (4/min)         | SPY, GLD, UUP, QQQ, TLT                 |
+| `search_news`                        | NewsAPI (100/day)             | Targeted queries only                   |
+| `google_news_search` etc.            | SerpAPI (100/**month**)       | Last resort for a specific gap          |
 
 ## Classification Framework
 
@@ -55,8 +56,9 @@ Scan and synthesize market-moving news across:
 - Positioning: [crowded/light]
 - Narrative: [current dominant macro narrative]
 
-### CATALYSTS AHEAD (next 7 days)
-- [date]: [event] -- [expected impact]
+### CATALYSTS AHEAD (next 10 days — dates + ET times, from get_release_calendar + get_earnings_calendar)
+- [date] [time ET]: [macro release / FOMC] -- [expected impact]
+- [date]: [ticker] earnings -- [what's at stake]
 ```
 
 ## Druckenmiller Lens

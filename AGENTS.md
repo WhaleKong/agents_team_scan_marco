@@ -3,9 +3,10 @@
 ## Project Structure & Module Organization
 This repository combines agent playbooks with a TypeScript MCP server. Core application code lives in `mcp-news-server/src/`, split by responsibility:
 - `tools/` exposes MCP tool handlers.
-- `sources/` wraps upstream data providers such as RSS, Finnhub, NewsAPI, and Alpha Vantage.
+- `sources/` wraps upstream data providers such as RSS, Finnhub, NewsAPI, Alpha Vantage, and FRED.
 - `utils/` contains shared helpers like deduplication and rate limiting.
-- `config/` stores market, API-source, and risk YAML files.
+- `src/config/` holds TypeScript constants (e.g. `fomc-schedule.ts` — FOMC decision dates that must be extended each year from federalreserve.gov) and RSS source lists.
+- `config/` (repo root) stores market, API-source, and risk YAML files.
 - `agents/` defines the macro, news, quant, and risk agent roles.
 - `templates/` and `data/` hold reusable markdown templates and runtime state.
 
@@ -25,7 +26,7 @@ npm run dev
 Follow the existing TypeScript style: ES modules, strict typing, named exports, and 2-space indentation. Keep filenames kebab-cased (`breaking-news.ts`, `economic-calendar.ts`), functions camelCased (`getBreakingNews`), and config files descriptive and lowercase (`instruments.yaml`). Prefer small modules with one clear responsibility and keep MCP tool descriptions actionable because they surface directly to clients.
 
 ## Testing Guidelines
-There is no committed automated test suite yet. Until one is added, treat `npm run build` as the required gate and manually smoke-test affected MCP tools after changes. If you add tests, use `*.test.ts` naming and place them near the feature or under `mcp-news-server/src/__tests__/` so they stay close to the server code.
+Run `npm test` from `mcp-news-server/` — it builds then runs `node --test` over `dist/__tests__/*.test.js`. Tests are pure-function and network-free: fetch orchestration stays in thin wrappers while computation (e.g. `summarizeSeries`, `formatReleaseCalendar`) is exported for direct testing. Keep new tests under `mcp-news-server/src/__tests__/` with `*.test.ts` naming, and treat `npm test` as the required gate before shipping tool changes.
 
 ## Commit & Pull Request Guidelines
 `main` currently has no commit history, so no established convention exists yet. Use short imperative subjects and prefer Conventional Commit prefixes such as `feat:`, `fix:`, or `docs:`. Pull requests should state the trading or data-flow impact, list changed configs or API dependencies, and include sample tool output when behavior changes.

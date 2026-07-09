@@ -68,6 +68,8 @@ export async function getCompanyNews(
   return finnhubFetch<FinnhubNewsItem[]>("/company-news", { symbol, from, to });
 }
 
+// Premium Finnhub endpoint — unused; do not wire up on the free tier.
+// Structured US release dates come from tools/release-calendar.ts (FRED) instead.
 export async function getEconomicCalendar(
   from: string,
   to: string
