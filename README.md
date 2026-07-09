@@ -1,8 +1,12 @@
 # Quant Macro Agent Team
 
-ระบบ Multi-Agent สำหรับ Macro Trading แบบ Stanley Druckenmiller ทำงานผ่าน Claude Code
+ระบบ Multi-Agent ที่เป็น **Macro Confluence Layer** สำหรับ swing trader — ทำงานผ่าน Claude Code
 
-> *"It's not whether you're right or wrong, but how much money you make when you're right and how much you lose when you're wrong."*
+> *"It's not whether you're right or wrong, but how much money you make when you're right and how much you lose when you're wrong."* — Stanley Druckenmiller
+
+**แนวคิดหลัก:** คุณมีระบบ technical entry ของตัวเองอยู่แล้ว (กราฟ 1H – weekly) — ระบบนี้**ไม่สร้าง entry/stop/target ให้** หน้าที่ของมันคือตอบคำถามเดียว: *"macro หนุนหรือขวาง trade ที่กำลังจะเข้า?"*
+
+**Universe:** XAUUSD, DXY, USDJPY, EURUSD, SPX, NDX + หุ้น US รายตัว
 
 ---
 
@@ -11,9 +15,10 @@
 - [Architecture](#architecture)
 - [Getting Started](#getting-started)
 - [Slash Commands](#slash-commands)
-- [Daily Workflow](#daily-workflow)
+- [Workflow](#workflow)
+- [MCP Server & Data Sources](#mcp-server--data-sources)
 - [Project Structure](#project-structure)
-- [Configuration](#configuration)
+- [ข้อจำกัดที่ต้องรู้](#ข้อจำกัดที่ต้องรู้)
 - [Druckenmiller Principles](#druckenmiller-principles)
 
 ---
@@ -21,22 +26,33 @@
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                  ORCHESTRATOR                        │
-│         Druckenmiller Decision Framework             │
-├──────────┬──────────┬──────────┬────────────────────┤
-│  NEWS    │  MACRO   │  QUANT   │  RISK              │
-│  SCANNER │  RESEARCH│  SIGNAL  │  MANAGER           │
-│          │  ER      │          │                    │
-└──────────┴──────────┴──────────┴────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                     ORCHESTRATOR                              │
+│              Druckenmiller Decision Framework                 │
+├──────────┬───────────┬───────────┬───────────┬───────────────┤
+│  NEWS    │  MACRO    │  BIAS     │  QUANT    │  RISK         │
+│  SCANNER │  RESEARCH │  CHECKER  │  SIGNAL   │  MANAGER      │
+│          │  (weekly) │ (pre-trade│ (macro    │ (validate     │
+│          │           │ fast path)│  tape)    │ user's trade) │
+└──────────┴───────────┴───────────┴───────────┴───────────────┘
+หลักการร่วม: ไม่มี agent ไหน invent price levels — ผู้ใช้เป็นเจ้าของกราฟ
 ```
 
 | Agent | หน้าที่ | Trigger |
 |-------|---------|---------|
-| **news-scanner** | สแกนข่าวและ sentiment | ทุก session / event สำคัญ |
-| **macro-researcher** | วิเคราะห์ regime (Goldilocks/Reflation/Stagflation/Deflation) | Weekly / regime shift |
-| **quant-signal** | สร้าง signal เชิงปริมาณ score -5 ถึง +5 | หลัง regime assessment |
-| **risk-manager** | ประเมิน trade idea (entry/stop/target/R:R/invalidation) | ก่อนทุก trade decision |
+| **news-scanner** | สแกนข่าว market-moving + catalysts 10 วันข้างหน้า (วันที่/เวลา ET จริง) | เช้า/เย็น ทุกวัน |
+| **macro-researcher** | วิเคราะห์ 6 pillars → classify regime + **Per-Asset Macro Bias Table** | Weekly / regime shift |
+| **bias-checker** ⭐ | เช็ค macro confluence ก่อนเข้าไม้ → conviction modifier | ก่อนเข้าทุกไม้ |
+| **quant-signal** | macro tape ยืนยัน thesis ไหม (composite −5..+5) — ไม่ใช่ chart reading | หลังตั้ง thesis / เช็ค divergence |
+| **risk-manager** | validate trade ที่**คุณ**ออกแบบ (entry/stop/target ต้องมาจากคุณ) | ก่อน execute ทุกครั้ง |
+
+### Timeframe Map
+
+```
+/regime (weekly macro context)
+   └─> /bias (pre-trade confluence check — ก่อนเข้าทุกไม้)
+          └─> entry จากกราฟของคุณเอง (1H–4H)
+```
 
 ---
 
@@ -44,29 +60,37 @@
 
 ### Prerequisites
 
-- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) ติดตั้งแล้ว
-- API keys สำหรับ data sources (optional แต่แนะนำ)
+- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code)
+- Node.js 18+ (สำหรับ build MCP server)
+- API keys (ฟรีทั้งหมด — ดูตารางด้านล่าง)
 
-### 1. Clone & Setup
-
-```bash
-cd agents_team_scan_marco
-cp .env.example .env
-# แก้ไข .env ใส่ API keys ของคุณ
-```
-
-### 2. ใส่ API Keys (optional)
-
-แก้ไขไฟล์ `.env`:
+### 1. Build MCP Server
 
 ```bash
-FRED_API_KEY=your_key_here        # Fed data, yield curves, M2
-ALPHA_VANTAGE_API_KEY=your_key    # Macro indicators, FX
-NEWSAPI_API_KEY=your_key          # Aggregated news
-FINNHUB_API_KEY=your_key          # Earnings, SEC filings
+cd mcp-news-server
+npm install
+npm run build
+npm test        # ต้องเขียวทั้งหมด
 ```
 
-> หากไม่มี API keys ระบบจะใช้ WebSearch เป็น fallback ได้
+### 2. ตั้งค่า API Keys
+
+```bash
+cp .mcp.json.example .mcp.json
+```
+
+แก้ `.mcp.json`: ใส่ absolute path ของ `mcp-news-server/dist/index.js` และ API keys:
+
+| Key | สมัครที่ | ใช้กับ |
+|-----|---------|--------|
+| `FRED_API_KEY` | [fred.stlouisfed.org](https://fred.stlouisfed.org/docs/api/api_key.html) | **hard data หลัก** — macro series + release calendar |
+| `FINNHUB_API_KEY` | [finnhub.io](https://finnhub.io) | breaking news, earnings |
+| `ALPHA_VANTAGE_API_KEY` | [alphavantage.co](https://www.alphavantage.co) | news sentiment |
+| `NEWSAPI_API_KEY` | [newsapi.org](https://newsapi.org) | targeted news search |
+| `SERPAPI_API_KEY` | [serpapi.com](https://serpapi.com) | Google search (quota 100/เดือน — ใช้น้อยที่สุด) |
+| `CFTC_APP_TOKEN` | ไม่ต้องมี (ฟรี ไม่ต้อง key) | COT positioning |
+
+> ⚠️ `.mcp.json` ถูก gitignore ไว้แล้ว — **ห้าม commit** เด็ดขาด
 
 ### 3. เริ่มใช้งาน
 
@@ -74,37 +98,37 @@ FINNHUB_API_KEY=your_key          # Earnings, SEC filings
 claude
 ```
 
-จากนั้นใช้ slash commands ด้านล่าง
-
 ---
 
 ## Slash Commands
 
-### `/scan` — News Scanner
+| Command | Agent | ใช้เมื่อ |
+|---------|-------|---------|
+| `/scan` | news-scanner | เช้า/เย็น — ข่าว + catalysts |
+| `/regime` | macro-researcher | weekly — regime + Per-Asset Bias Table |
+| `/bias {asset} {dir?}` ⭐ | bias-checker | **ก่อนเข้าทุกไม้** |
+| `/signal {asset?}` | quant-signal | เช็ค macro tape confirmation |
+| `/risk {asset} {dir} entry= stop= target=` | risk-manager | ก่อน execute |
+| `/decide` | ทุก agent | weekly deep dive |
 
-สแกนข่าวล่าสุดที่กระทบตลาด
+ทุก command export รายงานภาษาไทยลง `summary/{news,regime,bias,signals,risk,decide}.md`
+
+### `/scan` — News Scanner
 
 ```
 /scan
 ```
 
-**Output:** News Digest แยกตาม impact level (HIGH/MEDIUM), sentiment shift, และ catalysts 7 วันข้างหน้า
+**Output:** News Digest (HIGH/MEDIUM impact) + CATALYSTS AHEAD 10 วันข้างหน้า พร้อมวันที่ + เวลา ET จริงจาก release calendar
 
-**ใช้เมื่อ:** เปิด session ใหม่, ก่อนตลาดเปิด, หรือเมื่อมี event สำคัญ
-
----
-
-### `/regime` — Macro Regime Check
-
-วิเคราะห์ macro regime ปัจจุบัน
+### `/regime` — Macro Regime Check (weekly)
 
 ```
 /regime
 ```
 
-**Output:** Regime classification + dashboards 3 ตัว (Liquidity, Growth, Inflation) + mispricing ที่ตลาดมองข้าม
+**Output:** Regime classification + dashboards (cite RoC / second derivative) + KEY THESIS + MISPRICING + **Per-Asset Macro Bias Table** — ตารางนี้คือสิ่งที่ `/bias` ใช้ทั้งสัปดาห์ (เกิน 7 วัน = stale)
 
-**Regime ที่เป็นไปได้:**
 | Regime | สภาวะ | Strategy |
 |--------|--------|----------|
 | GOLDILOCKS | Growth ↑ Inflation ↓ Liquidity ↑ | Risk ON เต็มที่ |
@@ -113,97 +137,106 @@ claude
 | DEFLATION | Growth ↓ Inflation ↓ Liquidity ↑ | Bonds, Quality Growth |
 | TRANSITION | Mixed signals | ลดขนาด, รอความชัดเจน |
 
----
+### `/bias {asset} {direction}` ⭐ — Pre-Trade Fast Path
 
-### `/signal {asset}` — Quant Signal Check
-
-เช็ค signal เชิงปริมาณของ asset
+เจอ setup จากกราฟตัวเองแล้ว → เช็คก่อนเข้าไม้:
 
 ```
-/signal SPX
-/signal Gold
-/signal USDJPY
+/bias XAUUSD long
+/bias NDX short
 ```
 
-ถ้าไม่ระบุ asset จะรันทุก instrument ใน universe
+**Output:** Macro Bias Card
+- **VERDICT:** WITH-MACRO / NEUTRAL / AGAINST-MACRO
+- Driver breakdown (Δ3M + RoC) + event risk 10 วัน + invalidation triggers
+- **Conviction Modifier** (deterministic):
 
-**Output:** Signal score -5 (strong short) ถึง +5 (strong long) จาก 6 categories:
-1. Trend (50/200 DMA, ADX)
-2. Momentum (RSI, MACD)
-3. Mean Reversion (Bollinger, z-score)
-4. Cross-Asset (correlations)
-5. Flow (options, dark pool)
-6. Volatility (VIX structure, skew)
+| Modifier | เงื่อนไข |
+|----------|---------|
+| FULL SIZE | WITH-MACRO + ไม่มี HIGH event + regime สด |
+| REDUCED | NEUTRAL หรือมี HIGH event หรือ regime stale (>7 วัน) |
+| SKIP-OR-PROBE | AGAINST-MACRO |
 
----
-
-### `/risk {trade_idea}` — Pre-Trade Risk Check
-
-ประเมินความเสี่ยงก่อนเข้าเทรด
+### `/signal {asset?}` — Macro Tape Confirmation
 
 ```
-/risk Long Gold on stagflation thesis
-/risk Short SPX via puts
-/risk Long Crude Oil breakout
+/signal XAUUSD
 ```
 
-**Output:** Pre-trade checklist (6 items), conviction + size bias, entry/stop/target, kill switch conditions
+**Output:** Composite score −5..+5 จาก 5 หมวด (−1/0/+1 ต่อหมวด):
+1. USD tape (Broad USD Δ3M + RoC)
+2. Real rates & curve (10Y real yield, 10Y−3M)
+3. Liquidity pulse (Fed B/S, RRP, reserves, NFCI)
+4. Vol & credit (VIX, HY/IG OAS)
+5. Sentiment & positioning (news sentiment + COT — positioning ตึงระดับปี = crowded)
 
-**ต้องผ่านทุกข้อ:**
-- [x] Macro regime supports direction?
-- [x] Quant signals confirm (3+ aligned)?
-- [x] News catalyst identified?
-- [x] Clear invalidation level defined?
-- [x] Risk/Reward >= 3:1?
-- [x] Stop loss set?
+> ไม่มี RSI/MA/VWAP — คุณเป็นเจ้าของกราฟ นี่คือ macro tape ล้วนๆ
 
----
+### `/risk` — Validate Your Trade
 
-### `/decide` — Full Pipeline Decision
+```
+/risk XAUUSD long entry=2650 stop=2620 target=2760 horizon=5d
+```
 
-รัน **ทั้ง 4 agents** ตามลำดับ แล้วสังเคราะห์เป็น trade decision
+- entry/stop/target **มาจากคุณเท่านั้น** — ขาดข้อไหน agent จะถาม ไม่ invent ราคาให้
+- R:R ต้อง ≥ 3:1 + เช็ค HIGH event ใน horizon + invalidation ต้องเป็นเงื่อนไข macro ที่วัดได้
+
+**Verdict:** GO / REDUCE / NO-GO — *"เมื่อไม่รู้ อย่าทำอะไร" — NO-GO คือ output ที่ดี*
+
+### `/decide` — Full Pipeline
 
 ```
 /decide
 ```
 
-**Pipeline:**
-1. news-scanner → สแกนข่าว
-2. macro-researcher → วิเคราะห์ regime
-3. quant-signal → เช็ค signals
-4. risk-manager → sizing & risk
+รันทุก agent ตามลำดับ → THE THESIS / REGIME / CONVICTION / WHAT THE MARKET IS GETTING WRONG / WHAT CHANGES MY MIND / TRADE EXPRESSION (levels มาจากกราฟคุณ หรือ mark "awaiting user levels")
 
-**Output:** Trade Decision พร้อม thesis, entry/stop/target, R:R ratio, Druckenmiller gut check
-
-> ถ้าไม่มี high-conviction trade → output = **"CASH IS THE POSITION"**
+> ถ้าไม่มี fat pitch → **CASH IS THE POSITION**
 
 ---
 
+## Workflow
+
+### Daily / Pre-trade
+
+```
+เช้า:        /scan                       → News Digest + catalysts วันนี้
+ก่อนเข้าไม้:  /bias {asset} {direction}   → Macro Bias Card + conviction modifier
+ก่อน execute: /risk {asset} {dir} entry= stop= target= → GO / REDUCE / NO-GO
+เย็น:        /scan                       → after-hours catalysts
+```
+
+### Weekly
+
+```
+จันทร์:  /regime  → classify regime + Per-Asset Macro Bias Table
+ad-hoc: /decide  → full pipeline เมื่อต้องการ deep dive ทั้งระบบ
+```
+
 ---
 
-## Daily Workflow
+## MCP Server & Data Sources
 
-### Morning (ก่อนตลาดเปิด)
+MCP server `macro-news-feed` (`mcp-news-server/`) มี 13 tools:
 
-```
-1. /scan          ← สแกนข่าว overnight
-2. /regime        ← update regime ด้วยข้อมูลใหม่
-3. /signal        ← เช็ค signals ทั้งหมด
-4. /risk {idea}   ← ถ้ามี trade idea ให้ประเมิน risk
-5. /decide        ← หรือรัน full pipeline ทีเดียว
-```
+| Tool | Backend | หมายเหตุ |
+|------|---------|----------|
+| `get_fred_macro_data` | FRED | **hard data หลัก** — 20 series, 5 categories, ตารางมี Δ Prev / Δ 3M / Δ 1Y / YoY % / **RoC** (second derivative) |
+| `get_release_calendar` | FRED + FOMC schedule | CPI/NFP/Core PCE/GDP/PPI (08:30 ET) + FOMC (14:00 ET) |
+| `get_cot_positioning` | CFTC Socrata (ฟรี) | COT non-commercial: net, weekly Δ, % of OI, 52w percentile |
+| `get_breaking_news` | Finnhub + RSS | ข่าวเร็วสุด — ใช้เป็นหลัก |
+| `get_rss_feeds` | RSS 12 feeds | Reuters/CNBC/AP/Fed — ไม่มี quota |
+| `get_market_news` | Finnhub | ข่าวหุ้น US รายตัว |
+| `get_earnings_calendar` | Finnhub | earnings dates + surprise |
+| `get_news_sentiment` | Alpha Vantage | 4 req/min |
+| `search_news` | NewsAPI | 100 req/วัน |
+| `google_news_search` / `google_macro_search` / `google_market_overview` | SerpAPI | ⚠️ 100 req/**เดือน** — ใช้เท่าที่จำเป็น |
+| `google_finance_quote` | SerpAPI | snapshot quote เท่านั้น ไม่มี OHLC |
 
-### Evening (หลังตลาดปิด)
+### Maintenance
 
-```
-6. /scan          ← สแกน after-hours catalysts
-```
-
-### Weekly (ทุกวันจันทร์)
-
-```
-/regime           ← deep dive macro regime
-```
+- `mcp-news-server/src/config/fomc-schedule.ts` — วัน FOMC hardcode ถึงสิ้นปี 2027 → tool เตือน `WARNING` เมื่อ window เกิน แล้วอัปเดตจาก federalreserve.gov
+- ก่อน restart server: `cd mcp-news-server && npm run build && npm test` ต้องเขียว
 
 ---
 
@@ -212,57 +245,38 @@ claude
 ```
 agents_team_scan_marco/
 ├── .claude/commands/           # Slash commands
-│   ├── scan.md                 # /scan
-│   ├── regime.md               # /regime
-│   ├── signal.md               # /signal {asset}
-│   ├── risk.md                 # /risk {trade_idea}
-│   └── decide.md               # /decide
+│   ├── scan.md  regime.md  bias.md  signal.md  risk.md  decide.md
 │
-├── agents/                     # Agent definitions & prompts
+├── agents/                     # Agent definitions
 │   ├── news-scanner.md
 │   ├── macro-researcher.md
+│   ├── bias-checker.md
 │   ├── quant-signal.md
 │   └── risk-manager.md
 │
-├── config/
-│   ├── instruments.yaml        # Instrument universe & tickers
-│   └── api-sources.yaml        # API endpoints & data sources
+├── mcp-news-server/            # MCP server (TypeScript)
+│   ├── src/sources/            # FRED, CFTC, Finnhub, Alpha Vantage, NewsAPI, SerpAPI, RSS
+│   ├── src/tools/              # 13 MCP tools
+│   ├── src/config/             # FOMC schedule, RSS sources
+│   └── src/__tests__/
 │
-├── data/
-│   └── sessions/               # Session logs
+├── summary/                    # รายงานที่ export จากทุก command
+│   ├── news.md  regime.md  bias.md  signals.md  risk.md  decide.md
 │
-├── templates/
-│   └── decision.md             # Trade Decision template
-│
+├── data/sessions/              # Session logs
+├── templates/decision.md       # Trade Decision template
 ├── CLAUDE.md                   # Master system prompt
-├── .env.example                # API key template
-└── .gitignore
+├── .mcp.json.example           # MCP config template (copy → .mcp.json + ใส่ keys)
+└── .gitignore                  # .mcp.json ถูก ignore — keys ไม่ขึ้น repo
 ```
 
 ---
 
-## Configuration
+## ข้อจำกัดที่ต้องรู้
 
-### Instrument Universe (`config/instruments.yaml`)
-
-Assets ที่ระบบติดตาม:
-
-| Asset Class | Instruments |
-|-------------|-------------|
-| Equities | SPX, NDX, SET (Thai), EEM |
-| Rates | US2Y, US10Y, US30Y, TH10Y |
-| FX | DXY, USDTHB, USDJPY, EURUSD |
-| Commodities | Gold, Crude, Copper, Nat Gas |
-| Crypto | BTC, ETH (liquidity proxy) |
-
-เพิ่ม/ลบ instruments ได้ในไฟล์ `config/instruments.yaml`
-
-### Session Logs
-
-ทุก session จะบันทึกใน `data/sessions/` ตาม template:
-- Market context & regime
-- Agent reports summary (news / macro / signal / risk)
-- Notes & lessons learned
+- **ไม่มี price/OHLC feed จริง** → ไม่มี agent ไหนอ้าง technical indicators หรือ invent ราคา — กราฟเป็นของคุณ
+- Economic calendar ครอบเฉพาะ US releases หลัก + FOMC — ISM/BOJ/ECB ต้องอาศัยข่าว
+- COT เป็นรายสัปดาห์ (ข้อมูล ณ วันอังคาร ออกศุกร์ ~15:30 ET) — ใช้ shade verdict ไม่ใช่ timing
 
 ---
 
@@ -271,7 +285,7 @@ Assets ที่ระบบติดตาม:
 หลักการ 8 ข้อที่ระบบใช้ในทุก decision:
 
 1. **Liquidity is King** — Central bank balance sheets drive everything
-2. **Second Derivative Thinking** — เทรด rate of change ของ rate of change
+2. **Second Derivative Thinking** — เทรด rate of change ของ rate of change (คอลัมน์ `RoC` ใน FRED output)
 3. **Concentrate When Right** — เมื่อมั่นใจ ลงหนัก อย่ากระจาย
 4. **Cut Immediately When Wrong** — ไม่มี ego, ไม่หวัง, ไม่ average down
 5. **Don't Predict, React** — ใช้ liquidity + technical ไม่ใช่ valuation
