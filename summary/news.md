@@ -1,49 +1,50 @@
-# News Digest — 2026-07-02 (Thu, ~16:50 UTC / post-NFP, pre-holiday close)
+# 📰 News Digest — ศุกร์ 24 ก.ค. 2026 (สแกนเช้า ~09:20 ET)
 
-> Source: news-scanner agent (`/scan`). Feeds: Finnhub + 12 RSS wire feeds (Reuters, CNBC, AP, Fed, MarketWatch, OilPrice, CoinDesk, Calculated Risk) + Google News + NewsAPI + Alpha Vantage sentiment.
-> Data notes: `get_economic_calendar` unavailable (Finnhub premium); NewsAPI calendar query returned nothing; Alpha Vantage rate-limited on USO sentiment this run; CFTC COT not fetched this session.
-> Supersedes the pre-open digest from ~04:19 UTC — the NFP "confirm/deny" flagged this morning has now printed, and it printed SOFT.
+> จัดทำโดย news-scanner (`/scan`) | แหล่งข้อมูล: Finnhub + RSS 12 feeds, FRED release calendar, Finnhub earnings, Alpha Vantage sentiment
+> ต่อเนื่องจาก digest 21 ก.ค.: สัปดาห์นี้ธีม "war reflation รอบสอง" **เดินหน้าเต็มตัว** — oil ทะลุ $100 ระหว่างสัปดาห์ (Brent สูงสุด $97.66 เช้านี้หลังย่อ ~3%) กำลังปิดสัปดาห์ **+10%**, Hormuz เหลือเรือผ่านแค่ **1 ลำ/วัน** (ต่ำสุดตั้งแต่ 7 พ.ค.), และ narrative ใหม่ที่แรงสุดคือ **"Fed อาจต้องขึ้นดอกเบี้ย"** ภายใต้ประธานคนใหม่ Kevin Warsh — ทุกอย่างบีบเข้าหา FOMC พุธหน้า
+
+---
 
 ## 🔴 HIGH IMPACT
 
-- **June NFP: +57k vs +115k expected — big miss; unemployment rate FELL to 4.2% (exp. 4.3%)** → the "Warsh Fed may HIKE" repricing takes a direct hit; this is the soft print this morning's digest warned would trigger a "violent unwind of the new hawkish crowd" → **US2Y/US10Y yields ↓, TLT ↑, Gold ↑, DXY ↓ (tactical), rate-sensitive equities ↑** → confidence **H** on direction of repricing. *Nuance: the falling unemployment rate (household survey) muddies the growth-scare read — this looks like shrinking labor supply, not collapsing demand. Payrolls decelerating + U-rate falling = the Fed can stay patient in BOTH directions.*
-- **Second derivative on labor is now clearly negative** — 57k on a 115k consensus is not noise; job creation's rate of change is rolling over just as positioning went maximally hawkish (Goldman first cut 2027, hike bets building) → **asymmetric setup: crowded hawkish duration positioning vs deteriorating labor momentum** → bias: **long duration / fade the hike narrative** → confidence **M/H**.
-- **Oil whipsaw: crude "crashing" on Hormuz flow recovery + glut calls, BUT** OilPrice flags the glut narrative may be ahead of reality — Iran refuses to meet US envoys, ships were just struck in Hormuz, and **Russia's fuel crisis is spreading to Central Asia as Ukrainian drone strikes escalate** → **Crude: near-term ↓ momentum, rising tail-risk of a snap-back; energy equities choppy** → bias: **no position / own cheap upside tails if expressing** → confidence **M**.
+- **สงคราม US-Iran ยกระดับ: Trump พิจารณาโจมตี "bigger than ever"** (Axios/CNBC) + Hormuz crossings ทรุดเหลือ 1 ลำเมื่อวานพฤหัส (ต่ำสุดตั้งแต่ 7 พ.ค.) + Houthi ประกาศ blockade เรือซาอุ — เรือบรรทุกน้ำมันซาอุปิด transponder ลอด Bab el-Mandeb
+  → **Oil: supply shock ของจริง ไม่ใช่แค่ risk premium** — Brent แตะ $97.66 (สูงสุดตั้งแต่ พ.ค.) ปิดสัปดาห์ +10% แม้ศุกร์ย่อ ~3% | **XAUUSD: war bid หนุน** | **SPX/NDX: กดดัน** | ความเชื่อมั่น: **H**
+- **"A panicking Fed is just what the bond market needs" — Hartnett (BofA):** ประธาน Fed คนใหม่ **Kevin Warsh อาจต้อง "ขึ้นดอกเบี้ย" เพื่อ reassure long end** — 10Y yield แตะสูงสุดตั้งแต่ ม.ค. 2025 เมื่อพฤหัส (ศุกร์ย่อลงเล็กน้อย)
+  → **Narrative shift สำคัญสุดของสัปดาห์**: จาก "Fed จะ hawkish แค่ไหน" เป็น "Fed จะ **hike** ไหม" → yields ขึ้น = กด NDX/duration/gold (ผ่าน real rates), หนุน DXY | ความเชื่อมั่น: **M-H** (เป็น sell-side call แต่สอดคล้อง tape พันธบัตร)
+- **Trump global tariff รอบใหม่ (อ้าง forced labor) โดนคู่ค้า rebuke ทั่วโลก** — ยกระดับจาก Canada 50% สัปดาห์ก่อน เป็น**ระดับ global** แต่ส่วนใหญ่ยังส่งสัญญาณเจรจาต่อ
+  → inflation expectations ขึ้นซ้ำอีกชั้นบน oil shock | risk sentiment: ลบ | ความเชื่อมั่น: **H** (ประกาศแล้ว)
+- **FOMC พุธ 29 ก.ค. 14:00 ET ในสภาพแวดล้อม oil ~$100 + tariff ใหม่ + hike talk** — event risk ใหญ่สุดของหน้าต่าง swing นี้ ตลาดจะ price hawkish risk ตลอดต้นสัปดาห์หน้า
+  → ทุก asset ใน universe | ความเชื่อมั่น: **H** (กำหนดการแน่นอน)
+- **EU sanctions package ที่ 21 ต่อรัสเซีย** — เล็ง crypto network $120B + พิจารณาแบน third-country crypto providers ครั้งแรก; คู่ขนานกับ Ukraine โจมตีโรงงาน missile/น้ำมันรัสเซีย
+  → energy supply risk ซ้อนอีกชั้น (รัสเซีย+อิหร่านพร้อมกัน) | ความเชื่อมั่น: **M**
 
 ## 🟡 MEDIUM IMPACT
 
-- **Tesla -7% despite strong Q2 deliveries** — sell-the-news on a crowded name; momentum leadership fragile → **NDX drag; confirms the rotation-out-of-megacap-momentum theme** → confidence **M**.
-- **Trump Accounts default into State Street/BlackRock/Vanguard ETFs (SPY exclusive default)** — structural, price-insensitive passive bid for US large-cap equities over time → **SPY/index complex ↑ (slow-burn, not tradeable today)** → confidence **M**. Sentiment scored SPY bullish (+0.44) on this.
-- **Ford Q2 sales -10.3% (EV -40.7%); USMCA trade talks reopening, Ford CEO pressing for "level playing field"** → **autos, MXN/CAD, tariff headline risk back on the board** → confidence **M**.
-- **Nasdaq-100 warning signs after 5-day slide** (Benzinga, QQQ scored bearish) + "S&P 500's 2026 earnings growth is an illusion" (Seeking Alpha, SPY -0.45 bearish) → **breadth/earnings-quality skepticism persists under the surface** → confidence **M**.
-- **Defense capital flood continues** — Quantum Systems raises $1.2B; record defense-tech fundraising both sides of the Atlantic → **defense complex structural bid** → confidence **M**.
-- **US Treasury sanctions 100+ ISIS-K crypto addresses** — stablecoin issuers' role in sanctions enforcement growing; regulatory overhang for crypto rails → **BTC/ETH neutral, compliance-sensitive names watch** → confidence **L/M**.
+- **Intel Q2 beat ใหญ่ — แต่ analysts "on the fence"** (คง rating เป็นส่วนมาก) — Dow futures เด้ง +150 เช้าศุกร์เมื่อ oil ย่อ แต่ทั้ง 3 ดัชนีใหญ่ยังปิดสัปดาห์ลบ นำโดย Nasdaq → **NDX: bounce ศุกร์เป็น oversold bounce ไม่ใช่ trend เปลี่ยน** | ความเชื่อมั่น: M
+- **Bob Elliott: TIPS คือ "generational buying opportunity" — การันตี inflation +3%/ปี** → ตีความ macro: **real yields สูงระดับประวัติการณ์** = headwind เชิงโครงสร้างของ gold และ duration assets แม้ war bid หนุนระยะสั้น | ความเชื่อมั่น: M
+- **GLD outflows $14B ตั้งแต่ 1 มี.ค.** + ทองเคยหลุด $4,000 กลางเดือน → positioning ทองเบาลงมาก — สอดคล้อง COT ก่อนหน้า (43rd pct ไม่ crowded) = **มี room ถ้า war bid + inflation hedge กลับมาจริง** | ความเชื่อมั่น: M
+- **BTC ยืน ~$65k สวน oil shock** + options cluster $5B ที่ strikes $70-72k (calls ท่วม puts) → risk appetite เชิง speculative ยังไม่ตาย — ตลาดยังไม่เข้า panic mode | ความเชื่อมั่น: L-M
+- **Ukraine โจมตีโรงงานน้ำมัน/missile รัสเซีย — รัสเซียตัดไฟ 150k ครัวเรือน** → oil supply risk ฝั่งรัสเซียเพิ่มบน Hormuz risk | ความเชื่อมั่น: M
 
 ## 📊 SENTIMENT SHIFT
 
-- **Positioning:**
-  - Duration/rates — **hawkish crowd caught offside by the NFP miss**; the pain trade is now lower yields. Unwind likely has room: Goldman's 2027 first-cut call was published INTO this print.
-  - USD longs — early-narrative longs from the past week now face a countertrend shock; **DXY breakout thesis on probation** pending ISM Services Monday.
-  - Mega-cap tech — still **crowded and leaking** (TSLA -7% on good news; QQQ 5-day slide).
-  - Aggregate ticker sentiment (SPY/GLD/QQQ/TLT): **+0.11, split tape** (5 bull / 6 neutral / 4 bear).
-- **Narrative:** flipping AGAIN — morning: *"strong economy + sticky inflation = Warsh Fed may hike"* → post-NFP: *"labor is cracking, hike bets were a head-fake."* Two narrative flips in one session = **TRANSITION-flavored tape; conviction requires confirmation** (ISM Services Jul 6, FOMC minutes Jul 8).
+- **Aggregate sentiment: −0.073** — Bullish 4 / Neutral 2 / Bearish 9 (แย่ลงจาก 21 ก.ค. ที่ −0.075 แบบ bearish skew ชัดขึ้น: 9 bearish จาก 15 บทความ) | ⚠️ UUP/QQQ ติด Alpha Vantage rate limit — ข้อมูลหลักจาก SPY/GLD/TLT
+- **SPY bearish ต่อเนื่อง** ทุกบทความรายวันช่วง 16-22 ก.ค. เป็นลบ | GLD ผสม (สลับ bullish/bearish ตาม war headlines)
+- **Positioning (อ้างอิง COT ณ 14 ก.ค. — ชุดใหม่ออกวันนี้ ~15:30 ET):** USD long 96th pct = crowded, EUR short 2nd pct = crowded, Gold 43rd = ไม่ crowded, ES net short แต่ least-short รอบปี → **โครงสร้างเดิมยังอยู่: USD คือ crowded trade, gold คือ trade ที่มี room**
+- **Narrative หลัก:** **"stagflation shock"** — oil supply shock (Hormuz+รัสเซีย) + tariff ซ้ำ + Fed อาจต้อง hike → ตลาดหุ้นปิดสัปดาห์ลบนำโดย Nasdaq, long-end Treasury stress ที่ระดับสูงสุดตั้งแต่ ม.ค. 2025 — ต่างจากสัปดาห์ก่อนที่ยังเป็นแค่ "inflation fears"
 
-## 💧 LIQUIDITY READ (Druckenmiller lens)
+## 📅 CATALYSTS AHEAD (24 ก.ค. – 3 ส.ค. — วันที่/เวลา ET จาก get_release_calendar + get_earnings_calendar)
 
-**The drain just paused.** This morning liquidity was unambiguously draining (hike repricing, USD bid, gold cracking). A 57k NFP forces the market to walk back the hike premium → financial conditions ease at the margin (yields ↓, USD ↓). But the falling unemployment rate keeps the Fed from validating cuts quickly. Net: **liquidity backdrop shifts from "draining" to "contested"** — which argues for smaller size, not bigger, until ISM Services and the FOMC minutes break the tie. The crude selloff remains a disinflationary tailwind for the dovish side of the argument — watch it as the second-derivative accelerant flagged this morning.
+- **ศ. 24 ก.ค. ~15:30 ET (วันนี้):** CFTC COT ชุดใหม่ (ข้อมูล ณ อังคาร 21 ก.ค.) — **เช็คก่อนเข้าไม้สัปดาห์หน้า**: USD long extreme คลายหรือยัง / gold โดนไล่ซื้อหรือยัง
+- **พ. 29 ก.ค. 14:00 ET (แถลง 14:30):** **FOMC Rate Decision — HIGH** — จุดชี้ทิศใหญ่สุด; hike talk ทำให้ two-way risk แรงกว่าปกติมาก
+- **พฤ. 30 ก.ค. 08:30 ET:** **Core PCE — HIGH** — เงินเฟ้อที่ Fed ดู ออกวันถัดจาก FOMC → คู่ event ติดกัน 2 วัน = หน้าต่าง 29-30 ก.ค. อันตรายสุดของเดือน
+- **พฤ. 30 ก.ค. 08:30 ET:** GDP — MEDIUM
+- **ศ. 31 ก.ค.:** earnings cluster (จาก scan 21 ก.ค.): **CVX** (โฟกัส capital discipline ท่ามกลาง oil ~$100), ABBV, LIN, ETN, CL
+- **จ. 3 ส.ค.:** earnings หนาแน่น — **BRK.A**, AXON, CLX, ALSN, ALG, BLD ฯลฯ + **ISM Manufacturing** (1st business day — ไม่อยู่บน FRED, เช็ควัน/ผลจากข่าว)
+- ⚠️ **ช่องโหว่ feed:** Finnhub earnings รอบนี้คืนเฉพาะแถว 3 ส.ค. — วันรายงาน mega-caps สัปดาห์หน้า (25-31 ก.ค.) ไม่อยู่ใน feed → **เช็ควันจากข่าวก่อนเข้าไม้ NDX/หุ้นรายตัว**
 
-## ⚡ CATALYSTS AHEAD (next 7 days — holiday-shortened week)
+---
 
-- **Jul 2 (today, into close):** Post-NFP repricing on **thin pre-holiday liquidity** — moves exaggerated, gap risk into the long weekend; Trump CNBC interview 5pm ET (Fed/Warsh, tariff headline risk). *(H for vol, M for signal)*
-- **Jul 3 (Fri):** **U.S. markets CLOSED** (Independence Day observed). *(structural)*
-- **Jul 6 (Mon):** **ISM Services PMI (Jun)** — first tie-breaker: does services growth confirm the labor slowdown or refute it? *(H)*
-- **Jul 8 (Wed):** **June FOMC minutes (est.)** — how seriously was the committee discussing hikes? Stale but potent against the new dovish tape; Earnings: **Levi's (LEVI)**, Conagra (CAG), PriceSmart (PSMT), AZZ — consumer read-through. *(M/H)*
-- **Jul 9 (Thu):** Earnings — **PepsiCo (PEP)** ($24.2B rev est), WD-40 (WDFC), Simply Good Foods (SMPL) — staples pricing power + labor-cost commentary. *(M)*
-- **Weekly (Fri):** CFTC COT — check how far hawkish rates/USD-long positioning got before today's print. *(M)*
+## 🎯 สรุปเชิง Liquidity/Druckenmiller
 
-## 🎯 Orchestrator takeaways
-
-1. **The NFP miss is the event of the week:** labor's second derivative turned down exactly when positioning went maximally hawkish. The asymmetric trade is the unwind — long duration / long gold / fade DXY — but the falling unemployment rate means this is a **MEDIUM-conviction repricing trade, not a HIGH-conviction regime call**.
-2. **Two narrative flips in one session = don't bet the ranch.** Druckenmiller rule: when you don't know, do nothing. Probe size until ISM Services (Jul 6) and FOMC minutes (Jul 8) settle whether this is a growth scare or a labor-supply illusion.
-3. **Oil is the sleeper:** consensus glut calls + escalating Russia/Hormuz supply risk = cheap convexity on the long side if expressing; the crowd is leaning short into geopolitical tail risk.
-4. **Structural notes for the book:** Trump Account passive flows are a slow permanent bid under SPY; defense capex flood continues; megacap momentum still distributing (TSLA -7% on good news).
+Second derivative ที่ต้องจับตาสัปดาห์นี้: **ตลาดเปลี่ยนจาก "price เงินเฟ้อ" เป็น "price นโยบายตอบโต้เงินเฟ้อ"** — 10Y ที่จุดสูงสุดตั้งแต่ ม.ค. 2025 + hike talk ใต้ Warsh คือ tightening ของ financial conditions แบบ de facto ก่อน Fed ขยับจริงด้วยซ้ำ จุด asymmetry เดิมยังอยู่: **gold ไม่ crowded + war bid หนุน แต่เจอ real yields สูงสุดรอบทศวรรษเป็น headwind** = two-way จนกว่า FOMC เคลียร์ ส่วน **USD long ยัง crowded (96th pct)** — ถ้า FOMC dovish กว่า hike-fear ที่ price ไว้ ฝั่ง USD/EUR มีเชื้อ squeeze มากสุด **หน้าต่าง 29-30 ก.ค. (FOMC + Core PCE ติดกัน) คือโซนที่ conviction modifier ควรโดน cap ที่ REDUCED โดยอัตโนมัติ** — เมื่อไม่ชัด: cash is the position รอผ่านพุธ-พฤหัส

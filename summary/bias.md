@@ -1,47 +1,52 @@
-# Macro Bias Card — NIKKEI LONG — 6 กรกฎาคม 2026
+# Macro Bias Card — AUDUSD SHORT — 10 กรกฎาคม 2026
 
-> REGIME CONTEXT: **FRESH** (regime.md mtime 2026-07-05 — 1 วัน) | Regime: TRANSITION
-> ⚠️ NIKKEI อยู่**นอก universe ที่ curate ไว้** — card นี้ใช้ proxy drivers: yen carry (COT JPY, DEXJPUS), US-JP rate gap, BOJ liquidity (JPNASSETS), global risk tape | แถวที่ใกล้สุดในตาราง regime คือ USDJPY (NEUTRAL, tail risk ฝั่งลง)
-> ข้อมูล: FRED ถึง 06-26/07-02 (JGB 10Y = พ.ค., BOJ assets = มิ.ย.) | COT ณ 06-23 | EWJ sentiment
-> (card นี้แทนที่ card XAUUSD short ฉบับ 05 ก.ค. — ฉบับนั้นอยู่ใน chat history)
+> REGIME CONTEXT: **FRESH** (regime.md mtime 2026-07-10 — วันนี้) | Regime: **TRANSITION เอียง REFLATION/STAGFLATION**
+> ⚠️ AUDUSD อยู่**นอก universe ที่ curate ไว้** — ไม่มีแถวในตาราง Per-Asset และ COT tool ไม่มี AUD futures — card นี้ใช้ proxy drivers: rate differential (DGS2 vs AU 10Y), Broad USD, terms of trade (iron ore + copper), risk tape (VIX), COT USD Index (ฝั่งตรงข้ามของ pair), FXA sentiment
+> ข้อมูล: FRED ถึง 07-08/07-09 (iron ore/copper/AU 10Y = พ.ค. รายเดือน) | COT ณ 06-30 (รอบใหม่เย็นนี้ ~15:30 ET) | FXA sentiment 1 call
+> (card นี้แทนที่ card NIKKEI LONG ฉบับ 06 ก.ค. — ฉบับนั้นอยู่ใน chat history)
 
 ---
 
-## VERDICT: **NEUTRAL** — global tape หนุน แต่โครงสร้างญี่ปุ่นเองกำลังหันมาขวาง และ second derivative ขวางทุกตัว
+## VERDICT: **NEUTRAL** — rates หนุน short แต่ commodity tape เร่งขึ้นสวน และ positioning ฝั่ง USD ตึงสุดปี
 
-## DRIVER BREAKDOWN (เทียบกับทิศ LONG)
+Short AUDUSD = เดิมพัน "USD แข็ง + commodity อ่อน + risk-off" — ตอนนี้ macro ให้แค่ข้อแรกครึ่งเดียว:
 
-| Driver | Reading (latest / Δ3M / RoC) | For / Against LONG |
-|---|---|---|
-| Yen tape (DEXJPUS = JPY ต่อ USD) | 161.67 / +2.02 (+1.27%) / **decelerating** | ✅ For (ระดับ) แต่แผ่ว — yen อ่อน (+12% YoY) คือเชื้อเพลิงหลักของ Nikkei แต่ momentum การอ่อน**ช้าลง** |
-| **JGB 10Y (IRLTLT01JPM156N, พ.ค.)** | 2.65% / **+0.54 (+25.6%)** / **accelerating** | ❌ **Against (ตัวอันตรายสุด)** — yields ญี่ปุ่นพุ่งและเร่งขึ้น (+77% YoY) = BOJ normalization กดทั้ง valuation และหนุน yen |
-| **BOJ Balance Sheet (JPNASSETS, มิ.ย.)** | ¥639T / **−3.54%** / decelerating | ❌ **Against** — ญี่ปุ่นทำ QT จริง (−10.9% YoY) — liquidity ในประเทศหด |
-| US-JP rate gap (DGS10 4.48% vs JGB 2.65%) | gap ~183bp / ฝั่ง JP ขึ้นเร็วกว่า 3 เท่า | ❌ Against — gap แคบลงจากฝั่งญี่ปุ่น = แรงหนุน yen ระยะกลาง |
-| **COT JPY (ณ 06-23)** | net −146,104 (−33.9% of OI) / pct **2 — 1Y SHORT EXTREME** | ❌ **Against** — long Nikkei ≈ short yen โดยนัย และ yen short แน่นสุดรอบปี = unwind = Nikkei gap down |
-| Global risk tape (VIX / credit / NFCI) | VIX 16.59 ต่ำ, IG 0.75/HY 2.75 tights, NFCI ease | ✅ For — risk-on ทั่วโลกยังเปิด |
-| US liquidity (Reserves / M2) | Reserves +4.1% **accelerating**, M2 +5.6% | ✅ For |
-| Sentiment (EWJ) | +0.23 (7 bullish / 0 bearish) | ✅ For (แต่ bullish เอกฉันท์ = contrarian flag อ่อนๆ) |
+## DRIVER BREAKDOWN
 
-**นับคะแนน: For 4 / Against 4 → NEUTRAL** — แต่สังเกต: ฝั่ง For คือ "ระดับ" (levels ยังดี) ฝั่ง Against คือ "second derivative" (ทิศทางการเปลี่ยนแปลงขวางหมด: JGB accelerating, BOJ draining, yen-weakness decelerating, carry crowded) — แบบ Druckenmiller นี่คือ trend ที่ premise กำลังผุ
+| Driver | Reading (latest / Δ3M / RoC) | ต่อ SHORT |
+|--------|------------------------------|-----------|
+| Rate differential — DGS2 (US) | 4.21% / **+42bp** / **accelerating** | ✅ **For** — US front-end วิ่งแรงกว่า |
+| Rate differential — AU 10Y (IRLTLT01AUM156N, พ.ค.) | 4.99% / +23bp / decelerating | ✅ **For** — ฝั่ง AU แผ่วกว่า US ชัด |
+| US 10Y Real (DFII10) | 2.31% / +35bp / **accelerating** | ✅ **For** — USD supportive + กดดัน risk |
+| Broad USD (DTWEXBGS) | 120.69 / +0.16% / decelerating | ⚪ **Neutral** — เทรนด์ USD แบน โมเมนตัมแผ่ว |
+| Iron ore (PIORECRUSDM, พ.ค.) | 111.65 / **+10.6%** / **accelerating** | ❌ **Against** — export อันดับ 1 ของออสเตรเลียกำลังเร่งขึ้น |
+| Copper (PCOPPUSDM, พ.ค.) | 13,484 / +4.1% / decelerating (**+41% YoY**) | ❌ **Against** (เบาลง) — commodity tape ยังสูงมาก |
+| Risk tape (VIXCLS) | 16.90 / −19.7% / decelerating | ❌ **Against** — vol ต่ำ risk-on หนุน AUD |
+| Positioning (COT USD Index ณ 06-30 — proxy) | +13,016 / **98th percentile = long สุดขั้วรอบปี** | ❌ **Against** — short AUDUSD คือเบียดเข้า crowded USD-long complex |
+| Sentiment (FXA) | aggregate −0.02, มี outflow 3.4% AUM วันเดียว (30 มิ.ย.) | ✅ For (อ่อน) — เงินไหลออกจาก AUD |
 
-## EVENT RISK — 10 วันข้างหน้า (06 → 16 ก.ค.)
+**นับคะแนน:** For 3.5 (rates เป็นเสาหลัก) vs Against 3.5 (commodities + risk tape + crowding) — **หักล้างกันเกือบพอดี** และ regime ปัจจุบัน (reflation จากสงคราม) เป็นภาวะที่ commodity currency มักได้ประโยชน์ ระวังว่าน้ำมัน/LNG แพงจาก Hormuz **ช่วย** terms of trade ออสเตรเลียด้วย ไม่ใช่แค่กด risk
+
+## EVENT RISK — 10 วันข้างหน้า
 
 | วันที่ | เวลา ET | Event | Importance |
-|---|---|---|---|
-| ศ. 10 ก.ค. | ~15:30 | CFTC COT รอบใหม่ (ดู yen shorts) | 🟡 MED |
-| **อ. 14 ก.ค.** | **08:30** | **US CPI** | 🔴 **HIGH — กระทบผ่าน yen + global risk ตรงๆ** (CPI เย็น → USD อ่อน → yen แข็ง → Nikkei โดน 2 เด้ง) |
-| พ. 15 ก.ค. | 08:30 | US PPI | 🟡 MED |
+|--------|---------|-------|------------|
+| ศ. 10 ก.ค. | ~15:30 | CFTC COT รอบใหม่ (ดูว่า USD crowding คลาย/ตึงขึ้น) | MED |
+| **อ. 14 ก.ค.** | **08:30** | **US CPI (มิ.ย.)** | 🔴 **HIGH** — ชี้ทิศ USD complex ทั้งกระดาน |
+| พ. 15 ก.ค. | 08:30 | US PPI (มิ.ย.) | MED |
 
-⚠️ **ช่องโหว่ calendar:** tool ครอบเฉพาะ US — **วันประชุม BOJ / Tankan ไม่อยู่ในระบบ ต้องเช็คเอง** ถ้ามี BOJ meeting ในหน้าต่างถือ position ให้นับเป็น HIGH event ทันที
+⚠️ **Coverage gap:** calendar ของระบบครอบเฉพาะ US — **RBA meeting และ data จีน (GDP/credit — ตัวขับ iron ore) ไม่อยู่ใน feed** ช่วงกลางเดือนมักมี data จีนชุดใหญ่ ให้เช็คเองก่อนถือข้ามสัปดาห์หน้า
 
-## MACRO INVALIDATION TRIGGERS (วัดได้)
+## MACRO INVALIDATION TRIGGERS (วัดได้ — ไม่ใช่ stop บนกราฟ)
 
-- ถ้า **VIXCLS > 20** → carry unwind (yen shorts 2nd pct) → yen rally → Nikkei gap down — **นี่คือ kill switch หลัก**
-- ถ้า **DEXJPUS Δ3M พลิกเป็นลบ** (yen เริ่มแข็งเป็นเทรนด์) → เชื้อเพลิงหลักหมด ออก
-- ถ้า **JGB 10Y เร่งต่อ / ทะลุ 3.0%** → BOJ normalization shock — กดทั้ง Nikkei และปลุก yen
-- ถ้า **HY OAS > 3.25% หรือ NFCI RoC พลิก tightening** → global risk tape ปิด
-- ถ้า **COT JPY percentile เด้งจากพื้นเร็วๆ** (shorts covering) → unwind เริ่มแล้ว อย่ารอ
+- **CPI 14 ก.ค. ออกเย็น + DGS2 ถอยลง >20bp ภายในสัปดาห์** → เสา rate-differential หัก + crowded USD long (98th pct) unwind → macro เลิกหนุน short ทันที — นี่คือ tail risk ใหญ่สุดของไม้นี้
+- **DTWEXBGS Δ3M พลิกเป็นลบ** (ตอนนี้ +0.16% และ decelerating อยู่แล้ว) → เทรนด์ USD หมดแรง
+- **Iron ore print รอบถัดไปยัง accelerating + น้ำมันยืนเหนือ $75** → reflation ยืนยัน commodity-FX bid → ฝั่ง Against ชนะ
+- **VIX พุ่ง >25 จาก escalation** → อันนี้พลิกมา*หนุน* short (risk-off กด AUD) — เป็นสถานการณ์เดียวที่ short ไม้นี้ทำงานแรง
 
 ## CONVICTION MODIFIER: **REDUCED**
 
-> NEUTRAL (For/Against 4-4 — global tape หนุน แต่ Japan-specific second derivative ขวางหมด) + **US CPI = HIGH event ในหน้าต่าง (14 ก.ค.)** + วัน BOJ ไม่อยู่ในระบบต้องเช็คเอง → **REDUCED**: เข้าตาม technical ได้แต่ลดไซส์ และวาง kill switch ที่ VIX > 20 ไว้ล่วงหน้า — trade นี้ short vol โดยนัยผ่าน carry ที่แน่นสุดรอบปี
+> Verdict NEUTRAL + มี HIGH event (US CPI อังคาร 14 ก.ค. 08:30 ET) ในหน้าต่างถือ position → REDUCED ตามกติกา (regime สดวันนี้ ไม่ใช่ตัวจำกัด) — ถ้าจะเข้า ให้ถือว่าเป็นไม้ half-size และรู้ว่ากำลังเบียด USD-long ที่แน่นสุดปี ทางที่ short ไม้นี้จะกลายเป็น fat pitch คือ risk-off จริงจาก Hormuz ไม่ใช่ฝั่ง rates
+
+---
+*อัปเดต: 2026-07-10 ~12:05 UTC | อิง regime.md ฉบับ 10 ก.ค. (TRANSITION เอียง REFLATION) | COT รอบใหม่ + /scan เย็นนี้อาจเปลี่ยนภาพ crowding*
