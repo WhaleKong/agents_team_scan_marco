@@ -31,6 +31,12 @@ export async function getEarnings(
     return `No earnings found from ${from} to ${to}${symbol ? ` for ${symbol}` : ""}`;
   }
 
+  // Finnhub returns dates descending; nearest-first keeps today's reports
+  // from being cut by the 50-row cap.
+  earnings.sort(
+    (a, b) => a.date.localeCompare(b.date) || a.symbol.localeCompare(b.symbol)
+  );
+
   let output = `## Earnings Calendar — ${from} to ${to}\n\n`;
   output += `| Date | Symbol | EPS Est | EPS Actual | Revenue Est | Revenue Actual | Surprise |\n`;
   output += `|------|--------|---------|------------|-------------|----------------|----------|\n`;
@@ -45,6 +51,10 @@ export async function getEarnings(
         ? `${(((e.epsActual - e.epsEstimate) / Math.abs(e.epsEstimate)) * 100).toFixed(1)}%`
         : "—";
     output += `| ${e.date} | ${e.symbol} | ${epsEst} | ${epsAct} | ${revEst} | ${revAct} | ${surprise} |\n`;
+  }
+
+  if (earnings.length > 50) {
+    output += `\nShowing first 50 of ${earnings.length} reports (nearest dates first).\n`;
   }
 
   return output;

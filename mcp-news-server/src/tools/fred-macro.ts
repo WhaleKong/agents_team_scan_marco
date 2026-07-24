@@ -137,8 +137,15 @@ function classifyRateOfChange(
   return diff > 0 ? "accelerating" : "decelerating";
 }
 
-function pctOf(change: number | null, base: { value: number } | null): number | null {
+function pctOf(
+  change: number | null,
+  base: { value: number } | null,
+  unit: string
+): number | null {
   if (change === null || !base || base.value === 0) return null;
+  // Percentage-point series (spreads/yields) with a base under 0.1pp produce
+  // meaningless multi-thousand-% readings (e.g. T10Y3M 0.01 → 0.76 = +7700%).
+  if (unit === "%" && Math.abs(base.value) < 0.1) return null;
   return (change / Math.abs(base.value)) * 100;
 }
 
@@ -158,7 +165,7 @@ export function summarizeSeries(
   const latest = values[0] ?? null;
   const previous = values[1] ?? null;
   const change = latest && previous ? latest.value - previous.value : null;
-  const percentChange = pctOf(change, previous);
+  const percentChange = pctOf(change, previous, definition.unit);
 
   let change3m: number | null = null;
   let pct3m: number | null = null;
@@ -173,9 +180,9 @@ export function summarizeSeries(
     const v1y = findLagged(lagged, latest.date, 12, 90);
 
     change3m = v3m ? latest.value - v3m.value : null;
-    pct3m = pctOf(change3m, v3m);
+    pct3m = pctOf(change3m, v3m, definition.unit);
     change1y = v1y ? latest.value - v1y.value : null;
-    yoyPct = pctOf(change1y, v1y);
+    yoyPct = pctOf(change1y, v1y, definition.unit);
     rateOfChange = classifyRateOfChange(latest, v3m, v6m, definition.unit);
   }
 

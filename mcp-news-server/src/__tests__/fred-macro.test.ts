@@ -106,6 +106,31 @@ test("rate of change classifies accelerating and decelerating", () => {
   assert.equal(decel.rateOfChange, "decelerating");
 });
 
+test("percentage-point series: near-zero base suppresses the % artifact, keeps Δ", () => {
+  const spreadDef: FredSeriesDefinition = {
+    seriesId: "TEST_SPREAD",
+    label: "Test Spread",
+    category: "Markets & Financial Conditions",
+    unit: "%",
+    frequency: "monthly",
+  };
+
+  // 1y-ago base 0.01 (< 0.1pp floor → % suppressed), 3m-ago base 0.50 (valid).
+  const observations = monthlyObservations("2025-06-01", 13, (_i, date) => {
+    if (date === "2026-06-01") return "0.76";
+    if (date === "2026-03-01") return "0.50";
+    if (date === "2025-06-01") return "0.01";
+    return "0.30";
+  });
+
+  const summary = summarizeSeries(spreadDef, observations);
+
+  approxEqual(summary.change1y, 0.75);
+  assert.equal(summary.yoyPct, null); // would be +7500% off the 0.01 base
+  approxEqual(summary.change3m, 0.26);
+  approxEqual(summary.pct3m, (0.26 / 0.5) * 100, 1e-6);
+});
+
 test("short history yields n/a trend fields without throwing", () => {
   const summary = summarizeSeries(monthlyDef, [
     { date: "2026-06-01", value: "114" },
