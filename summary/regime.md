@@ -1,22 +1,43 @@
-# Macro Regime Report — ศุกร์ 24 กรกฎาคม 2026
+# 🌐 Macro Regime Report — 2026-08-13
 
-> รันโดย: `macro-researcher` | แหล่งข้อมูล: FRED 20 series (Δ3M / Δ1Y / YoY / **RoC = second derivative**) + CFTC COT (ณ 14 ก.ค. — ชุดใหม่ออกเย็นนี้) + FRED release calendar + ISM มิ.ย. (news) + wires/sentiment จาก `/scan` เช้านี้
-> กรอบ: **Druckenmiller — "Focus on LIQUIDITY above all" + "เทรดที่ดีที่สุดคือจุดที่ตลาดตี second derivative ผิด"**
-> ต่อเนื่องจากฉบับ 21 ก.ค.: ฉบับนั้นวาง TRANSITION ไว้ที่ "สองเทรนด์ premise ขัดกัน ชนกันที่ FOMC" — **3 วันผ่านไป ทั้งสองฝั่งยิ่งถ่างออก ไม่ได้แคบลง:** ฝั่ง hawkish เร่งขึ้น (2Y 4.18→4.31%, 10Y แตะสูงสุดตั้งแต่ ม.ค. 2025, hike talk ขึ้นหน้าหนึ่ง — Hartnett/BofA เรียกร้อง Warsh "hike เพื่อ reassure long end") ขณะที่ Brent พุ่งแตะ $97.66 (+10% สัปดาห์) แต่ **breakevens ยังปฏิเสธ supply shock เหมือนเดิม (T5YIE 2.29%, −29bp 3M, decelerating)** — ความขัดแย้งเวอร์ชันที่กว้างที่สุดตั้งแต่เริ่มติดตาม และเหลือเวลาตัดสิน 3 วันทำการ
-> หมายเหตุ vintage: CPI = มิ.ย. (ก่อน oil spike รอบนี้) | Core PCE/M2/Reserves = พ.ค. | NFP = มิ.ย. | COT = 14 ก.ค. (**ชุดใหม่ ~15:30 ET วันนี้**) | yields/DFII10/OAS = 22 ก.ค. | T5YIE/T10Y3M/T10Y2Y/VIX/RRP = 23 ก.ค. | DTWEXBGS/NFCI = 17 ก.ค. (รายสัปดาห์ — ยังไม่จับ tape สัปดาห์นี้)
+> **เวลาวิเคราะห์:** 2026-08-13 14:15 UTC (= **10:15 ET**) — หลัง PPI ออก 105 นาที
+> **ความสดของรายงาน:** ⭐ **`/bias` ใช้ตารางนี้ได้ถึง 2026-08-20**
+> **แหล่ง:** FRED 20 series + ISM (PRNewswire) + CFTC COT + Finnhub/RSS + NewsAPI
+> *(ฉบับก่อน: 12 ส.ค. 20:03 — รายงานนี้แทนที่ และ **แก้ทิศทางการเอียง**)*
 
 ---
 
-## 📍 CURRENT REGIME: **TRANSITION — เข้าโค้งสุดท้ายก่อนตัดสินที่ FOMC พุธ 29 ก.ค. 14:00 ET (ความขัดแย้งกว้างสุดนับตั้งแต่ตั้งเรื่อง)**
+## ⚡ สิ่งที่เปลี่ยนจากฉบับเมื่อวาน (อ่านก่อน)
 
-สองเทรนด์เดิมจากฉบับ 21 ก.ค. — อย่างน้อยหนึ่งอันยืนบน premise ที่ผิด และทั้งคู่แรงขึ้นพร้อมกัน:
+| ประเด็น | เมื่อวาน (12 ส.ค.) | **วันนี้ (13 ส.ค.)** |
+|---|---|---|
+| **การเอียงของ regime** | TRANSITION → **"Late-Cycle + เงินเฟ้อกลับมา"** | TRANSITION → 🔄 **"GOLDILOCKS หน้าฉาก บนฐานสภาพคล่องกลวง"** |
+| **PPI** | คาดว่าจะร้อน = เปิดโปง mispricing | ❌ **flat (0.0% vs คาด +0.2%)** — thesis แพ้ |
+| **ISM Mfg** | ไม่ได้ดึง | 🆕 **55.6% ขยายตัวแข็งแรง** New Orders + Production โต |
+| **RRP** | $1.3B | 🚨 **$0.7B** — กันชนหมดจริง (−98.74% YoY) |
+| **XAUUSD** | LONG *(conviction สูงสุด)* | 🔻 **LONG แต่ลด conviction** — real yield เร่งขึ้นเป็นนาฬิกาจับเวลา |
+| **DXY** | NEUTRAL *(ไม่มีตัวจุดชนวน)* | 🔄 **NEUTRAL เอียง SHORT** — ตัวจุดชนวนมาแล้ว |
 
-1. **เทรนด์ hawkish/real-rate shock** — DGS2 4.31% (**+52bp 3M, accelerating** — จาก +47bp เมื่อ 21 ก.ค.), DFII10 2.39% (**+47bp, accelerating** — "รอยร้าว" −4bp ของสัปดาห์ก่อนโดนกลบ ทำ high ใหม่), 30Y 5.15% accelerating, 10Y สูงสุดตั้งแต่ ม.ค. 2025 — premise: "oil ~$100 + tariff → Fed ใต้ Warsh ต้อง hike" ซึ่งตอนนี้**ไม่ใช่ tail scenario แล้ว แต่เป็น mainstream sell-side call**
-2. **เทรนด์ disinflation ของตลาดบอนด์** — T5YIE 2.29% (**−29bp 3M, decelerating**) ทั้งที่ Brent +10% ในสัปดาห์เดียวและ Hormuz เหลือเรือผ่าน 1 ลำ/วัน, CPI มิ.ย. m/m **−0.42%** RoC decelerating — premise: "supply shock ชั่วคราว / demand destruction / Fed เอาอยู่"
+> **📉 ผมลดน้ำหนัก thesis ของตัวเองวันนี้** — เมื่อวานตั้งไว้ว่า "PPI คือที่แรกที่ต้นทุนจะโผล่ ถ้าร้อน = mispricing ถูกเปิดโปง"
+> **PPI ไม่ร้อน** และ **CPI RoC = decelerating** ด้วย → เสา "เงินเฟ้อกำลังกลับมา" อ่อนลงจริง ไม่ใช่แค่เลื่อน
 
-ถ้า (1) ถูก → breakevens mispriced → STAGFLATION (gold, short duration, energy ชนะ) | ถ้า (2) ถูก → hawkish complex ที่ crowded สุดปี (USD 96th) คือ "trend whose premise is wrong" → dovish unwind ทั้งกระดาน — **ยังตัดสินไม่ได้จาก data = TRANSITION ต่อ, ลด size ข้าม 29–30 ก.ค.**
+---
 
-เสาอื่น: **Growth** ยังขยายแต่ขอบแผ่ว (ISM Mfg 53.3 / Services 54.0 มิ.ย., mfg employment หด, NFP 3M ~111k/เดือน stable) | **Liquidity ปริมาณ** หนุน (M2 +5.58% YoY, reserves +4.12% 3M **accelerating**) ↔ **Liquidity ราคา** ตึงเร่งขึ้นทุกจุดบน curve | **Credit** หลับสนิทผ่าน oil $100 (HY 2.68%, **แน่นลงอีก** −16bp 3M)
+## 🎯 CURRENT REGIME: **TRANSITION**
+### เอียงไปทาง **"GOLDILOCKS หน้าฉาก — ฐานสภาพคล่องกลวง"**
+
+### เช็ค 3 เงื่อนไขของ GOLDILOCKS
+
+| เงื่อนไข | สถานะ | หลักฐาน |
+|---|---|---|
+| **Growth ↑** | ✅ **ผ่าน** | ISM Mfg **55.6** • ISM Svc **54.1** (Business Activity **59.1**) • GDP RoC **accelerating** • กำไร Q2 ทำสถิติ |
+| **Inflation ↓** | ✅ **ผ่าน** | CPI YoY **3.30%** RoC **decelerating** • **PPI flat** • breakeven **−45bp/3M** |
+| **Liquidity ↑** | ❌ **ไม่ผ่าน** | Reserves **−10.05% YoY** • RRP **$0.7B** (กันชนหมด) • WALCL RoC **decelerating** |
+
+> **2 ใน 3 ผ่าน — เสาที่ไม่ผ่านคือเสาที่ Druckenmiller บอกว่าสำคัญที่สุด**
+> จึงยังเป็น **TRANSITION** ไม่ใช่ GOLDILOCKS เต็มตัว
+>
+> 🔑 **NFCI −0.55 (หลวมสุด) คือ *ราคา* ของสภาพคล่อง ไม่ใช่ *ปริมาณ*** — ปริมาณจริง (reserves) ติดลบ 10%
 
 ---
 
@@ -24,103 +45,302 @@
 
 | Metric | Current | Δ 3M | RoC | Signal |
 |--------|---------|------|-----|--------|
-| Fed Balance Sheet (WALCL) | $6.75T | +0.60% | decelerating | Neutral — โตแต่แผ่วลง |
-| M2 YoY | +5.58% | +1.88% (3M) | stable | Bullish — เงินยังโต |
-| Bank Reserves (TOTRESNS) | $3.08T | +4.12% | **accelerating** | Bullish — ตัวเร่งฝั่งหนุนตัวเดียวในกระดาน |
-| RRP Facility | **$0.9B** | ระดับศูนย์ต่อเนื่อง (−99.5% YoY) | — | ⚠️ **บัฟเฟอร์หมดสนิท — issuance/QT ต่อจากนี้กัด reserves ตรงๆ ไม่มีเบาะ** |
-| NFCI (17 ก.ค.) | −0.55 | −0.07 (ผ่อนต่อ) | decelerating | Easing — แต่ vintage ก่อน bond stress สัปดาห์นี้ |
+| **Fed Balance Sheet (WALCL)** | **$6.75T** | +0.04 (+0.58%) | **decelerating** | ⚪ โตแต่แผ่วลง |
+| **M2 (M2SL)** | **$23.16T** | +0.48 (+2.11%) | **accelerating** | 🟢 +5.53% YoY *(แต่คือเงินฝากครัวเรือน ไม่ใช่ reserves)* |
+| **Bank Reserves (TOTRESNS)** | **$3.02T** | +0.00 (+0.09%) | **decelerating** | 🔴 **−10.05% YoY** — เงินที่ใช้ซื้อสินทรัพย์จริงหดตัว |
+| **RRP Facility (RRPONTSYD)** | 🚨 **$0.7B** | −0.47 (**−39.53%**) | accelerating* | 🔴 **−98.74% YoY — กันชนหมดแล้ว** |
+| **NFCI** | **−0.55** | −0.04 (−7.86%) | **decelerating** | 🟢 หลวม *(แต่หลวมจาก leverage เอกชน)* |
 
-**สรุป:** โครงเดิม — **ปริมาณเงินหนุน แต่ราคาเงินแพงขึ้นเร่งตัวและลามขึ้น curve** (2Y→10Y→30Y accelerating ทั้งแถบ) liquidity สุทธิ = neutral เอียงลบสำหรับ duration assets และช่องโหว่เชิงโครงสร้างคือ RRP ศูนย์: ถ้า Fed hike จริงบนสภาพนี้ การตึงจะส่งตรงเข้า reserves โดยไม่มีตัวดูดซับ
+### 🚨 จุดที่ต้องเข้าใจให้ถูก: RRP RoC = "accelerating" **ไม่ใช่ข่าวดี**
+
+เครื่องมือระบุเองว่า *"สำหรับ series ที่กำลังลดลง accelerating = การลดลงกำลังชะลอ"*
+**แต่ที่ $0.7B มันชะลอเพราะ *ไม่เหลืออะไรให้ลดแล้ว* — เป็น floor artifact ไม่ใช่การฟื้นตัว**
+
+```
+RRP:  $56.8B (ปีที่แล้ว) → $1.3B (เมื่อวาน) → $0.7B (วันนี้)
+```
+
+**👉 กลไกที่สำคัญที่สุดของสัปดาห์นี้:**
+เมื่อ RRP = 0 **ทุกดอลลาร์ของ QT และการออกพันธบัตรใหม่ต่อจากนี้ ดูดตรงจาก Bank Reserves**
+Reserves ที่ **−10.05% YoY อยู่แล้ว** จะเป็นตัวรับแรงเต็มๆ — **และยังไม่มีราคาไหนสะท้อนเรื่องนี้**
+
+---
 
 ## 📈 GROWTH DASHBOARD
 
-| Metric | Current | Δ 3M / momentum | RoC | Signal |
-|--------|---------|-----------------|-----|--------|
-| ISM Mfg PMI (มิ.ย., ออก 1 ก.ค.) | 53.3 | new orders/production โต, **employment หด, prices เพิ่ม** | — | Neutral-Bullish |
-| ISM Services (มิ.ย., ออก 6 ก.ค.) | 54.0 | business activity 55.4, employment 51.2 | — | Neutral |
-| NFP | +57k (มิ.ย.) | 3M +334k (~111k/เดือน) | stable | Bearish lean — แผ่วแต่ยังไม่ร้าว |
-| GDP (Q1, nominal) | $31.87T | +1.41% QoQ / +6.07% YoY | stable | Neutral-Bullish — **Q2 advance ออก พฤ. 30 ก.ค.** |
-| EPS cycle | **Intel Q2 beat ใหญ่** (แต่ analysts คง rating — ไม่ยอม re-rate) / ดัชนีใหญ่ปิดสัปดาห์ลบนำโดย Nasdaq / cluster ถัดไป: CVX 31 ก.ค., BRK.A 3 ส.ค. | — | Neutral — beat รายตัวไม่พอสู้ real-rate tax |
+| Metric | Current | Δ 3M | RoC | Signal |
+|--------|---------|------|-----|--------|
+| **ISM Mfg PMI** *(ก.ค.)* | 🟢 **55.6%** | n/a¹ | n/a¹ | 🟢 **ขยายตัวแข็ง** — New Orders + Production โต, **Prices Increasing** |
+| **ISM Services** *(ก.ค.)* | **54.1%** | n/a¹ | n/a¹ | 🟢 Business Activity **59.1** / New Orders **57.2** |
+| **ISM Svc Employment** *(ก.ค.)* | 🔴 **47.4%** | n/a¹ | n/a¹ | 🔴 **หดตัว** — สวนทางกิจกรรม |
+| **NFP 3M avg (PAYEMS)** | 🔴 **+20k/เดือน** | +60k รวม 3M | **stable** | 🔴 ก.ค. **−23k** (เสียตำแหน่งงาน) |
+| **Real GDP (Q2)** | **$32,475B** | **+1.91% QoQ** | **accelerating** | 🟢 +6.53% YoY (nominal) |
+| **EPS Growth** | **สถิติสูงสุด** | n/a² | n/a² | 🟢 "โตดีสุดตั้งแต่ 2021" + **margin ทำสถิติ** |
+
+¹ ISM ไม่มีใน FRED — ดึงจากรายงาน PRNewswire ก.ค. 2026 ได้เฉพาะ**ระดับล่าสุด** ไม่มี series history (NewsAPI ตอบ 426 เมื่อขอย้อนหลังเกิน 1 เดือน) → **ไม่กรอก Δ3M/RoC ที่ไม่มีข้อมูลจริง**
+² ไม่มีตัวเลข % ที่ยืนยันได้จากแหล่งที่ดึงมา — เป็นข้อมูลเชิงคุณภาพ
+
+### 🔍 การแตกตัวที่สำคัญที่สุดในเสานี้: **กิจกรรมโต แต่การจ้างงานหด**
+
+```
+ผลผลิต:      ISM Mfg 55.6 ✅   ISM Svc Business Activity 59.1 ✅   GDP accelerating ✅
+การจ้างงาน:  NFP −23k ❌        ISM Svc Employment 47.4 ❌
+```
+
+**สองการตีความ — และตลาดเลือกข้อแรกไปแล้ว:**
+
+| การตีความ | ผลต่อสินทรัพย์ | ใครเชื่อ |
+|---|---|---|
+| **A) "ปาฏิหาริย์ productivity จาก AI"** — ผลิตได้มากขึ้นด้วยคนน้อยลง = margin ทำสถิติ | 🟢 บวกมาก | **JPMorgan ขึ้นเป้า SPX เป็น 8,000** อ้าง AI capex เริ่มให้ผล |
+| **B) ธุรกิจไม่จ้างเพราะดีมานด์ไม่แรงพอ** — margin มาจากการตัดต้นทุน ไม่ใช่การเติบโต | 🔴 ลบ ระเบิดเวลาที่ผู้บริโภค | ยังไม่มีใครออกมาพูดชัด |
+
+> **⚖️ ข้อมูลปัจจุบันแยกสองข้อนี้ไม่ออก — และนี่คือเหตุผลหลักที่ regime ยังเป็น TRANSITION**
+> 👉 **ตัวตัดสิน: HD (18 ส.ค.) → TGT+LOW (19 ส.ค.) → WMT (20 ส.ค.)** — ถ้าผู้บริโภคยังแข็ง ข้อ A ชนะ
+
+---
 
 ## 🔥 INFLATION DASHBOARD
 
 | Metric | Current | Δ 3M | RoC | Signal |
 |--------|---------|------|-----|--------|
-| CPI YoY (มิ.ย.) | 3.46% | +0.69% (3M) — m/m มิ.ย. **−0.42%** | **decelerating** | Disinflation ใน data จริง — **vintage ก่อน oil spike รอบนี้** — CPI ก.ค. (กลาง ส.ค.) คือตัวจับ shock |
-| Core PCE YoY (พ.ค.) | 3.41% | +0.87% (≈3.5% ann.) | stable | Sticky เหนือเป้า — **ตัวใหม่ (มิ.ย.) ออก พฤ. 30 ก.ค. 08:30 ET — ชิ้นตัดสินคู่กับ FOMC** |
-| 5Y Breakeven (T5YIE, 23 ก.ค.) | **2.29%** | **−29bp** | decelerating | 🔴 **จุดวัด mispricing อันดับหนึ่ง — ไม่ขยับทั้งที่ Brent +10% สัปดาห์เดียว/แตะ $97.66** — ทะลุ >2.40 = ตลาดยอมรับ supply shock → เอียง STAGFLATION |
+| **CPI YoY (CPIAUCSL)** | **3.30%** | +0.12% (index) | 🟢 **decelerating** | 🟢 กำลังลง |
+| **Core PCE YoY (PCEPILFE)** | 🔴 **3.29%** | +0.71% (index) | 🔴 **stable** | 🔴 **ไม่ได้ลง — มันค้าง** |
+| **PPI m/m (ก.ค.)** 🆕 | 🟢 **0.0% flat** | *(คาด +0.2%)* | n/a | 🟢 **เย็นกว่าคาด** |
+| **5Y Breakeven (T5YIE)** | **2.24%** | **−0.45 (−16.73%)** | decelerating | ⚠️ **price ไว้ว่างานจบแล้ว** |
 
-## 📊 MARKETS & CONDITIONS DASHBOARD
+### ช่องว่างที่ยังอยู่ — **แต่แคบลงในเชิงคุณภาพ**
+
+```
+Core PCE YoY:     3.29%   ← RoC = STABLE  (เสาเดียวที่ยังหนุน thesis เงินเฟ้อเหนียว)
+5Y Breakeven:     2.24%
+                  ─────
+ช่องว่าง:         105bp
+```
+
+**สิ่งที่เปลี่ยนจากเมื่อวาน:** เมื่อวานผมนับ 3 เสาหนุน thesis "เงินเฟ้อเหนียว" วันนี้เหลือ **เสาเดียว**
+
+| เสา | สถานะวันนี้ |
+|---|---|
+| PPI จะร้อนจากต้นทุนใน "ท่อ" | ❌ **แพ้** — flat |
+| CPI ลงช้าเกินไป | ⚠️ **อ่อนลง** — RoC = **decelerating** (กำลังลงเร็วขึ้น) |
+| **Core PCE RoC = stable** | ✅ **ยังยืน** — ตัวเดียวที่เหลือ |
+| *(ต้นทุนน้ำมัน/ไฟยุโรป)* | ⏳ **ยังไม่ทดสอบ** — PPI ก.ค. ไม่ครอบ shock เดือน ส.ค. → รอ **PPI 10 ก.ย.** |
+
+> **สรุปเสานี้ตามตรง: หลักฐานเอียงไปทาง disinflation มากกว่าเมื่อวานชัดเจน**
+> เหลือแค่ **Core PCE (26 ส.ค.)** เป็นด่านตัดสินว่า "stable" จะกลายเป็น "decelerating" ไหม
+
+---
+
+## 💹 MARKETS & CONDITIONS DASHBOARD
 
 | Metric | Current | Δ 3M | RoC | Signal |
 |--------|---------|------|-----|--------|
-| Broad USD (DTWEXBGS, 17 ก.ค.) | 120.53 | **+2.08%** | **accelerating** | USD เร่งแข็ง — บน positioning crowded 96th (vintage ยังไม่จับสัปดาห์นี้) |
-| VIX (VIXCLS, 23 ก.ค.) | 18.70 | −3.2% | decelerating | +2.06 วันเดียวก่อน FOMC — hedging กลับมาแต่ยังไม่ panic ทั้งที่ oil ~$100 |
-| 10Y Real (DFII10, 22 ก.ค.) | **2.39%** | **+47bp (+24.5%)** | **accelerating** | 🔴 **ตัวแปรหลัก — "รอยร้าวแรก" ของ 21 ก.ค. โดนกลบ ทำ high ใหม่ — trigger ฝั่ง gold ยังไม่ผ่าน** |
-| 2Y (DGS2, 22 ก.ค.) | 4.31% | **+52bp** | **accelerating** | Front-end price hike จริงจัง (จาก +47bp เมื่อ 21 ก.ค., +38bp เมื่อ 18 ก.ค. — เร่งขึ้น 3 รายงานติด) |
-| 30Y (DGS30) | 5.15% | +25bp | accelerating | Long end แพ้ต่อ — term premium/fiscal channel ทำงาน |
-| Curve (T10Y3M, 23 ก.ค.) | +0.76% | +11bp | stable | บวก — ไม่มีสัญญาณ recession |
-| 10Y-2Y (T10Y2Y, 23 ก.ค.) | +0.34% | −17bp | decelerating | **Bear flattening ลึกขึ้น** (0.39→0.34) — front-end นำ = ตลาด price นโยบายตึง ไม่ใช่ price เงินเฟ้อ |
-| IG OAS (BAMLC0A0CM, 22 ก.ค.) | 0.78% | −1bp | แน่น | ไม่มี stress |
-| HY OAS (BAMLH0A0HYM2, 22 ก.ค.) | **2.68%** | **−16bp** | decelerating (แน่นลง) | ไม่มี stress — **แน่นลงอีกทั้งที่ oil ทะลุ $100 ระหว่างสัปดาห์** |
+| **Broad USD (DTWEXBGS)** | **119.06** | +1.05 (+0.89%) | **accelerating** | ⚠️ เด้งใน downtrend *(YoY **−1.19%**)* • Δ ล่าสุด **−0.45** |
+| **VIX (VIXCLS)** | 🔴 **14.55** | **−3.44 (−19.12%)** | decelerating | 🔴 **ความประมาท** |
+| **10Y Real (DFII10)** | 🚨 **2.43%** | **+0.48 (+24.62%)** | 🚨 **accelerating** | 🚨 **ตัวแปรสำคัญที่สุดของ regime นี้** |
+| **Curve 10Y−3M (T10Y3M)** | +0.81% | +0.05 (+6.58%) | decelerating | ⚪ ชันขึ้นแต่แรงแผ่ว |
+| **Curve 10Y−2Y (T10Y2Y)** | +0.48% | +0.02 (+4.35%) | **accelerating** | ⚠️ term premium ขยาย |
+| **IG OAS (BAMLC0A0CM)** | **0.79%** | +0.02 (+2.60%) | **accelerating** | ⚠️ **หยุดแคบแล้ว — เริ่มกว้าง** |
+| **HY OAS (BAMLH0A0HYM2)** | **2.71%** | −0.11 (−3.90%) | **stable** | ⚪ ยังไม่มีเครียด |
+| **2Y (DGS2)** | 4.22% | +0.27 (+6.84%) | **decelerating** | ⚪ ฝั่งสั้นแผ่ว |
+| **10Y (DGS10)** | 4.70% | +0.28 (+6.33%) | **accelerating** | ⚠️ |
+| **30Y (DGS30)** | **5.24%** | +0.26 (+5.22%) | **accelerating** | ⚠️ **bond vigilantes** |
 
-## 🎯 POSITIONING (CFTC COT ณ 14 ก.ค. — ⚠️ ชุดใหม่ data ณ 21 ก.ค. ออก**เย็นนี้** ~15:30 ET — เช็คก่อนวางแผนสัปดาห์หน้า)
+### 🧮 การคำนวณที่สำคัญที่สุดของรายงานนี้
 
-| Market | Net | Weekly Δ | 52w Percentile | อ่านว่า |
-|--------|-----|----------|----------------|---------|
-| Gold | +186,682 | −7,564 | **43 — สะอาด** | ไม่ crowded + GLD outflows $14B ตั้งแต่ มี.ค. → ฝั่ง long ไม่มี overhang ถ้า trigger มา |
-| Euro FX | −12,605 | +3,622 | **2 — short สุดขั้ว** | ตึงสุดกระดาน — dovish FOMC = squeeze แรงสุดใน FX หลัก |
-| JPY | −122,663 | +1,115 | 12 | short หนัก — oil shock กด JPY เพิ่ม (นำเข้าพลังงาน) แต่เชื้อ squeeze สะสมอยู่ |
-| USD Index | +13,173 | −96 | **96 — long สุดขั้ว** | crowded trade ของทั้งตลาด — ห้ามเปิด USD-long ใหม่โซนนี้ |
-| E-mini S&P | −38,938 | +3,953 | 96 | shorts cover ไปแล้ว — เชื้อ squeeze ฝั่งขึ้นเหลือน้อย |
-| Nasdaq-100 | +2,721 | +658 | 24 | เบา — ไม่มีเชื้อ squeeze |
+**แยกส่วนประกอบของผลตอบแทน 10Y ในรอบ 3 เดือน:**
+
+```
+10Y nominal   +28bp   ← ที่ทุกคนเห็น
+     ประกอบด้วย:
+     Real yield  +48bp  ← RoC = ACCELERATING  🚨
+     Breakeven   −45bp (5Y)  ← RoC = decelerating
+
+👉 การขึ้นของ yield ทั้งหมด (และมากกว่านั้น) เป็น "ของจริง" ล้วนๆ
+   ไม่ใช่เงินเฟ้อคาดการณ์
+```
+
+> **นี่คือแก่นของ regime ปัจจุบัน:**
+> **ตลาดชนะสงครามเงินเฟ้อในความคิดของตัวเอง (breakeven 2.24%) แล้วจ่ายค่าชัยชนะนั้นด้วยต้นทุนเงินจริงที่แพงที่สุดของ cycle (2.43%, เร่งขึ้น)**
+> ขณะเดียวกันก็ยัง price ความเสี่ยงที่ **VIX 14.55 / IG 79bp / HY 271bp = cycle tights**
 
 ---
 
-## 💡 KEY THESIS
+## 🎲 POSITIONING PILLAR (CFTC COT ณ 4 ส.ค. — รอบใหม่ **ศุกร์ 14 ส.ค. 15:30 ET**)
 
-> **ตลาดกำลังเปลี่ยนจาก "price เงินเฟ้อ" เป็น "price การตอบโต้เงินเฟ้อของ Fed" — front-end +52bp/3M accelerating และ hike talk เป็น mainstream แล้ว ขณะที่ตัววัดเงินเฟ้อของตลาดบอนด์เอง (T5YIE 2.29%, decelerating) ยังปฏิเสธ supply shock ทั้งที่ oil +10% ในสัปดาห์เดียว — ความขัดแย้งนี้กว้างสุดนับตั้งแต่ตั้งเรื่องและจะถูกตัดสินใน 2 วัน: FOMC 29 ก.ค. + Core PCE 30 ก.ค. ระหว่างนี้ shock ทั้งหมดวิ่งผ่าน REAL yields (DFII10 2.39% high ใหม่) ซึ่งเก็บภาษี gold/NDX/duration โดยไม่สน narrative ฝั่งไหนถูก** — TRANSITION เต็มรูป: ลด size, อย่า front-run, ให้ event เฉลย
+| ตลาด | Net | Δ สัปดาห์ | % of OI | 52w %ile | อ่านว่า |
+|------|-----|----------|---------|----------|---------|
+| **USD Index** | +22,499 | +5,302 | +43.1% | 🚨 **100** | **แออัด long สุดขีดในรอบปี** |
+| **E-mini S&P** | −27,258 | −10,062 | −1.3% | 🚨 **96** | **แออัดฝั่ง long สุดขีด** |
+| **Nasdaq-100** | −14,639 | −19,553 | −4.8% | 🚨 **4** | **แออัด short สุดขีด = เชื้อเพลิง squeeze** |
+| **Euro FX** | −58,091 | +14,356 | −7.3% | 🚨 **2** | **แออัด short สุดขีด** |
+| **Gold** | +197,634 | +15,564 | +53.2% | ✅ **53** | **ตัวเดียวที่สะอาด** |
+| **JPY** | −45,473 | **+117,939** | −10.8% | 39 | ถูก squeeze ไปแล้ว เชื้อเพลิงหมด |
+
+**Sentiment (Alpha Vantage):** รวม **+0.221** | 🟢 13 / ⚪ 4 / 🔴 3
+- **GLD +0.43 bullish** ("เป้า $4,500 เงินไหลเข้าพุ่ง") • **TLT −0.74 bearish** ("bond vigilantes ดัน 30Y")
+- 🚩 พาดหัว **"เศรษฐกิจเสียตำแหน่งงาน — Wall Street จัดปาร์ตี้" (+0.59)** = ลายเซ็น bad-news-is-good-news
+- ⚠️ **UUP / QQQ ไม่มีข้อมูล** (Alpha Vantage rate limit)
+
+---
+
+## 📌 KEY THESIS
+
+> **Regime นี้คือ GOLDILOCKS ที่ซื้อมาด้วยเครดิต ไม่ใช่ด้วยสภาพคล่อง — การเติบโตจริง (ISM Mfg 55.6, GDP เร่ง, กำไรทำสถิติ) และเงินเฟ้อที่เย็นลงจริง (PPI flat, CPI RoC decelerating) เกิดขึ้นบนฐานที่ RRP เหลือ $0.7B และ reserves −10% YoY โดยมี NFCI −0.55 ที่หลวมเพราะ leverage เอกชนเป็นตัวปิดบัง**
+>
+> **ราคาที่ต้องจ่ายกำลังโผล่ในที่เดียวคือ real yield: +48bp ใน 3 เดือน RoC = accelerating ขณะที่ breakeven ร่วง 45bp — ทั้งหมดเป็นต้นทุนเงินจริง ไม่ใช่เงินเฟ้อ และตลาดยัง price ความเสี่ยงที่ VIX 14.55 / IG 79bp เหมือนไม่มีอะไรเกิดขึ้น**
+
+---
 
 ## ⚠️ MISPRICING IDENTIFIED
 
-1. **Breakevens vs น้ำมัน — ถ่างสุดตั้งแต่ติดตาม:** Brent +10% สัปดาห์เดียว/แตะ $97.66/Hormuz เหลือ 1 ลำ แต่ T5YIE 2.29% **RoC ยัง decelerating** — ฝั่งใดฝั่งหนึ่งผิดแน่: blockade ลากต่อ → breakevens คือฝั่ง mispriced (stagflation tail ถูกเกินไป — TIPS/gold/energy ชนะ, สอดคล้อง Elliott เรียก TIPS "generational") | ceasefire → hawkish crowded 96th คือฝั่ง mispriced → **จุดวัดเดิม: T5YIE ทะลุ 2.40**
-2. **Hike partially priced แล้ว — asymmetry ของ dovish surprise โตขึ้นอีก:** DGS2 +52bp accelerating 3 รายงานติด (38→47→52) บน CPI จริงที่ RoC decelerating และ m/m ติดลบ — ถ้า FOMC ไม่ hike/ไม่เปิดประตู hike ชัด ฝั่ง USD 96th + EUR 2nd + front-end คือเชื้อ unwind ที่พร้อมสุด (เช็ค COT ใหม่เย็นนี้ว่าเชื้อยังอยู่ครบไหม)
-3. **Credit แน่นลงสวน oil shock:** HY 2.68% (−16bp 3M, RoC ยังบีบลง) ผ่านสัปดาห์ที่ oil ทะลุ $100 + Trump ขู่ "massive attack" — ตลาด credit กำลังบอกว่า "ไม่มี recession ไม่มี earnings shock" — ถ้ามันถูก การย่อของ SPX คือ dip ไม่ใช่ top | ถ้ามันผิด มันจะผิดทีเดียวแรงๆ → **tail monitor อันดับหนึ่ง: HY ถ่าง >50bp เร็วๆ = เปลี่ยนเกมทันที**
-4. **Gold — asymmetry ดีสุดใน universe แต่ trigger ยังไม่ผ่าน (ย้ำจาก 21 ก.ค. พร้อม data ใหม่):** DFII10 ทำ high ใหม่ 2.39% (+47bp accelerating — "รอยร้าว" โดนกลบ) = real-yield tax ยังเก็บเต็ม แต่ gold ยังถือ war bid + COT 43rd สะอาด + GLD outflows $14B = positioning เบา — gold ชนะทั้ง branch dovish (real yields คลาย) และ branch stagflation (T5YIE ยอมแพ้) แพ้เฉพาะ branch "hawkish validated + ceasefire" → **รอ trigger: DFII10 RoC พลิก decelerating / dovish FOMC / T5YIE >2.40 — ห้าม front-run**
-5. **RRP ศูนย์ + 30Y 5.15% accelerating = hike บนพื้นเปราะ:** ถ้า Warsh hike จริงในสภาพ RRP หมด + long end แพ้จาก term premium → การตึงส่งตรงเข้า reserves และ funding โดยไม่มีเบาะ — นี่คือเงื่อนไขที่ "policy error → กลับทิศแรง" เกิดได้เร็ว — จับตา SOFR spikes/NFCI พลิกบวกเร็วเป็นสัญญาณเตือน
+### 1️⃣ ⭐ **ต้นทุนเงินจริงเร่งขึ้น — ตลาดคิดค่ามันเป็นศูนย์** *(second derivative)*
+- **DFII10 2.43%, Δ3M +48bp (+24.62%), RoC = ACCELERATING** — ไม่ใช่แค่สูง แต่**กำลังเร่ง**
+- สวนทางกับ **VIX RoC = decelerating** ที่ระดับ **14.55** และ **HY OAS RoC = stable** ที่ 271bp
+- **สินทรัพย์ที่ duration ยาวที่สุด (NDX) เจอแรงนี้หนักสุด แต่ COT %ile = 4 (แออัด short)**
+- 👉 **นี่คือ mispricing อันดับ 1 แทนที่ "เงินเฟ้อเหนียว" ของเมื่อวาน**
 
-## 🧭 PER-ASSET MACRO BIAS TABLE (ใช้โดย /bias — สดถึง 31 ก.ค. | ⚠️ หน้าต่าง 29–30 ก.ค. มี HIGH event 2 วันติด: conviction ทุกไม้โดน cap REDUCED โดยกติกาอยู่แล้ว — **รีเฟรช regime ทันทีหลัง Core PCE 30 ก.ค.**)
+### 2️⃣ 🚨 **RRP = $0.7B แปลว่ากลไกดูดซับ QT เปลี่ยนเป้าไปที่ reserves แล้ว**
+- RRP **$56.8B → $0.7B ใน 1 ปี (−98.74%)** — เบาะหมดสนิท
+- **ทุกดอลลาร์ของ QT/การออกพันธบัตรต่อจากนี้ ดูดตรงจาก reserves** ที่ −10.05% YoY อยู่แล้ว
+- **NFCI −0.55 (หลวมสุด) กำลังบอกตรงกันข้ามกับความจริงเชิงปริมาณ**
+- ไม่มีสินทรัพย์ไหน price เรื่องนี้
 
-| Asset | Macro bias | Key drivers ตอนนี้ | อะไรพลิก bias |
-|-------|-----------|--------------------|----------------|
-| XAUUSD | **NEUTRAL (คงเดิม)** | war bid แรงขึ้น (Trump "massive attack", Hormuz 1 ลำ) + COT 43rd สะอาด + GLD outflows = เบา / แต่ DFII10 **2.39% high ใหม่ +47bp accelerating** + USD accelerating — สองแรงหักล้างกัน | **LONG เมื่อ:** DFII10 RoC พลิก decelerating หรือ dovish FOMC หรือ T5YIE >2.40 | **SHORT เมื่อ:** ceasefire จริง + FOMC hawkish + DFII10 เร่งต่อ |
-| DXY | **LONG (conviction ต่ำมาก — ห้ามเปิดใหม่, คงเดิม)** | DGS2 +52bp accelerating + hike talk mainstream + DTWEXBGS +2.08% accelerating / บน COT 96th | dovish FOMC หรือ Core PCE เย็น → crowded unwind — downside จาก positioning ใหญ่กว่า upside จาก momentum — เช็ค COT ใหม่เย็นนี้ |
-| USDJPY | **NEUTRAL lean LONG (คงเดิม)** | rate gap กว้างขึ้น (2Y accelerating) + oil shock กด JPY (นำเข้าพลังงาน) + VIX ยังสงบ | SHORT: VIX ยืน >25 / dovish FOMC / BOJ hawkish หรือ intervention (ตามข่าว) — JPY short 12th = เชื้อ squeeze สะสม |
-| EURUSD | **NEUTRAL lean SHORT — ห้ามไล่ (คงเดิม)** | rate diff + energy shock กด EU แรงกว่าสหรัฐ + EU sanctions รอบ 21 / short 2nd pct ตึงสุดกระดาน | dovish FOMC หรือ ceasefire (oil ลง = terms-of-trade EU ฟื้น) → squeeze แรงสุดใน FX หลัก — R/R ของ short ใหม่โซนนี้แย่ |
-| SPX | **NEUTRAL ลบ skew ลง (ปรับจาก NEUTRAL กลาง)** | กด: real yields ทุก tenor accelerating + oil ~$100 + global tariff + ปิดสัปดาห์ลบ / หนุน: HY แน่นลงอีก + NFCI ผ่อน + reserves accelerating + Intel beat — ES 96th = เชื้อ squeeze ฝั่งขึ้นน้อย | ขึ้นชัด: dovish FOMC + Core PCE เย็น | ลงชัด: hike จริง หรือ HY ถ่างเร็ว หรือ oil ยืน >$100 ข้ามสัปดาห์ |
-| NDX | **NEUTRAL lean SHORT (คงเดิม — แรงขึ้น)** | DFII10 high ใหม่ accelerating = ภาษี duration เก็บเต็ม + Nasdaq นำขาลงสัปดาห์นี้ + NQ 24th ไม่มีเชื้อ squeeze / Intel beat ช่วยที่ขอบ (analysts ไม่ re-rate) | LONG: DFII10 RoC พลิก + dovish FOMC | SHORT ต่อ: hike จริง + real yields เร่งต่อ |
+### 3️⃣ **กำไรทำสถิติ แต่พึ่งบริษัทเดียว**
+- *"S&P 500 profit margins hit record highs in Q2, **but one company is doing a lot of heavy lifting**"*
+- **Eisman: "AI boom พึ่งพาแค่ OpenAI กับ Anthropic"**
+- **JPM ขึ้นเป้า SPX เป็น 8,000 บนสมมติฐาน "AI capex เริ่มให้ผล"**
+- 👉 ความแข็งแรงระดับดัชนีปิดบังการพึ่งพารายตัว — **NVDA 26 ส.ค. คือจุดเปราะ**
 
-## 📅 CATALYSTS AHEAD (14 วัน — FRED release calendar + Finnhub/news)
+### 4️⃣ **การจ้างงานหดขณะผลผลิตโต — ตลาดเลือกตีความด้านบวกไปแล้ว**
+- **ISM Mfg 55.6 / Svc Business Activity 59.1** ปะทะ **NFP −23k / ISM Svc Employment 47.4**
+- ตลาดเรียกมันว่า productivity — **ยังไม่มีข้อมูลพิสูจน์ว่าไม่ใช่การตัดต้นทุนเพราะดีมานด์อ่อน**
+- 👉 **ค้าปลีก 18–20 ส.ค. คือหลักฐานชิ้นแรก**
 
-| วันที่ | เวลา ET | Event | นัยต่อ regime |
-|--------|---------|-------|----------------|
-| **ศ. 24 ก.ค. (วันนี้)** | ~15:30 | **CFTC COT ใหม่ (data ณ 21 ก.ค.)** | เช็คว่า USD 96th / EUR 2nd / ES 96th คลายก่อน FOMC หรือยัง — ตัวปรับ conviction ทุกแถวในตาราง |
-| **พ. 29 ก.ค.** | **14:00 (แถลง 14:30)** | **FOMC Rate Decision** | 🔴 **ตัวตัดสิน regime** — hike/เปิดประตู hike → real-rate shock validated, เคารพเทรนด์ USD | hold+dovish → crowded unwind (gold/EUR/duration ชนะ) |
-| **พฤ. 30 ก.ค.** | 08:30 | **Core PCE (มิ.ย.)** | 🔴 ชิ้นตัดสินที่สอง — <~3.3% = ปิดคดี disinflation, hike premise พัง / เด้ง = hawkish ได้ต่อ |
-| พฤ. 30 ก.ค. | 08:30 | GDP Q2 (advance) | ยืนยัน growth pillar ก่อนถกเรื่อง stagflation |
-| ศ. 31 ก.ค. | — | Earnings: **CVX**, ABBV, LIN, ETN, CL | CVX = read น้ำมัน/capex ท่ามกลาง Hormuz ~$100 |
-| จ. 3 ส.ค. | 10:00 | **ISM Mfg ก.ค.** (นอก FRED — ตามข่าว) | **data point แรกที่จับ oil shock เข้า prices paid** — ตัวเช็ค premise เงินเฟ้อภาคจริง |
-| จ. 3 ส.ค. | — | Earnings หนาแน่น: BRK.A, AXON, CLX, ALSN | broad-market read |
-| พ. 5 ส.ค. | 10:00 | ISM Services ก.ค. (ตามข่าว) | services prices = ตัวจับ second-round effect |
-| **ศ. 7 ส.ค.** | 08:30 | **NFP (ก.ค.)** | ถ้า <50k บนสภาพ hike talk → stagflation risk จริงจัง / แข็ง → Fed มี room ตึง |
-| ตลอดหน้าต่าง | — | **Iran headlines (two-way): "massive attack" vs ceasefire** + สถานะ Hormuz | ตัวแปรที่ตัดสินว่า breakevens หรือ front-end ฝั่งไหน mispriced |
+### 5️⃣ **USD: positioning สุดขีด + ตัวจุดชนวนมาถึงแล้ว** 🆕
+- **COT %ile 100** = long แออัดที่สุดในรอบปี
+- **PPI เย็น = ถอดความเสี่ยงเฟดขึ้นดอกเบี้ย** — เมื่อวานยังไม่มีตัวจุดชนวนนี้
+- **DTWEXBGS Δ ล่าสุด −0.45** และ **YoY ยัง −1.19%** (3M ที่ +0.89% คือการเด้งใน downtrend)
+- 👉 **ยืนยันที่ COT ศุกร์ 14 ส.ค.**
 
-## 🔒 WHAT CHANGES MY MIND (เงื่อนไขวัดได้)
-
-- **ไป STAGFLATION (supply shock ชนะ):** T5YIE ยืนเหนือ **2.40%** + Brent ยืน >$95 ข้ามสัปดาห์ + ISM prices-paid (3 ส.ค.) เด้งแรง → gold/energy long, duration short — และเลิกเถียงว่า front-end แพง
-- **ไป GOLDILOCKS (disinflation ชนะ + Fed ยอม):** ceasefire จริง + FOMC hold/dovish + DFII10 ถอย >15bp ใน 1 สัปดาห์ + Core PCE <3.3% → risk-on เต็ม, USD unwind ใหญ่
-- **Hawkish ชนะจริง (ไป REFLATION-ตึง / เคารพเทรนด์):** FOMC hike หรือส่งสัญญาณ hike ชัด + real yields เร่งต่อ + USD ทำ high ใหม่ทั้งที่ COT 96th → structural driver (fiscal/term premium) ใหญ่กว่า positioning — เลิก fade USD, gold โดน cap ยาว
-- **สัญญาณ recession แทรก:** HY OAS ถ่าง >50bp เร็วๆ + NFP 7 ส.ค. <50k + ISM Mfg หลุด 50 → ทุก bias ในตารางโมฆะ รีเฟรชทันที
+### 6️⃣ **IG OAS หยุดแคบและเริ่มกว้าง — RoC accelerating**
+- **0.79%, Δ3M +0.02, RoC accelerating** ขณะ HY ยัง stable
+- **IG กว้างก่อน HY = ลำดับที่ถูกต้องของการเริ่มเครียดจริง** (ไม่ใช่ risk-off จากหุ้น)
+- ยังห่างทริกเกอร์ 0.90% อยู่ **11bp** แต่ทิศทางเปลี่ยนแล้ว
 
 ---
-*อัปเดต: 2026-07-24 ~09:30 ET | regime สดถึง 31 ก.ค. แต่ **หน้าต่าง 29–30 ก.ค. (FOMC+Core PCE) conviction โดน cap REDUCED โดยกติกา event risk อยู่แล้ว** | **รีเฟรชทันทีหลัง Core PCE 30 ก.ค.** | เช็ค COT ใหม่เย็นนี้ ~15:30 ET*
+
+## 📊 PER-ASSET MACRO BIAS TABLE
+
+> ⭐ **ตารางนี้คือสิ่งที่ `/bias` อ่าน — สดถึง 2026-08-20**
+> 🟢 **หน้าต่าง 10 วัน (13–23 ส.ค.) ไม่มี HIGH macro event เหลือ** → ประตู FULL SIZE เปิดเชิงเทคนิค
+> ⚠️ **แต่มี earnings event ในหน้าต่าง: AMAT (คืนนี้), HD 18, TGT/LOW 19, WMT 20**
+
+| Asset | Macro bias | Key drivers now | What flips it |
+|-------|-----------|-----------------|---------------|
+| **XAUUSD** | 🟢 **LONG** 🔻*(ลด conviction จาก "สูงสุด" → "ปานกลาง-สูง")* | **COT 53 = ตัวเดียวที่ไม่แออัด** • **RRP $0.7B + reserves −10% YoY** = debasement • **USD COT 100 + ตัวจุดชนวน unwind** • GLD inflow พุ่ง เป้า $4,500 • อิหร่านเข้า BRICS bank • **ทองยืนได้ทั้งที่ real yield +48bp = สัญญาณความแข็งแกร่ง** • **แต่:** 🚨 **DFII10 2.43% RoC accelerating + breakeven −45bp = ลมปะทะหลัก** | 🚨 **DFII10 > 2.75%** *(ห่าง 32bp ≈ **2 เดือน**ที่ความเร็วปัจจุบัน)* • **COT %ile ≥ 90** • **DTWEXBGS ยืนเหนือ 120.5** • Core PCE (26 ส.ค.) RoC พลิกเป็น decelerating |
+| **DXY** | ⚪ **NEUTRAL เอียง SHORT** 🔄 *(ห้าม long เด็ดขาดที่ %ile 100)* | **COT %ile 100 = แออัดสุดขีด** • 🆕 **PPI เย็น = ตัวจุดชนวน unwind มาแล้ว** • **Δ ล่าสุด −0.45** • **YoY −1.19%** = 3M ที่ +0.89% เป็นแค่การเด้ง • **แต่ Δ3M RoC ยัง accelerating** = momentum ยังไม่แตก | ⭐ **COT ศุกร์ 14 ส.ค.: %ile < 85 → SHORT ยืนยัน** • DTWEXBGS หลุด **117.5** → SHORT • ยืนเหนือ **120.5** พร้อม %ile ยัง 100 → กลับเป็น NEUTRAL แข็ง |
+| **USDJPY** | ⚪ **NEUTRAL** ⚠️ *(carry long เสีย asymmetry)* | ส่วนต่างยังกว้าง (DGS2 4.22%) + **VIX 14.55 + NFCI −0.55 = carry friendly** • **แต่:** 🆕 **Goldman: ญี่ปุ่นมี $1T "เหลือกำลังเหลือเฟือ" แทรกแซงอีกหลายรอบ = เพดานจากทางการ** • JPY COT 39 หลัง squeeze **+117,939** = เชื้อเพลิง short หมด • **DGS2 RoC decelerating** = ฝั่งสั้นแผ่ว | **VIX > 20** → SHORT ทันที • **แทรกแซงจริงรอบใหม่** → SHORT • **DGS2 < 4.00%** → SHORT • BOJ ขยับ *(ต้องดูข่าว — ไม่มีในปฏิทิน FRED)* |
+| **EURUSD** | ⚪ **NEUTRAL** ⚡ *(ความเสี่ยง squeeze ขึ้นสูงสุดในตาราง)* | **COT %ile 2 = short แออัดสุดขีด** + 🆕 **USD ได้ตัวจุดชนวน unwind = ส่วนผสมของ squeeze ครบ** • **แต่:** วิกฤตพลังงานยุโรปจากสงครามอิหร่าน — **"UK เศรษฐกิจโตเร็วสุดใน G7 เสี่ยงหยุดชะงัก"** = ลบเชิงปัจจัยพื้นฐาน | **COT ศุกร์: EUR %ile > 10 พร้อม USD %ile < 85** → LONG *(squeeze ยืนยัน)* • วิกฤตไฟฟ้ายุโรปลุกลาม → SHORT |
+| **SPX** | ⚪ **NEUTRAL** *(สั้นหนุน / กลางเปราะ)* | **หนุน:** กำไร Q2 + margin **ทำสถิติ** • **ISM Mfg 55.6** • PPI เย็น • **HY 271bp RoC stable** ไม่มีเครียด • NFCI หลวม • JPM เป้า 8,000 • **เปราะ:** **COT %ile 96** • **VIX 14.55** • **IG OAS RoC accelerating** (หยุดแคบ) • **reserves −10% / RRP $0.7B** • **กำไรพึ่งบริษัทเดียว** | **IG OAS > 0.90%** หรือ **HY OAS > 3.20%** → SHORT • **VIX > 22** → SHORT • ⭐ **WMT 20 ส.ค. ยืนยันผู้บริโภคแข็ง** → LONG • **WMT + HD + TGT พลาดพร้อมกัน** → SHORT *(ยืนยันการตีความ B)* |
+| **NDX** | ⚪ **NEUTRAL** *(สั้น: squeeze ขึ้น / กลาง: เสี่ยงสุดในตาราง)* | **สั้น:** **COT %ile 4 = short แออัดสุดขีด** + Kospi เข้า bull market จาก AI + PPI เย็น = **เชื้อเพลิง squeeze ครบ** • **กลาง:** 🚨 **DFII10 +48bp RoC accelerating = แรงกดสินทรัพย์ duration ยาวที่สุด** • **Eisman: พึ่ง OpenAI+Anthropic** • AI capex ย้ายไป **debt** ในวันที่ **IG OAS เริ่มกว้าง** • Cisco ร่วงหลังงบ | ⭐ **AMAT คืนนี้พลาด** → SHORT • **DFII10 > 2.75%** → SHORT • **IG/HY OAS กว้างขึ้น** → SHORT *(AI เป็น credit trade แล้ว)* • **NVDA 26 ส.ค.** |
+
+### 🧭 สรุปตาราง
+
+- **XAUUSD ยังเป็น LONG ตัวเดียวในตาราง — แต่ลด conviction ลงหนึ่งขั้นอย่างตรงไปตรงมา** เหตุผล: real yield ที่ **+48bp/3M และเร่งขึ้น** คือลมปะทะหลักของทอง และมันกำลังเดินเข้าหาระดับพลิก 2.75% ที่ความเร็ว **~2 เดือน** • ข้อดีคือทอง**ยืนได้ทั้งที่เจอลมนี้** และ **COT แค่ 53**
+- **DXY เปลี่ยนสถานะจริง** — เมื่อวาน "ไม่มีตัวจุดชนวน" วันนี้ **มีแล้ว** → เอียง SHORT รอ COT ศุกร์
+- **EURUSD คือ squeeze setup ที่สมบูรณ์ที่สุด** (COT 2 + USD unwind) แต่ปัจจัยพื้นฐานยุโรปแย่ = อย่าถือยาว
+- **NDX มี asymmetry สองทางที่ชัดที่สุด** — COT 4 หนุน squeeze สั้น / real yield เร่งขึ้นกดระยะกลาง
+- ⚡ **ไม่มี HIGH macro event ใน 10 วัน แต่มี earnings 5 ตัว** → FULL SIZE เปิดเชิงเทคนิค แต่ต้องเช็ควันงบรายตัว
+
+---
+
+## 📅 CATALYSTS AHEAD (14 วัน: 13–27 ส.ค.)
+
+| วันที่ | เวลา ET | เหตุการณ์ | Impact | เดิมพัน |
+|--------|---------|-----------|--------|---------|
+| ~~พฤ 13 ส.ค.~~ | ~~08:30~~ | ~~**PPI**~~ | ✅ **flat vs คาด +0.2%** | เย็นกว่าคาด — เฟด hike risk ถูกถอด |
+| **พฤ 13 ส.ค.** | **AMC** | 📊 **AMAT** *(est 3.45 / $9.18B)* | **HIGH ต่อ NDX** | ⭐ ทริกเกอร์ในตาราง — semis capex ยังจริงไหม |
+| **ศุกร์ 14 ส.ค.** | **15:30** | 🎲 **CFTC COT รอบใหม่** | **HIGH ต่อ DXY/EUR** | ⭐ **USD %ile หลุด 85 ไหม = unwind เริ่มจริงหรือยัง** |
+| **อังคาร 18 ส.ค.** | BMO | 📊 **HD** *(est 4.88 / $48.7B)* | MEDIUM | ผู้บริโภคกลุ่มบ้าน + ผลจากดอกเบี้ยสูง |
+| **พุธ 19 ส.ค.** | BMO | 📊 **LOW** *(est 4.29 / $26.5B)* | MEDIUM | ยืนยัน/ขัดแย้ง HD |
+| **พุธ 19 ส.ค.** | BMO | 📊 **TGT** *(est 2.31 / $26.3B)* | MEDIUM | ผู้บริโภคกลุ่มไม่จำเป็น |
+| **พฤ 20 ส.ค.** | BMO | 📊 **WMT** *(est 0.75 / **$188.8B**)* | **HIGH ต่อ SPX** | ⭐ **ตัวชี้ผู้บริโภคดีสุด — ตัดสินการตีความ A vs B** |
+| **ศุกร์ 21 ส.ค.** | 15:30 | 🎲 **CFTC COT** | MEDIUM | ยืนยันเทรนด์ positioning |
+| **พุธ 26 ส.ค.** | **08:30** | 🔴 **Core PCE** | **HIGH** | ⭐⭐ **เสาสุดท้ายของ thesis เงินเฟ้อ — RoC จะยัง "stable" ที่ 3.29% ไหม** |
+| **พุธ 26 ส.ค.** | 08:30 | 🟡 **GDP** | MEDIUM | ยืนยัน RoC accelerating |
+| **พุธ 26 ส.ค.** | **AMC** | 📊 **NVDA** *(est 2.13 / $93.6B)* | **HIGH ต่อ NDX** | ⭐⭐ **จุดเปราะของ mispricing #3** |
+
+> 🚨 **26 ส.ค. คือวันที่อันตรายที่สุดในปฏิทิน: Core PCE (08:30) + GDP (08:30) + NVDA (AMC) วันเดียวกัน**
+> ตำแหน่งที่ถือข้ามวันนั้นเจอความเสี่ยง 3 ชั้น — **วางแผนลดขนาดก่อน 25 ส.ค.**
+
+**นอกหน้าต่าง 14 วัน:** NFP 4 ก.ย. • **PPI 10 ก.ย.** *(รอบแรกที่เห็น shock เดือน ส.ค. เต็ม)* • CPI 11 ก.ย. • **FOMC 16 ก.ย. 14:00**
+
+---
+
+## 🔄 WHAT WOULD CHANGE THE REGIME
+
+| ไปทาง | ต้องเห็นอะไร |
+|-------|-------------|
+| 🟢 **→ GOLDILOCKS เต็มตัว** | **Reserves พลิกเป็นบวก YoY** *(หรือเฟดหยุด QT ชัดเจน)* + Core PCE RoC พลิกเป็น **decelerating** + IG OAS กลับมาแคบ |
+| 🔴 **→ STAGFLATION** | **PPI 10 ก.ย. ร้อน** *(shock ส.ค. โผล่)* + Core PCE ยัง stable + ISM Prices เร่งขึ้น + น้ำมันกลับขึ้น |
+| 🔴 **→ DEFLATION / RISK-OFF** | **IG OAS > 0.90% + HY > 3.20%** พร้อม **VIX > 22** + ค้าปลีก 18–20 ส.ค. พลาดยกแผง *(ยืนยันการตีความ B)* |
+| ⚪ **ยัง TRANSITION** | ข้อมูลเดินแบบผสมต่อ — **สถานการณ์ฐาน** |
+
+---
+
+## 🧊 มุมมองแบบ Druckenmiller
+
+> **1. Liquidity is King — และเสานี้คือเสาที่พัง**
+> RRP $0.7B, reserves −10.05% YoY, WALCL RoC decelerating **เทียบกับ** VIX 14.55 และ IG 79bp
+> **ความจริงเชิงปริมาณกับราคาความเสี่ยงกำลังพูดคนละเรื่องกัน** — และเมื่อ RRP = 0 แรงกดจะไปลงที่ reserves ตรงๆ
+>
+> **2. Second Derivative — ตัวที่ต้องดูคือ DFII10 RoC = accelerating**
+> ไม่ใช่ "real yield สูง" แต่คือ "**real yield กำลังเร่งขึ้น**" ในวันที่ breakeven ร่วง −45bp
+> **ต้นทุนเงินจริงกำลังแพงขึ้นเร็วขึ้น ในวันที่ตลาดคิดว่ามันจะถูกลง**
+>
+> **3. หา trend ที่ premise ผิดแล้วเดิมพันสวน**
+> premise ที่เปราะที่สุดตอนนี้: **"เงินเฟ้อจบแล้ว = ต้นทุนทุนจะถูกลง"**
+> — **breakeven 2.24% พูดข้อแรก / DFII10 2.43% เร่งขึ้น ปฏิเสธข้อหลัง**
+>
+> **4. ผมผิดเมื่อวานเรื่องไหน และแก้ยังไง**
+> เมื่อวานเอียงไปทาง "เงินเฟ้อกำลังกลับมา" — **PPI flat + CPI RoC decelerating หักล้างไปแล้ว**
+> **แต่ข้อสรุปเชิงตำแหน่งไม่เปลี่ยนมาก** เพราะปัญหาจริงย้ายที่ ไม่ได้หายไป: จาก *เงินเฟ้อแพง* → *เงินจริงแพง*
+>
+> **5. Cash is a Position**
+> **5 ใน 6 สินทรัพย์เป็น NEUTRAL** — ไม่ใช่ความขี้เกียจ แต่เพราะ momentum กับ positioning ขัดกันเกือบทุกตัว
+> **fat pitch เดียวที่เห็นคือทอง** และแม้แต่ตัวนั้นก็มีนาฬิกาจับเวลาชื่อ DFII10 เดินอยู่
+
+---
+
+## ✅ ACTION ITEMS
+
+1. **คืนนี้ — AMAT (AMC)**: ทริกเกอร์ NDX ในตาราง ถ้าพลาด = หลักฐานแรกว่า semis capex แผ่ว
+2. **ศุกร์ 14 ส.ค. 15:30 ET — COT**: ตัวเดียวที่ยืนยัน DXY short / EURUSD squeeze → **เช็คก่อนเปิดสถานะ USD ใดๆ**
+3. **18–20 ส.ค. — HD / TGT / LOW / WMT**: ตัดสิน "productivity miracle" (A) vs "ตัดต้นทุนเพราะดีมานด์อ่อน" (B)
+4. **เฝ้า DFII10 ทุกวัน**: ที่ 2.43% เร่งขึ้น — **2.75% คือเส้นที่พลิกทองและ NDX พร้อมกัน**
+5. **เฝ้า IG OAS**: 0.79% RoC accelerating — **0.90% คือทริกเกอร์ SHORT ทั้ง SPX และ NDX**
+6. **ลดขนาดก่อน 25 ส.ค.**: Core PCE + GDP + NVDA ชนกันวันที่ 26
+7. **`/regime` รอบหน้า จันทร์ 17 ส.ค.** — หรือเร็วกว่านั้นถ้า AMAT/COT พลิกภาพ
+
+---
+
+## 📋 ข้อจำกัดของรายงานฉบับนี้ (โปร่งใส)
+
+| รายการ | สถานะ |
+|--------|-------|
+| **ISM Δ3M / RoC** | ❌ ไม่มี — ISM ไม่อยู่ใน FRED และ NewsAPI ตอบ **426** เมื่อขอย้อนหลังเกิน 1 เดือน → กรอกเฉพาะระดับ ก.ค. ที่ยืนยันได้ |
+| **EPS growth %** | ❌ ไม่มีตัวเลขที่ยืนยันได้ — ใช้ข้อมูลเชิงคุณภาพ ("ดีสุดตั้งแต่ 2021", "margin ทำสถิติ") |
+| **Sentiment UUP / QQQ** | ❌ Alpha Vantage rate limit (25/วัน) |
+| **PPI องค์ประกอบ / YoY** | ⚠️ สื่อรายงานแค่ m/m = flat |
+| **COT** | ⚠️ ข้อมูล ณ **4 ส.ค.** = เก่า 9 วัน — รอบใหม่ศุกร์นี้ |
+| **ราคาสินทรัพย์** | ⚠️ **ระบบไม่มี price feed** — ทุกอย่างในตารางเป็น *macro bias* ไม่ใช่ระดับราคา • **levels มาจากกราฟผู้ใช้เท่านั้น** |
+| **ปฏิทิน BOJ / ECB** | ⚠️ ไม่มีใน FRED — ต้องอาศัยข่าว |
+| **FRED เสถียรภาพ** | ⚠️ ตอบ 502/timeout เป็นช่วงๆ ตอนเช้า — รอบนี้ดึง `category: all` ได้ครบ 20 series |
+
+---
+
+*สร้างโดย `macro-researcher` | 2026-08-13 14:15 UTC (10:15 ET)*
+*แหล่ง: FRED (20 series), ISM ก.ค. 2026 (PRNewswire), CFTC COT (4 ส.ค.), Finnhub + 12 RSS, NewsAPI, Alpha Vantage*
+*ไม่มีการใช้ SerpAPI (สงวนโควตา 100/เดือน)*
+*⭐ **`/bias` ใช้ตารางนี้ได้ถึง 2026-08-20** — หลังจากนั้นจะโดน stale cap*
