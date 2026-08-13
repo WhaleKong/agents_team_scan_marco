@@ -1,5 +1,10 @@
 import { getFredReleaseDates } from "../sources/fred.js";
 import { FOMC_DECISION_DATES } from "../config/fomc-schedule.js";
+import {
+  RBA_DECISION_DATES_SYDNEY,
+  RBA_ANNOUNCEMENT_TIME_SYDNEY,
+  RBA_TIME_ZONE,
+} from "../config/rba-schedule.js";
 
 export interface ReleaseCalendarEntry {
   date: string; // YYYY-MM-DD
@@ -25,6 +30,8 @@ const CURATED_RELEASES: CuratedRelease[] = [
 ];
 
 const FOMC_EVENT_NAME = "FOMC Rate Decision";
+const RBA_EVENT_NAME = "RBA Rate Decision (Australia)";
+const ET_TIME_ZONE = "America/New_York";
 
 const DAY_MS = 86_400_000;
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -64,6 +71,72 @@ export function fomcEntries(): ReleaseCalendarEntry[] {
   }));
 }
 
+/** Wall-clock fields for an instant, read out of the IANA database. */
+function zonedParts(at: Date, timeZone: string): Record<string, string> {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    hour12: false,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).formatToParts(at);
+
+  return Object.fromEntries(parts.map((p) => [p.type, p.value]));
+}
+
+/** Offset of `timeZone` from UTC at `at`, in ms (east of UTC is positive). */
+function zoneOffsetMs(at: Date, timeZone: string): number {
+  const p = zonedParts(at, timeZone);
+  const asUtc = Date.UTC(
+    Number(p.year),
+    Number(p.month) - 1,
+    Number(p.day),
+    Number(p.hour) % 24, // Intl renders midnight as "24" in some ICU versions
+    Number(p.minute),
+    Number(p.second)
+  );
+  return asUtc - at.getTime();
+}
+
+/** Convert a wall-clock date+time in `timeZone` to the UTC instant it names. */
+function zonedTimeToUtc(date: string, timeHm: string, timeZone: string): Date {
+  const naive = new Date(`${date}T${timeHm}:00Z`);
+  const firstGuess = new Date(naive.getTime() - zoneOffsetMs(naive, timeZone));
+  // Re-read the offset at the guessed instant: if the naive guess fell on the
+  // far side of a DST transition the two offsets differ and the second wins.
+  const settled = zoneOffsetMs(firstGuess, timeZone);
+  return new Date(naive.getTime() - settled);
+}
+
+/**
+ * RBA decisions rendered in ET. The announcement is 14:30 Sydney, which lands
+ * on the PREVIOUS calendar day in New York whenever Sydney is on daylight
+ * saving — so the date is derived, never assumed to equal the Sydney date.
+ */
+export function rbaEntries(): ReleaseCalendarEntry[] {
+  return RBA_DECISION_DATES_SYDNEY.map((sydneyDate) => {
+    const instant = zonedTimeToUtc(sydneyDate, RBA_ANNOUNCEMENT_TIME_SYDNEY, RBA_TIME_ZONE);
+    const et = zonedParts(instant, ET_TIME_ZONE);
+    return {
+      date: `${et.year}-${et.month}-${et.day}`,
+      event: RBA_EVENT_NAME,
+      timeEt: `${String(Number(et.hour) % 24).padStart(2, "0")}:${et.minute}`,
+      importance: "HIGH" as const,
+    };
+  });
+}
+
+/** Latest ET date the RBA constant covers — used for the staleness warning. */
+function lastRbaEtDate(): string {
+  return rbaEntries()
+    .map((e) => e.date)
+    .sort()
+    .slice(-1)[0];
+}
+
 /**
  * Pure formatter: windows, filters, dedupes, sorts, and renders entries.
  * Fetch-free so it is unit-testable with synthetic data and a fixed asOf.
@@ -90,7 +163,7 @@ export function formatReleaseCalendar(
     })
     .sort((a, b) => (a.date === b.date ? a.event.localeCompare(b.event) : a.date.localeCompare(b.date)));
 
-  let output = `## US Economic Release Calendar — ${asOf} to ${windowEnd}\n\n`;
+  let output = `## Economic Release Calendar — ${asOf} to ${windowEnd}\n\n`;
 
   if (rows.length === 0) {
     output += `No tracked releases inside this window.\n`;
@@ -107,12 +180,19 @@ export function formatReleaseCalendar(
     output += `\nWARNING: FOMC schedule constant ends ${lastFomc} — update src/config/fomc-schedule.ts from federalreserve.gov/monetarypolicy/fomccalendars.htm\n`;
   }
 
+  const lastRba = lastRbaEtDate();
+  if (windowEnd > lastRba) {
+    output += `\nWARNING: RBA schedule constant ends ${lastRba} (ET) — update src/config/rba-schedule.ts from rba.gov.au/schedules-events/board-meeting-schedules.html\n`;
+  }
+
   for (const note of notes) {
     output += `\nNOTE: ${note}\n`;
   }
 
-  output += `\nAll times US Eastern. Sources: FRED release calendar (CPI, NFP, Core PCE, GDP, PPI) + scheduled FOMC decisions. `;
-  output += `ISM PMI is not carried by FRED — check news for its date (1st/3rd business day of the month).\n`;
+  output += `\nAll times US Eastern. Sources: FRED release calendar (CPI, NFP, Core PCE, GDP, PPI) + scheduled FOMC decisions `;
+  output += `+ RBA Monetary Policy Board decisions (announced 14:30 Sydney, converted to ET — note this falls on the PREVIOUS ET day when Sydney is on daylight saving). `;
+  output += `ISM PMI is not carried by FRED — check news for its date (1st/3rd business day of the month). `;
+  output += `Australian data (jobs, CPI) and Chinese data are NOT covered.\n`;
   return output;
 }
 
@@ -153,7 +233,7 @@ export async function getReleaseCalendar(
     }
   });
 
-  entries.push(...fomcEntries());
+  entries.push(...fomcEntries(), ...rbaEntries());
 
   return formatReleaseCalendar(entries, asOf, clampedDays, events, notes);
 }

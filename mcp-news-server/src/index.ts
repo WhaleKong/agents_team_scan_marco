@@ -77,7 +77,7 @@ server.tool(
 // Tool 3: US Economic Release Calendar (FRED release dates + FOMC schedule)
 server.tool(
   "get_release_calendar",
-  "Get upcoming US economic release dates (CPI, NFP/Employment Situation, Core PCE, GDP, PPI) from the FRED release calendar plus scheduled FOMC decision dates with times (ET). Use to check event risk inside a swing-trade holding window. Requires FRED_API_KEY.",
+  "Get upcoming economic release dates with times (ET): US releases (CPI, NFP/Employment Situation, Core PCE, GDP, PPI) from the FRED release calendar, scheduled FOMC decisions, and RBA (Australia) cash rate decisions. Use to check event risk inside a swing-trade holding window. RBA announces 14:30 Sydney, which converts to the PREVIOUS ET day when Sydney is on daylight saving. Australian data (jobs, CPI) and Chinese data are NOT covered. Requires FRED_API_KEY.",
   {
     days_ahead: z
       .number()
@@ -382,12 +382,12 @@ server.tool(
 // Tool 13: CFTC COT Positioning
 server.tool(
   "get_cot_positioning",
-  "Get CFTC Commitments of Traders (COT) non-commercial futures positioning for Gold, Euro FX, Japanese Yen, USD Index, E-mini S&P 500, and Nasdaq-100: net position, weekly change, % of open interest, and 52-week percentile (crowdedness — >=90 crowded long, <=10 crowded short). Free CFTC public API, no key required. Data as-of Tuesday, published Friday ~15:30 ET.",
+  "Get CFTC Commitments of Traders (COT) non-commercial futures positioning for Gold, Euro FX, Japanese Yen, USD Index, Australian Dollar, E-mini S&P 500, and Nasdaq-100: net position, weekly change, % of open interest, and 52-week percentile (crowdedness — >=90 crowded long, <=10 crowded short). Free CFTC public API, no key required. Data as-of Tuesday, published Friday ~15:30 ET.",
   {
     markets: z
       .string()
       .optional()
-      .describe('Optional comma-separated market filter, e.g. "gold,euro" or "s&p,nasdaq". Omit for all six markets.'),
+      .describe('Optional comma-separated market filter, e.g. "gold,euro", "aud", or "s&p,nasdaq". Omit for all seven markets.'),
   },
   async ({ markets }) => {
     try {

@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { summarizeCot, formatCotSummaries } from "../tools/cot-positioning.js";
+import {
+  summarizeCot,
+  formatCotSummaries,
+  selectCotMarkets,
+  COT_MARKETS,
+} from "../tools/cot-positioning.js";
 import type { CotRecord } from "../sources/cftc.js";
 
 function record(
@@ -80,6 +85,50 @@ test("empty records produce an all-n/a summary without throwing", () => {
   assert.equal(summary.net, null);
   assert.equal(summary.weeklyChange, null);
   assert.equal(summary.percentile52w, null);
+});
+
+test("Australian Dollar is a tracked market on the verified CME contract code", () => {
+  const aud = COT_MARKETS.find((m) => m.code === "232741");
+
+  assert.ok(aud, "expected AUD contract 232741 in COT_MARKETS");
+  assert.equal(aud.label, "Australian Dollar (CME)");
+});
+
+test("no market filter selects every tracked market", () => {
+  assert.deepEqual(selectCotMarkets(), COT_MARKETS);
+  assert.deepEqual(selectCotMarkets(""), COT_MARKETS);
+  assert.deepEqual(selectCotMarkets("  , ,"), COT_MARKETS);
+});
+
+test("label substring matching keeps working for the documented tokens", () => {
+  assert.deepEqual(
+    selectCotMarkets("gold,euro").map((m) => m.label),
+    ["Gold (COMEX)", "Euro FX (CME)"]
+  );
+  assert.deepEqual(selectCotMarkets("nasdaq").map((m) => m.label), ["Nasdaq-100 Mini (CME)"]);
+  assert.deepEqual(selectCotMarkets("YEN").map((m) => m.label), ["Japanese Yen (CME)"]);
+});
+
+test('"aud" selects the Aussie even though it is not a substring of the label', () => {
+  // "australian dollar (cme)" does not contain the substring "aud".
+  assert.equal(COT_MARKETS.some((m) => m.label.toLowerCase().includes("aud")), false);
+
+  for (const token of ["aud", "AUD", "audusd", "aussie", "australian"]) {
+    assert.deepEqual(
+      selectCotMarkets(token).map((m) => m.label),
+      ["Australian Dollar (CME)"],
+      `token "${token}" should select the Aussie`
+    );
+  }
+});
+
+test('"usd" still selects only the dollar index, not the Aussie', () => {
+  assert.deepEqual(selectCotMarkets("usd").map((m) => m.label), ["USD Index (ICE)"]);
+  assert.deepEqual(selectCotMarkets("usd index").map((m) => m.label), ["USD Index (ICE)"]);
+});
+
+test("an unmatched filter selects nothing so the caller can report available markets", () => {
+  assert.deepEqual(selectCotMarkets("bitcoin"), []);
 });
 
 test("formats the positioning table with crowdedness flags and n/a rows", () => {

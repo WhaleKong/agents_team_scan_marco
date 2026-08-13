@@ -3,17 +3,45 @@ import { getCotRecords, type CotRecord } from "../sources/cftc.js";
 export interface CotMarketDefinition {
   code: string;
   label: string;
+  /**
+   * Extra filter tokens matched exactly (not as substrings), for markets whose
+   * common ticker is absent from the label — "aud" is nowhere in
+   * "Australian Dollar (CME)". Exact matching keeps "usd" off the Aussie.
+   */
+  aliases?: string[];
 }
 
-// Contract codes verified against publicreporting.cftc.gov on 2026-07-05.
+// Contract codes verified against publicreporting.cftc.gov on 2026-07-05;
+// Australian Dollar (232741) verified 2026-08-13.
 export const COT_MARKETS: CotMarketDefinition[] = [
   { code: "088691", label: "Gold (COMEX)" },
   { code: "099741", label: "Euro FX (CME)" },
   { code: "097741", label: "Japanese Yen (CME)" },
   { code: "098662", label: "USD Index (ICE)" },
+  { code: "232741", label: "Australian Dollar (CME)", aliases: ["aud", "audusd", "aussie"] },
   { code: "13874A", label: "E-mini S&P 500 (CME)" },
   { code: "209742", label: "Nasdaq-100 Mini (CME)" },
 ];
+
+/**
+ * Resolve a comma-separated filter to tracked markets. A token matches a market
+ * if it appears in the label, or equals one of the market's aliases. Empty or
+ * whitespace-only input selects everything. Fetch-free so it is unit-testable.
+ */
+export function selectCotMarkets(markets?: string): CotMarketDefinition[] {
+  const tokens = (markets ?? "")
+    .split(",")
+    .map((t) => t.trim().toLowerCase())
+    .filter(Boolean);
+
+  if (tokens.length === 0) return COT_MARKETS;
+
+  return COT_MARKETS.filter((m) =>
+    tokens.some(
+      (t) => m.label.toLowerCase().includes(t) || (m.aliases?.includes(t) ?? false)
+    )
+  );
+}
 
 export interface CotSummary {
   label: string;
@@ -126,14 +154,7 @@ export function formatCotSummaries(summaries: CotSummary[]): string {
 }
 
 export async function getCotPositioning(markets?: string): Promise<string> {
-  const tokens = (markets ?? "")
-    .split(",")
-    .map((t) => t.trim().toLowerCase())
-    .filter(Boolean);
-
-  const wanted = tokens.length === 0
-    ? COT_MARKETS
-    : COT_MARKETS.filter((m) => tokens.some((t) => m.label.toLowerCase().includes(t)));
+  const wanted = selectCotMarkets(markets);
 
   if (wanted.length === 0) {
     const names = COT_MARKETS.map((m) => m.label).join(", ");

@@ -210,8 +210,8 @@ Tools ที่มีจริง (13 ตัว):
 | Tool | Backend | หมายเหตุ |
 |------|---------|----------|
 | `get_fred_macro_data` | FRED | **แหล่ง hard data หลัก** — 20 series, 5 categories (`all/liquidity/rates_credit/growth_inflation/markets`), ตารางมี Δ Prev / Δ 3M / Δ 1Y / YoY % / **RoC** (second derivative) |
-| `get_release_calendar` | FRED release dates + FOMC constant | CPI/NFP/Core PCE/GDP/PPI (08:30 ET) + FOMC (14:00 ET) — event risk สำหรับ swing window (ISM ไม่มีบน FRED) |
-| `get_cot_positioning` | CFTC Socrata (ฟรี ไม่ต้องมี key) | COT non-commercial: Gold/EUR/JPY/USD Index/ES/NQ — net, weekly Δ, % of OI, 52w percentile (≥90/≤10 = positioning ตึงระดับปี = contrarian risk) ข้อมูล ณ วันอังคาร ออกศุกร์ ~15:30 ET |
+| `get_release_calendar` | FRED release dates + FOMC constant + **RBA constant** | CPI/NFP/Core PCE/GDP/PPI (08:30 ET) + FOMC (14:00 ET) + **RBA cash rate (14:30 ซิดนีย์ → แปลงเป็น ET)** — event risk สำหรับ swing window (ISM ไม่มีบน FRED • **ข้อมูล AU/จีน ไม่ครอบคลุม**) |
+| `get_cot_positioning` | CFTC Socrata (ฟรี ไม่ต้องมี key) | COT non-commercial: Gold/EUR/JPY/USD Index/**AUD**/ES/NQ — net, weekly Δ, % of OI, 52w percentile (≥90/≤10 = positioning ตึงระดับปี = contrarian risk) ข้อมูล ณ วันอังคาร ออกศุกร์ ~15:30 ET • filter token: `gold`/`euro`/`yen`/`usd index`/**`aud`**/`s&p`/`nasdaq` |
 | `get_breaking_news` | Finnhub + RSS | ข่าวเร็วสุด ฟรี — ใช้เป็นหลัก |
 | `get_rss_feeds` | RSS 12 feeds | Reuters/CNBC/AP/Fed — ไม่มี quota |
 | `get_market_news` | Finnhub | ข่าวรายตัว (หุ้น US) |
@@ -227,6 +227,10 @@ Tools ที่มีจริง (13 ตัว):
 T10Y3M (curve), BAMLC0A0CM (IG OAS), NFCI (financial conditions) — data รายวันสำหรับ /bias
 
 ### Maintenance
+- `mcp-news-server/src/config/rba-schedule.ts` — วัน RBA hardcode **ถึง 2026-12-08 เท่านั้น**
+  (RBA ยังไม่ประกาศตาราง 2027) — เก็บเป็น**วันที่ซิดนีย์** แล้วให้ tool แปลงเป็น ET เอง
+  **ห้ามแปลงมือ** เพราะ DST ออสเตรเลีย/สหรัฐสวนทางกัน ทำให้ offset สลับระหว่าง 14h/16h;
+  tool จะเตือน `WARNING` เมื่อ window เกิน → อัปเดตจาก rba.gov.au (เว็บบล็อก bot ต้องเปิดเอง)
 - `mcp-news-server/src/config/fomc-schedule.ts` — วัน FOMC hardcode ถึงสิ้นปี 2027;
   tool จะเตือน `WARNING` เมื่อ window เกิน → อัปเดตจาก federalreserve.gov
 - Build/test: `cd mcp-news-server && npm run build && npm test` (ต้องเขียวก่อน restart server)

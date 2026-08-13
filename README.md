@@ -222,8 +222,8 @@ MCP server `macro-news-feed` (`mcp-news-server/`) มี 13 tools:
 | Tool | Backend | หมายเหตุ |
 |------|---------|----------|
 | `get_fred_macro_data` | FRED | **hard data หลัก** — 20 series, 5 categories, ตารางมี Δ Prev / Δ 3M / Δ 1Y / YoY % / **RoC** (second derivative) |
-| `get_release_calendar` | FRED + FOMC schedule | CPI/NFP/Core PCE/GDP/PPI (08:30 ET) + FOMC (14:00 ET) |
-| `get_cot_positioning` | CFTC Socrata (ฟรี) | COT non-commercial: net, weekly Δ, % of OI, 52w percentile |
+| `get_release_calendar` | FRED + FOMC + RBA schedules | CPI/NFP/Core PCE/GDP/PPI (08:30 ET) + FOMC (14:00 ET) + RBA cash rate (14:30 Sydney → ET) |
+| `get_cot_positioning` | CFTC Socrata (ฟรี) | COT non-commercial: net, weekly Δ, % of OI, 52w percentile — Gold/EUR/JPY/USD Index/AUD/ES/NQ |
 | `get_breaking_news` | Finnhub + RSS | ข่าวเร็วสุด — ใช้เป็นหลัก |
 | `get_rss_feeds` | RSS 12 feeds | Reuters/CNBC/AP/Fed — ไม่มี quota |
 | `get_market_news` | Finnhub | ข่าวหุ้น US รายตัว |
@@ -236,6 +236,7 @@ MCP server `macro-news-feed` (`mcp-news-server/`) มี 13 tools:
 ### Maintenance
 
 - `mcp-news-server/src/config/fomc-schedule.ts` — วัน FOMC hardcode ถึงสิ้นปี 2027 → tool เตือน `WARNING` เมื่อ window เกิน แล้วอัปเดตจาก federalreserve.gov
+- `mcp-news-server/src/config/rba-schedule.ts` — วัน RBA hardcode **ถึง 2026-12-08** (2027 ยังไม่ประกาศ) → เก็บเป็นวันที่ซิดนีย์ ให้ tool แปลง ET เอง; tool เตือน `WARNING` เมื่อ window เกิน แล้วอัปเดตจาก rba.gov.au
 - ก่อน restart server: `cd mcp-news-server && npm run build && npm test` ต้องเขียว
 
 ---
