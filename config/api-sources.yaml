@@ -32,10 +32,10 @@ market_data:
       - "DGS30"       # 30-Year Treasury
       - "T10Y2Y"      # 10Y-2Y Spread
       - "BAMLH0A0HYM2" # HY OAS Spread
-      - "CPIAUCSL"    # CPI
+      - "CPILFESL"    # Core CPI price index
       - "PCEPILFE"    # Core PCE
       - "PAYEMS"      # Nonfarm Payrolls
-      - "GDP"         # GDP
+      - "A191RL1Q225SBEA" # Real GDP growth, QoQ SAAR
       - "MANEMP"      # Manufacturing Employment
       - "T5YIE"       # 5Y Breakeven Inflation
 

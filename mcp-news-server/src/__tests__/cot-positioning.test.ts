@@ -94,6 +94,26 @@ test("Australian Dollar is a tracked market on the verified CME contract code", 
   assert.equal(aud.label, "Australian Dollar (CME)");
 });
 
+test("Swiss Franc is a tracked market on the verified CME contract code", () => {
+  const chf = COT_MARKETS.find((m) => m.code === "092741");
+
+  assert.ok(chf, "expected CHF contract 092741 in COT_MARKETS");
+  assert.equal(chf.label, "Swiss Franc (CME)");
+});
+
+test('"chf" selects the Swiss Franc even though it is not a substring of the label', () => {
+  // "swiss franc (cme)" does not contain the substring "chf".
+  assert.equal(COT_MARKETS.some((m) => m.label.toLowerCase().includes("chf")), false);
+
+  for (const token of ["chf", "CHF", "usdchf", "swissie", "swiss", "franc"]) {
+    assert.deepEqual(
+      selectCotMarkets(token).map((m) => m.label),
+      ["Swiss Franc (CME)"],
+      `token "${token}" should select the Swiss Franc`
+    );
+  }
+});
+
 test("no market filter selects every tracked market", () => {
   assert.deepEqual(selectCotMarkets(), COT_MARKETS);
   assert.deepEqual(selectCotMarkets(""), COT_MARKETS);

@@ -6,16 +6,17 @@
 ### REGIME: {GOLDILOCKS / REFLATION / STAGFLATION / DEFLATION / TRANSITION}
 ### CONVICTION: {HIGH / MEDIUM / LOW}
 
-### WHAT THE MARKET IS GETTING WRONG:
-> {the mispricing -- focus on 2nd derivative}
+### EXPECTATIONS / PRICING GAP:
+> {priced/consensus baseline with source + as-of, evidence path including Δ3M/RoC, gap,
+> catalyst, and VERIFIED/UNVERIFIED/NO GAP status}
 
 ### WHAT CHANGES MY MIND (invalidation):
 > {specific, measurable conditions that would break the thesis}
 
 ### TRADE EXPRESSION:
-| Leg          | Direction  | Conviction   | Entry  | Stop   | Target |
-|--------------|------------|--------------|--------|--------|--------|
-| {instrument} | LONG/SHORT | HIGH/MED/LOW | $XXXX  | $XXXX  | $XXXX  |
+| Leg          | Direction  | Conviction   | Levels |
+|--------------|------------|--------------|--------|
+| {instrument} | LONG/SHORT | HIGH/MED/LOW | user supplied / awaiting user levels |
 
 ### RISK/REWARD PROFILE:
 - R:R ratio: X.X : 1
@@ -29,8 +30,8 @@
 | quant-signal     | {score}  | H/M/L      |
 | risk-manager     | {GO/NO}  | --         |
 
-### DRUCKENMILLER GUT CHECK:
-- [ ] "Am I betting big enough if I'm right?"
-- [ ] "Will I cut fast enough if I'm wrong?"
-- [ ] "Is this a fat pitch or am I forcing it?"
-- [ ] "Am I trading my thesis or my P&L?"
+### ASYMMETRY AND DISCIPLINE CHECK:
+- [ ] Does the expected upside justify the defined downside?
+- [ ] Is the thesis invalidation measurable and actionable?
+- [ ] Is the expectations gap verified rather than inferred from RoC alone?
+- [ ] Is the expression compatible with instrument liquidity and portfolio exposure?

@@ -5,7 +5,7 @@ Run the **FULL PIPELINE** -- all agents in sequence to reach a trade decision.
 
 ## Instructions
 
-You are the **Orchestrator** running the complete Druckenmiller Decision Framework.
+You are the **Orchestrator** running the repository's Druckenmiller-inspired house framework.
 The user is a swing trader with their own technical entry system (1H–weekly charts). This pipeline
 produces the macro thesis, direction, and conviction — **price levels come from the user's chart.**
 
@@ -29,7 +29,8 @@ Using the news context, analyze and classify the current macro regime:
 - GOLDILOCKS / REFLATION / STAGFLATION / DEFLATION / TRANSITION
 - Fill Liquidity, Growth, Inflation, and Markets & Conditions dashboards — cite the `RoC`
   (second-derivative) column from `get_fred_macro_data`
-- Identify what the market is mispricing (focus on 2nd derivative)
+- Test what the market may be mispricing against a sourced/as-of consensus or market-implied
+  baseline. If no baseline exists, label it an UNVERIFIED HYPOTHESIS; RoC alone is insufficient.
 - Build the Per-Asset Macro Bias Table
 
 #### Step 3: Macro Tape Confirmation (quant-signal)
@@ -64,9 +65,9 @@ For any trade idea that emerges:
 
 ### CONVICTION: {HIGH / MEDIUM / LOW}
 
-### WHAT THE MARKET IS GETTING WRONG:
+### EXPECTATIONS / PRICING GAP:
 
-> {the mispricing — cite the second derivative / RoC}
+> {priced/consensus baseline with source + as-of, evidence path including Δ3M/RoC, gap, and status}
 
 ### WHAT CHANGES MY MIND (invalidation):
 
@@ -82,12 +83,12 @@ For any trade idea that emerges:
 
 - {date} {time ET}: {event}
 
-### DRUCKENMILLER GUT CHECK:
+### ASYMMETRY AND DISCIPLINE CHECK:
 
-- [ ] "Am I betting big enough if I'm right?"
-- [ ] "Will I cut fast enough if I'm wrong?"
-- [ ] "Is this a fat pitch or am I forcing it?"
-- [ ] "Am I trading my thesis or my P&L?"
+- [ ] Does the expected upside justify the defined downside?
+- [ ] Is the thesis invalidation measurable and actionable?
+- [ ] Is the expectations gap verified rather than inferred from RoC alone?
+- [ ] Is the position expression compatible with liquidity and portfolio exposure?
 ```
 
 If no high-conviction trade exists, the correct output is: **CASH IS THE POSITION**. Do not force a trade.

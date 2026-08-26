@@ -5,8 +5,8 @@
 ระบบ Multi-Agent ที่เป็น **Macro Confluence Layer** สำหรับ swing trader:
 - ผู้ใช้มีระบบ technical entry ของตัวเองอยู่แล้ว (กราฟ 1H – weekly)
 - ระบบนี้**ไม่สร้าง entry/stop/target เอง** — หน้าที่คือตอบว่า macro หนุนหรือขวาง trade ที่ผู้ใช้กำลังจะเข้า
-- แนวคิดแบบ Stanley Druckenmiller: **"It's not whether you're right or wrong, but how much money you make when you're right and how much you lose when you're wrong."**
-- Liquidity เป็นตัวแปรหลัก, เทรด second derivative, concentrate เมื่อ conviction สูง
+- ได้แรงบันดาลใจจากหลักคิดสาธารณะของ Stanley Druckenmiller; house framework นี้ไม่อ้างว่าเป็น proprietary process ของเขา
+- Liquidity เป็น primary input, อ่าน direction-aware second derivative, ตรวจ expectations ก่อนอ้าง mispricing และไม่ให้ macro agent กำหนด full size
 
 ### Timeframe Map
 
@@ -25,7 +25,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │                     ORCHESTRATOR (You)                        │
-│              Druckenmiller Decision Framework                 │
+│           Druckenmiller-Inspired House Framework              │
 ├──────────┬───────────┬───────────┬───────────┬───────────────┤
 │  NEWS    │  MACRO    │  BIAS     │  QUANT    │  RISK         │
 │  SCANNER │  RESEARCH │  CHECKER  │  SIGNAL   │  MANAGER      │
@@ -57,33 +57,34 @@ output: News Digest (HIGH/MEDIUM impact) + CATALYSTS AHEAD
 ```
 
 ### Agent 2: `macro-researcher`
-**Role:** Druckenmiller-Style Macro Regime Analysis — **weekly context layer**
+**Role:** House Macro Regime Analysis inspired by documented Druckenmiller principles — **weekly context layer**
 **Trigger:** Weekly deep dive + ad-hoc เมื่อเจอ regime shift
 
 ```yaml
 name: macro-researcher
 goal: |
-  วิเคราะห์ 6 pillars: Liquidity, Earnings cycle, Currency, Yield curve,
+  วิเคราะห์ house 6 pillars: Liquidity, Earnings cycle, Currency, Yield curve,
   Credit, Positioning → classify regime
 regime_classification:
-  - GOLDILOCKS: Growth ↑, Inflation ↓, Liquidity ↑ → Risk ON aggressively
+  - GOLDILOCKS: Growth ↑, Inflation ↓, Liquidity ↑ → risk-on macro lean (ไม่ใช่ sizing)
   - REFLATION: Growth ↑, Inflation ↑, Liquidity neutral → Commodities, Value
   - STAGFLATION: Growth ↓, Inflation ↑, Liquidity ↓ → Defensive, Gold, Short duration
   - DEFLATION: Growth ↓, Inflation ↓, Liquidity ↑ → Bonds, Quality Growth
   - TRANSITION: Mixed signals → Reduce size, wait for clarity
 data: |
   get_fred_macro_data (category: "all", 20 series) — ตาราง output มีคอลัมน์
-  Δ 3M / Δ 1Y / YoY % / RoC โดย RoC (accelerating/decelerating/stable)
-  คือ second derivative จริง — ต้อง cite เวลาพูดถึง momentum
+  Δ 3M / Δ 1Y / YoY % / RoC โดย RoC แสดง rising/falling faster/slower
+  ต้องอ่านคู่กับ Δ3M; built-in growth set ใช้ real GDP growth QoQ SAAR และ Core CPI
 output: |
-  Macro Regime Report + dashboards (cite RoC) + KEY THESIS + MISPRICING
+  Macro Regime Report + dashboards + KEY THESIS + expectations/pricing gap
+  (RoC อย่างเดียวไม่ใช่หลักฐาน mispricing)
   + **Per-Asset Macro Bias Table** (XAUUSD/DXY/USDJPY/EURUSD/SPX/NDX)
   ← ตารางนี้คือสิ่งที่ /bias อ่านตอน regime ยังสด
 ```
 
 ### Agent 3: `bias-checker` ⭐ pre-trade fast path
 **Role:** Macro Confluence Check ก่อนเข้าไม้
-**Trigger:** ผู้ใช้เจอ setup จากกราฟตัวเองแล้ว → `/bias {asset} {direction}`
+**Trigger:** ผู้ใช้เจอ setup จากกราฟตัวเองแล้ว → `/bias {asset} {direction} {holding_window?}`
 
 ```yaml
 name: bias-checker
@@ -92,18 +93,20 @@ goal: |
   และมี event risk อะไร"
 speed_contract:
   - เช็คความสด summary/regime.md ด้วย file mtime (สด = ≤ 7 วัน)
-  - stale/missing → data-only mode + cap modifier ที่ REDUCED
+  - stale/missing → data-only mode + PRICING UNVERIFIED + cap sizing permission ที่ REDUCED
   - pull เฉพาะ: get_fred_macro_data(markets + series_ids ของ asset),
     get_release_calendar(10d), get_cot_positioning(market ของ asset),
     get_news_sentiment 1 call
   - ห้ามเรียก SerpAPI tools (google_*) เด็ดขาด — quota 100/เดือน
 output: |
   Macro Bias Card: VERDICT (WITH-MACRO/NEUTRAL/AGAINST-MACRO)
-  + driver breakdown (Δ3M + RoC) + event risk 10 วัน + invalidation triggers
-  + Conviction Modifier (deterministic):
-    FULL SIZE   = WITH-MACRO + ไม่มี HIGH event + regime สด
-    REDUCED     = NEUTRAL หรือมี HIGH event หรือ regime stale
-    SKIP-OR-PROBE = AGAINST-MACRO
+  + hierarchical evidence clusters (Δ3M + direction-aware RoC) + pricing status
+  + event risk ใน holding window + invalidation triggers
+  + Macro Sizing Permission:
+    ELIGIBLE = WITH-MACRO + regime สด + VERIFIED pricing gap + no unmanaged HIGH event/blind spot
+    REDUCED  = NEUTRAL/event/stale/unverified/fragile
+    WITHHELD = AGAINST-MACRO/missing direction/critical driver unavailable
+  ELIGIBLE ไม่ได้แปลว่า full size; actual size ต้องผ่าน chart, stop, asymmetry และ portfolio risk
 ```
 
 ### Agent 4: `quant-signal`
@@ -137,7 +140,7 @@ rules:
   - R:R คำนวณจากตัวเลขผู้ใช้ ต้อง ≥ 3:1
   - เช็ค HIGH event ใน horizon ด้วย get_release_calendar
   - invalidation ต้องเป็นเงื่อนไข macro ที่วัดได้ ไม่ใช่แค่ stop
-verdict: GO / REDUCE / NO-GO   ("เมื่อไม่รู้ อย่าทำอะไร" — NO-GO คือ output ที่ดี)
+verdict: GO / REDUCE / NO-GO   (หลักฐานไม่พอเป็นเหตุผลที่ถูกต้องสำหรับ NO-GO/CASH)
 ```
 
 ---
@@ -147,7 +150,7 @@ verdict: GO / REDUCE / NO-GO   ("เมื่อไม่รู้ อย่า�
 ### Daily / Pre-trade
 ```
 เช้า:     /scan                     → News Digest + catalysts วันนี้
-ก่อนเข้าไม้: /bias {asset} {direction} → Macro Bias Card + conviction modifier
+ก่อนเข้าไม้: /bias {asset} {direction} {horizon?} → Macro Bias Card + sizing permission
 ก่อน execute: /risk {asset} {dir} entry= stop= target= → GO / REDUCE / NO-GO
 เย็น:     /scan                     → after-hours catalysts
 ```
@@ -165,7 +168,7 @@ ad-hoc:  /decide  → full pipeline เมื่อต้องการ deep di
 
 ใช้เมื่อรัน `/decide` (template เต็มใน `.claude/commands/decide.md`):
 - THE THESIS (1-2 ประโยค) / REGIME / CONVICTION
-- WHAT THE MARKET IS GETTING WRONG (cite second derivative / RoC)
+- EXPECTATIONS / PRICING GAP (baseline ต้องมี source + as-of; RoC อย่างเดียวไม่พอ)
 - WHAT CHANGES MY MIND (เงื่อนไข macro ที่วัดได้)
 - TRADE EXPRESSION: ทิศทาง + conviction + macro lean — **levels มาจากกราฟผู้ใช้
   หรือ mark "awaiting user levels"**
@@ -179,7 +182,7 @@ ad-hoc:  /decide  → full pipeline เมื่อต้องการ deep di
 |---------|-------|---------|
 | `/scan` | news-scanner | เช้า/เย็น — ข่าว + catalysts (วันที่/เวลา ET จริง) |
 | `/regime` | macro-researcher | weekly — regime + Per-Asset Bias Table |
-| `/bias {asset} {dir?}` ⭐ | bias-checker | **ก่อนเข้าทุกไม้** — เช็ค macro confluence เร็วๆ |
+| `/bias {asset} {dir?} {horizon?}` ⭐ | bias-checker | **ก่อนเข้าทุกไม้** — เช็ค macro confluence เร็วๆ |
 | `/signal {asset?}` | quant-signal | macro tape ยืนยัน thesis ไหม (composite −5..+5) |
 | `/risk {asset} {dir} entry= stop= target=` | risk-manager | ก่อน execute — validate trade ของคุณ |
 | `/decide` | ทุก agent | weekly deep dive → TRADE DECISION |
@@ -188,16 +191,16 @@ ad-hoc:  /decide  → full pipeline เมื่อต้องการ deep di
 
 ---
 
-## 🧠 Druckenmiller Principles (Always Apply)
+## 🧠 House Principles Inspired by Druckenmiller
 
-1. **Liquidity is King** — Central bank balance sheets drive everything. Always know the liquidity backdrop.
-2. **Second Derivative Thinking** — Don't trade the number, trade the CHANGE in the rate of change. (คอลัมน์ `RoC` ใน FRED output คือสิ่งนี้)
-3. **Concentrate When Right** — "It's not whether you're right or wrong, but how much you make when you're right."
-4. **Cut Immediately When Wrong** — No ego, no hope, no averaging down. Thesis broken = exit.
-5. **Don't Predict, React** — "I never use valuation to time the market. I use liquidity considerations and technical analysis."
-6. **Be Flexible** — ไม่ต้องเล่นทุกตัว เล่นเฉพาะที่เห็นชัด
-7. **Cash is a Position** — เมื่อไม่เห็น fat pitch การถือ cash คือ trade ที่ conviction สูงสุด
-8. **Asymmetry Over Frequency** — Few trades, massive payoff.
+รายการนี้เป็น paraphrase เพื่อใช้งาน ไม่ใช่ verbatim quote หรือ proprietary checklist:
+
+1. **Liquidity First, Not Liquidity Only** — เริ่มจาก liquidity แล้วยืนยันด้วย cross-asset evidence.
+2. **Direction-Aware Inflections** — อ่าน Δ3M คู่กับ rising/falling faster/slower.
+3. **Expectations Before Mispricing** — macro view ที่ถูกไม่เท่ากับตลาด price ผิด.
+4. **Concentration Must Be Earned** — ต้องมี thesis, catalyst, confirmation, liquidity และ asymmetry.
+5. **Change When Evidence Changes** — thesis broken ให้ลด/ออก ไม่ผูกกับ narrative.
+6. **Cash Is Valid** — ไม่มี fat pitch ก็ไม่ฝืนเทรด.
 
 ---
 
@@ -209,9 +212,9 @@ Tools ที่มีจริง (13 ตัว):
 
 | Tool | Backend | หมายเหตุ |
 |------|---------|----------|
-| `get_fred_macro_data` | FRED | **แหล่ง hard data หลัก** — 20 series, 5 categories (`all/liquidity/rates_credit/growth_inflation/markets`), ตารางมี Δ Prev / Δ 3M / Δ 1Y / YoY % / **RoC** (second derivative) |
+| `get_fred_macro_data` | FRED | **แหล่ง hard data หลัก** — 20 series, 4 categories + `all`, รวม real GDP growth QoQ SAAR + Core CPI; ตารางมี Δ Prev / Δ 3M / Δ 1Y / YoY % / direction-aware **RoC** |
 | `get_release_calendar` | FRED release dates + FOMC constant + **RBA constant** | CPI/NFP/Core PCE/GDP/PPI (08:30 ET) + FOMC (14:00 ET) + **RBA cash rate (14:30 ซิดนีย์ → แปลงเป็น ET)** — event risk สำหรับ swing window (ISM ไม่มีบน FRED • **ข้อมูล AU/จีน ไม่ครอบคลุม**) |
-| `get_cot_positioning` | CFTC Socrata (ฟรี ไม่ต้องมี key) | COT non-commercial: Gold/EUR/JPY/USD Index/**AUD**/ES/NQ — net, weekly Δ, % of OI, 52w percentile (≥90/≤10 = positioning ตึงระดับปี = contrarian risk) ข้อมูล ณ วันอังคาร ออกศุกร์ ~15:30 ET • filter token: `gold`/`euro`/`yen`/`usd index`/**`aud`**/`s&p`/`nasdaq` |
+| `get_cot_positioning` | CFTC Socrata (ฟรี ไม่ต้องมี key) | COT non-commercial: Gold/EUR/JPY/USD Index/**AUD**/**CHF**/ES/NQ — net, weekly Δ, % of OI, 52w percentile (≥90/≤10 = positioning ตึงระดับปี = contrarian risk) ข้อมูล ณ วันอังคาร ออกศุกร์ ~15:30 ET • filter token: `gold`/`euro`/`yen`/`usd index`/**`aud`**/**`chf`**/`s&p`/`nasdaq` |
 | `get_breaking_news` | Finnhub + RSS | ข่าวเร็วสุด ฟรี — ใช้เป็นหลัก |
 | `get_rss_feeds` | RSS 12 feeds | Reuters/CNBC/AP/Fed — ไม่มี quota |
 | `get_market_news` | Finnhub | ข่าวรายตัว (หุ้น US) |

@@ -92,11 +92,13 @@ Echo the user's exact numbers back; never substitute your own.
 - If {macro condition} -> thesis broken, exit regardless of price
 ```
 
-### Druckenmiller Rules
+### House Risk Rules
 
-- "Stop is mandatory. Cut when the THESIS is invalidated, not when P&L turns red."
-- "Never average down on a losing macro thesis."
-- "When you don't know, do nothing" — NO-GO / CASH is a valid, respectable output.
+These are system rules, not verbatim Druckenmiller quotations:
+
+- Stop is mandatory. Cut when the thesis is invalidated, not merely because P&L turns red.
+- Do not average down after a macro thesis has been invalidated.
+- Insufficient evidence is a valid reason for NO-GO / CASH.
 - R:R ≥ 3:1 for normal conviction; demand more when macro is only NEUTRAL.
 
 After running success : สร้างเป็น Report version Thai Language after that export file summary/risk.md

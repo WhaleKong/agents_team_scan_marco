@@ -55,9 +55,9 @@ const FRED_SERIES: FredSeriesDefinition[] = [
   { seriesId: "T10Y2Y", label: "10Y-2Y Treasury Spread", category: "Rates & Credit", unit: "%", frequency: "daily" },
   { seriesId: "T5YIE", label: "5Y Breakeven Inflation", category: "Rates & Credit", unit: "%", frequency: "daily" },
   { seriesId: "BAMLH0A0HYM2", label: "High Yield OAS", category: "Rates & Credit", unit: "%", frequency: "daily" },
-  { seriesId: "GDP", label: "Real GDP", category: "Growth & Inflation", unit: "$B", frequency: "quarterly" },
-  { seriesId: "PAYEMS", label: "Nonfarm Payrolls", category: "Growth & Inflation", unit: "k", frequency: "monthly" },
-  { seriesId: "CPIAUCSL", label: "CPI Index", category: "Growth & Inflation", unit: "index", frequency: "monthly" },
+  { seriesId: "A191RL1Q225SBEA", label: "Real GDP Growth (QoQ SAAR)", category: "Growth & Inflation", unit: "%", frequency: "quarterly" },
+  { seriesId: "PAYEMS", label: "Total Nonfarm Payroll Employment", category: "Growth & Inflation", unit: "k", frequency: "monthly" },
+  { seriesId: "CPILFESL", label: "Core CPI Price Index", category: "Growth & Inflation", unit: "index", frequency: "monthly" },
   { seriesId: "PCEPILFE", label: "Core PCE Price Index", category: "Growth & Inflation", unit: "index", frequency: "monthly" },
   { seriesId: "DTWEXBGS", label: "Broad USD Index", category: "Markets & Financial Conditions", unit: "index", frequency: "daily" },
   { seriesId: "VIXCLS", label: "VIX", category: "Markets & Financial Conditions", unit: "index", frequency: "daily" },
@@ -229,7 +229,26 @@ function formatChangeWithPct(change: number | null, pct: number | null): string 
   return pct === null ? base : `${base} (${formatPercent(pct)})`;
 }
 
-function getDefinitions(category: string, seriesIds?: string): FredSeriesDefinition[] {
+function formatRateOfChange(
+  change3m: number | null,
+  rateOfChange: RateOfChange | null
+): string {
+  if (change3m === null || rateOfChange === null) return "n/a";
+  if (rateOfChange === "stable") return "stable";
+
+  if (change3m > 0) {
+    return rateOfChange === "accelerating" ? "rising faster" : "rising slower";
+  }
+  if (change3m < 0) {
+    return rateOfChange === "accelerating" ? "falling slower" : "falling faster";
+  }
+  return rateOfChange === "accelerating" ? "turning up" : "turning down";
+}
+
+export function getFredSeriesDefinitions(
+  category: string,
+  seriesIds?: string
+): FredSeriesDefinition[] {
   if (seriesIds) {
     const byId = new Map(FRED_SERIES.map((s) => [s.seriesId, s]));
     return seriesIds
@@ -281,13 +300,45 @@ export function formatFredSeriesSummaries(summaries: FredSeriesSummary[]): strin
 
   for (const s of summaries) {
     const latestValue = formatValue(s.latest?.value ?? null, s.unit);
-    output += `| ${s.label} (${s.seriesId}) | ${latestValue} | ${s.latest?.date ?? "n/a"} | ${formatNumber(s.change)} | ${formatChangeWithPct(s.change3m, s.pct3m)} | ${formatNumber(s.change1y)} | ${formatPercent(s.yoyPct)} | ${s.rateOfChange ?? "n/a"} |\n`;
+    output += `| ${s.label} (${s.seriesId}) | ${latestValue} | ${s.latest?.date ?? "n/a"} | ${formatNumber(s.change)} | ${formatChangeWithPct(s.change3m, s.pct3m)} | ${formatNumber(s.change1y)} | ${formatPercent(s.yoyPct)} | ${formatRateOfChange(s.change3m, s.rateOfChange)} |\n`;
   }
 
   output += `\nSource: FRED series observations. Missing FRED values marked "." are skipped.\n`;
-  output += `RoC = second derivative of the 3M rate of change (Δ over last 3M vs Δ over prior 3M). `;
-  output += `For a FALLING series, "accelerating" means the decline is slowing (positive 2nd derivative) — interpret direction from Δ 3M.\n`;
+  output += `RoC = direction-aware second derivative of the 3M change (Δ over last 3M vs Δ over prior 3M): `;
+  output += `rising/falling faster or slower, stable, or a turn.\n`;
   return output;
+}
+
+/**
+ * Map settled fetches back onto table rows. A rejected series becomes an
+ * all-n/a row labelled "(fetch failed)" rather than discarding its siblings —
+ * one bad series_id (a typo, a retired series) must not empty the whole
+ * response. Fetch-free so it is unit-testable.
+ */
+export function settleSeriesSummaries(
+  definitions: FredSeriesDefinition[],
+  results: PromiseSettledResult<FredSeriesSummary>[]
+): FredSeriesSummary[] {
+  return results.map((result, i) => {
+    if (result.status === "fulfilled") return result.value;
+
+    const definition = definitions[i];
+    return {
+      seriesId: definition.seriesId,
+      label: `${definition.label} (fetch failed)`,
+      category: definition.category,
+      unit: definition.unit,
+      latest: null,
+      previous: null,
+      change: null,
+      percentChange: null,
+      change3m: null,
+      pct3m: null,
+      change1y: null,
+      yoyPct: null,
+      rateOfChange: null,
+    };
+  });
 }
 
 export async function getFredMacroData(
@@ -297,8 +348,8 @@ export async function getFredMacroData(
   observationStart?: string,
   observationEnd?: string
 ): Promise<string> {
-  const definitions = getDefinitions(category, seriesIds);
-  const summaries = await Promise.all(
+  const definitions = getFredSeriesDefinitions(category, seriesIds);
+  const results = await Promise.allSettled(
     definitions.map((definition) => getFredSeriesSummary(
       definition,
       limit,
@@ -307,5 +358,5 @@ export async function getFredMacroData(
     ))
   );
 
-  return formatFredSeriesSummaries(summaries);
+  return formatFredSeriesSummaries(settleSeriesSummaries(definitions, results));
 }

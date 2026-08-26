@@ -2,7 +2,7 @@
 
 ระบบ Multi-Agent ที่เป็น **Macro Confluence Layer** สำหรับ swing trader — ทำงานผ่าน Claude Code
 
-> *"It's not whether you're right or wrong, but how much money you make when you're right and how much you lose when you're wrong."* — Stanley Druckenmiller
+> *"It's not whether you're right or wrong, but how much money you make when you're right and how much you lose when you're wrong."* — Stanley Druckenmiller, *The New Market Wizards* (1992)
 
 **แนวคิดหลัก:** คุณมีระบบ technical entry ของตัวเองอยู่แล้ว (กราฟ 1H – weekly) — ระบบนี้**ไม่สร้าง entry/stop/target ให้** หน้าที่ของมันคือตอบคำถามเดียว: *"macro หนุนหรือขวาง trade ที่กำลังจะเข้า?"*
 
@@ -19,7 +19,7 @@
 - [MCP Server & Data Sources](#mcp-server--data-sources)
 - [Project Structure](#project-structure)
 - [ข้อจำกัดที่ต้องรู้](#ข้อจำกัดที่ต้องรู้)
-- [Druckenmiller Principles](#druckenmiller-principles)
+- [House Principles Inspired by Druckenmiller](#house-principles-inspired-by-druckenmiller)
 
 ---
 
@@ -28,7 +28,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │                     ORCHESTRATOR                              │
-│              Druckenmiller Decision Framework                 │
+│           Druckenmiller-Inspired House Framework              │
 ├──────────┬───────────┬───────────┬───────────┬───────────────┤
 │  NEWS    │  MACRO    │  BIAS     │  QUANT    │  RISK         │
 │  SCANNER │  RESEARCH │  CHECKER  │  SIGNAL   │  MANAGER      │
@@ -41,8 +41,8 @@
 | Agent | หน้าที่ | Trigger |
 |-------|---------|---------|
 | **news-scanner** | สแกนข่าว market-moving + catalysts 10 วันข้างหน้า (วันที่/เวลา ET จริง) | เช้า/เย็น ทุกวัน |
-| **macro-researcher** | วิเคราะห์ 6 pillars → classify regime + **Per-Asset Macro Bias Table** | Weekly / regime shift |
-| **bias-checker** ⭐ | เช็ค macro confluence ก่อนเข้าไม้ → conviction modifier | ก่อนเข้าทุกไม้ |
+| **macro-researcher** | วิเคราะห์ house 6 pillars → regime + expectations gap + **Per-Asset Macro Bias Table** | Weekly / regime shift |
+| **bias-checker** ⭐ | เช็ค macro confluence ก่อนเข้าไม้ → macro sizing permission | ก่อนเข้าทุกไม้ |
 | **quant-signal** | macro tape ยืนยัน thesis ไหม (composite −5..+5) — ไม่ใช่ chart reading | หลังตั้ง thesis / เช็ค divergence |
 | **risk-manager** | validate trade ที่**คุณ**ออกแบบ (entry/stop/target ต้องมาจากคุณ) | ก่อน execute ทุกครั้ง |
 
@@ -106,7 +106,7 @@ claude
 |---------|-------|---------|
 | `/scan` | news-scanner | เช้า/เย็น — ข่าว + catalysts |
 | `/regime` | macro-researcher | weekly — regime + Per-Asset Bias Table |
-| `/bias {asset} {dir?}` ⭐ | bias-checker | **ก่อนเข้าทุกไม้** |
+| `/bias {asset} {dir?} {horizon?}` ⭐ | bias-checker | **ก่อนเข้าทุกไม้** |
 | `/signal {asset?}` | quant-signal | เช็ค macro tape confirmation |
 | `/risk {asset} {dir} entry= stop= target=` | risk-manager | ก่อน execute |
 | `/decide` | ทุก agent | weekly deep dive |
@@ -127,35 +127,38 @@ claude
 /regime
 ```
 
-**Output:** Regime classification + dashboards (cite RoC / second derivative) + KEY THESIS + MISPRICING + **Per-Asset Macro Bias Table** — ตารางนี้คือสิ่งที่ `/bias` ใช้ทั้งสัปดาห์ (เกิน 7 วัน = stale)
+**Output:** Regime classification + data dates + dashboards + KEY THESIS + expectations/pricing gap + **Per-Asset Macro Bias Table** — ตารางนี้คือสิ่งที่ `/bias` ใช้ทั้งสัปดาห์ (เกิน 7 วัน = stale) RoC อย่างเดียวไม่ถือเป็นหลักฐานว่าตลาด mispriced
 
 | Regime | สภาวะ | Strategy |
 |--------|--------|----------|
-| GOLDILOCKS | Growth ↑ Inflation ↓ Liquidity ↑ | Risk ON เต็มที่ |
+| GOLDILOCKS | Growth ↑ Inflation ↓ Liquidity ↑ | Risk-on macro lean; ยังไม่ใช่คำสั่ง sizing |
 | REFLATION | Growth ↑ Inflation ↑ | Commodities, Value |
 | STAGFLATION | Growth ↓ Inflation ↑ Liquidity ↓ | Defensive, Gold |
 | DEFLATION | Growth ↓ Inflation ↓ Liquidity ↑ | Bonds, Quality Growth |
 | TRANSITION | Mixed signals | ลดขนาด, รอความชัดเจน |
 
-### `/bias {asset} {direction}` ⭐ — Pre-Trade Fast Path
+### `/bias {asset} {direction} {holding_window?}` ⭐ — Pre-Trade Fast Path
 
 เจอ setup จากกราฟตัวเองแล้ว → เช็คก่อนเข้าไม้:
 
 ```
-/bias XAUUSD long
-/bias NDX short
+/bias XAUUSD long 5d
+/bias NDX short 10d
 ```
 
 **Output:** Macro Bias Card
 - **VERDICT:** WITH-MACRO / NEUTRAL / AGAINST-MACRO
-- Driver breakdown (Δ3M + RoC) + event risk 10 วัน + invalidation triggers
-- **Conviction Modifier** (deterministic):
+- Evidence clusters (Δ3M + direction-aware RoC) + expectations status + event risk ใน holding window + invalidation
+- **Macro Sizing Permission**:
 
-| Modifier | เงื่อนไข |
-|----------|---------|
-| FULL SIZE | WITH-MACRO + ไม่มี HIGH event + regime สด |
-| REDUCED | NEUTRAL หรือมี HIGH event หรือ regime stale (>7 วัน) |
-| SKIP-OR-PROBE | AGAINST-MACRO |
+| Permission | เงื่อนไข |
+|------------|---------|
+| ELIGIBLE | WITH-MACRO + regime สด + pricing gap VERIFIED + ไม่มี unmanaged HIGH event/blind spot |
+| REDUCED | NEUTRAL, event risk, regime stale, pricing UNVERIFIED, หรือ fragility สำคัญ |
+| WITHHELD | AGAINST-MACRO, ไม่มี direction, หรือ driver หลักตรวจไม่ได้ |
+
+`ELIGIBLE` ไม่ได้แปลว่า full size; ขนาดจริงต้องผ่าน chart confirmation, stop, payoff asymmetry,
+instrument liquidity และ portfolio exposure ก่อน
 
 ### `/signal {asset?}` — Macro Tape Confirmation
 
@@ -181,7 +184,7 @@ claude
 - entry/stop/target **มาจากคุณเท่านั้น** — ขาดข้อไหน agent จะถาม ไม่ invent ราคาให้
 - R:R ต้อง ≥ 3:1 + เช็ค HIGH event ใน horizon + invalidation ต้องเป็นเงื่อนไข macro ที่วัดได้
 
-**Verdict:** GO / REDUCE / NO-GO — *"เมื่อไม่รู้ อย่าทำอะไร" — NO-GO คือ output ที่ดี*
+**Verdict:** GO / REDUCE / NO-GO — หลักฐานไม่พอเป็นเหตุผลที่ถูกต้องสำหรับ NO-GO/CASH
 
 ### `/decide` — Full Pipeline
 
@@ -189,7 +192,7 @@ claude
 /decide
 ```
 
-รันทุก agent ตามลำดับ → THE THESIS / REGIME / CONVICTION / WHAT THE MARKET IS GETTING WRONG / WHAT CHANGES MY MIND / TRADE EXPRESSION (levels มาจากกราฟคุณ หรือ mark "awaiting user levels")
+รันทุก agent ตามลำดับ → THE THESIS / REGIME / CONVICTION / EXPECTATIONS & PRICING GAP / WHAT CHANGES MY MIND / TRADE EXPRESSION (levels มาจากกราฟคุณ หรือ mark "awaiting user levels")
 
 > ถ้าไม่มี fat pitch → **CASH IS THE POSITION**
 
@@ -201,7 +204,7 @@ claude
 
 ```
 เช้า:        /scan                       → News Digest + catalysts วันนี้
-ก่อนเข้าไม้:  /bias {asset} {direction}   → Macro Bias Card + conviction modifier
+ก่อนเข้าไม้:  /bias {asset} {direction} {horizon?} → Macro Bias Card + sizing permission
 ก่อน execute: /risk {asset} {dir} entry= stop= target= → GO / REDUCE / NO-GO
 เย็น:        /scan                       → after-hours catalysts
 ```
@@ -221,9 +224,9 @@ MCP server `macro-news-feed` (`mcp-news-server/`) มี 13 tools:
 
 | Tool | Backend | หมายเหตุ |
 |------|---------|----------|
-| `get_fred_macro_data` | FRED | **hard data หลัก** — 20 series, 5 categories, ตารางมี Δ Prev / Δ 3M / Δ 1Y / YoY % / **RoC** (second derivative) |
+| `get_fred_macro_data` | FRED | **hard data หลัก** — 20 series, 4 categories + `all`, รวม real GDP growth QoQ SAAR + Core CPI; ตารางมี Δ Prev / Δ 3M / Δ 1Y / YoY % / direction-aware **RoC** |
 | `get_release_calendar` | FRED + FOMC + RBA schedules | CPI/NFP/Core PCE/GDP/PPI (08:30 ET) + FOMC (14:00 ET) + RBA cash rate (14:30 Sydney → ET) |
-| `get_cot_positioning` | CFTC Socrata (ฟรี) | COT non-commercial: net, weekly Δ, % of OI, 52w percentile — Gold/EUR/JPY/USD Index/AUD/ES/NQ |
+| `get_cot_positioning` | CFTC Socrata (ฟรี) | COT non-commercial: net, weekly Δ, % of OI, 52w percentile — Gold/EUR/JPY/USD Index/AUD/CHF/ES/NQ |
 | `get_breaking_news` | Finnhub + RSS | ข่าวเร็วสุด — ใช้เป็นหลัก |
 | `get_rss_feeds` | RSS 12 feeds | Reuters/CNBC/AP/Fed — ไม่มี quota |
 | `get_market_news` | Finnhub | ข่าวหุ้น US รายตัว |
@@ -281,18 +284,16 @@ agents_team_scan_marco/
 
 ---
 
-## Druckenmiller Principles
+## House Principles Inspired by Druckenmiller
 
-หลักการ 8 ข้อที่ระบบใช้ในทุก decision:
+หลักการต่อไปนี้เป็นการสรุปเพื่อใช้งานของระบบ ไม่ใช่ quote หรือ proprietary checklist ของ Druckenmiller:
 
-1. **Liquidity is King** — Central bank balance sheets drive everything
-2. **Second Derivative Thinking** — เทรด rate of change ของ rate of change (คอลัมน์ `RoC` ใน FRED output)
-3. **Concentrate When Right** — เมื่อมั่นใจ ลงหนัก อย่ากระจาย
-4. **Cut Immediately When Wrong** — ไม่มี ego, ไม่หวัง, ไม่ average down
-5. **Don't Predict, React** — ใช้ liquidity + technical ไม่ใช่ valuation
-6. **Be Flexible** — ไม่ต้องเล่นทุกตลาด เลือกเฉพาะ fat pitch
-7. **Cash is a Position** — ไม่เห็น setup ที่ดี = นั่ง cash คือ trade ที่ดีที่สุด
-8. **Asymmetry Over Frequency** — เทรดน้อย แต่ได้เยอะ ไม่ใช่เทรดเยอะ ได้น้อย
+1. **Liquidity First, Not Liquidity Only** — เริ่มจาก liquidity แล้วยืนยันด้วย cross-asset evidence
+2. **Direction-Aware Inflections** — อ่าน Δ3M คู่กับ rising/falling faster/slower
+3. **Expectations Before Mispricing** — macro view ที่ถูกไม่เท่ากับตลาด price ผิด
+4. **Concentration Must Be Earned** — ต้องมี thesis, catalyst, confirmation, liquidity และ asymmetry
+5. **Change When Evidence Changes** — thesis broken ให้ลด/ออก ไม่ผูกติดกับ narrative
+6. **Cash Is Valid** — หากหลักฐานหรือ asymmetry ไม่พอ ไม่ต้องฝืนเทรด
 
 ---
 

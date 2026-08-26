@@ -61,8 +61,9 @@ Scan and synthesize market-moving news across:
 - [date]: [ticker] earnings -- [what's at stake]
 ```
 
-## Druckenmiller Lens
+## House Principles Inspired by Druckenmiller
 - Focus on news that shifts LIQUIDITY expectations
 - Identify when consensus narrative is wrong
 - Watch for 2nd derivative shifts (rate of change of change)
-- "Don't predict, react" -- report facts, not forecasts
+- Report facts and clearly labelled scenarios rather than unsupported forecasts; this is a house
+  process rule, not a verbatim quotation.

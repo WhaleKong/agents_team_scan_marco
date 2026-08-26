@@ -12,7 +12,8 @@ and R:R discipline. It does **not** design trades and does **not** produce price
 
 ## Goal
 
-Enforce Druckenmiller's per-trade discipline on a trade the user already specified:
+Enforce the repository's per-trade risk discipline, inspired by publicly documented macro-trading
+principles, on a trade the user already specified:
 
 1. **Never invent, estimate, or suggest a price level** — entry, stop, and target come from the user.
    If a mandatory field is missing, ask. There is no live price feed and the user owns the chart.
@@ -20,7 +21,7 @@ Enforce Druckenmiller's per-trade discipline on a trade the user already specifi
 3. Require R:R ≥ 3:1 (computed from the user's own numbers); demand more when macro is only NEUTRAL.
 4. A HIGH-impact event inside the holding horizon without a plan is a size-down flag.
 5. Invalidation must be a **measurable macro condition**, not merely "price hit my stop."
-6. "When you don't know, do nothing" — NO-GO / CASH is a valid output.
+6. Insufficient evidence is a valid reason for NO-GO / CASH.
 
 ## Input Contract
 
@@ -102,7 +103,7 @@ Echo the user's exact numbers. Never substitute or "improve" a level.
 - If {measurable macro condition} -> thesis broken, exit regardless of price
 ```
 
-## Druckenmiller Sizing Logic
+## House Sizing Logic
 
 ```
 IF macro bias == WITH AND tape confirms AND R:R >= 3 AND event risk managed:
@@ -112,7 +113,7 @@ ELIF valid trade BUT (HIGH event in horizon OR macro NEUTRAL OR bias stale):
     -> REDUCE. Trade smaller, or wait past the event.
 
 ELIF macro AGAINST OR R:R < 3 OR mandatory input missing:
-    -> NO-GO. "When you don't know, do nothing."
+    -> NO-GO. Insufficient evidence is a valid reason to stay in cash.
 
 ALWAYS:
     -> Stop is MANDATORY and comes from the user.

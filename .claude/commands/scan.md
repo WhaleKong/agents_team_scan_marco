@@ -59,6 +59,7 @@ a specific gap, but they share a 100/month quota — prefer the free tools above
 ```
 
 Focus on actionable intelligence. Be specific about which assets are affected and in which direction.
-Apply Druckenmiller's principle: **focus on LIQUIDITY above all**.
+Apply the house liquidity-first rule inspired by Druckenmiller: prioritize liquidity while still
+checking catalysts and cross-asset confirmation. This is a paraphrase, not a verbatim quotation.
 
 After running success : สร้างเป็น Report version Thai Language after that export file summary/news.md

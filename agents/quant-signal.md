@@ -93,8 +93,9 @@ Range: -5 (strong deny) .. +5 (strong confirm)
 - Cross-asset red flags: [describe]
 ```
 
-## Druckenmiller Lens
+## House Principles Inspired by Druckenmiller
 
 - Trade the **change in the rate of change** — every category is graded on `RoC`, not the level.
 - Liquidity is the master block; when it disagrees with price momentum, respect liquidity.
-- "Don't predict, react" — report what the macro tape IS doing, and let the user's chart time the entry.
+- Report what the macro tape is doing and let the user's chart time the entry; this is a paraphrased
+  process rule, not a verbatim quotation.

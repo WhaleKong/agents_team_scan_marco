@@ -12,13 +12,15 @@ export interface CotMarketDefinition {
 }
 
 // Contract codes verified against publicreporting.cftc.gov on 2026-07-05;
-// Australian Dollar (232741) verified 2026-08-13.
+// Australian Dollar (232741) verified 2026-08-13;
+// Swiss Franc (092741) verified 2026-08-25.
 export const COT_MARKETS: CotMarketDefinition[] = [
   { code: "088691", label: "Gold (COMEX)" },
   { code: "099741", label: "Euro FX (CME)" },
   { code: "097741", label: "Japanese Yen (CME)" },
   { code: "098662", label: "USD Index (ICE)" },
   { code: "232741", label: "Australian Dollar (CME)", aliases: ["aud", "audusd", "aussie"] },
+  { code: "092741", label: "Swiss Franc (CME)", aliases: ["chf", "usdchf", "swissie"] },
   { code: "13874A", label: "E-mini S&P 500 (CME)" },
   { code: "209742", label: "Nasdaq-100 Mini (CME)" },
 ];

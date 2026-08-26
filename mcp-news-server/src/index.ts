@@ -337,7 +337,7 @@ server.tool(
 // Tool 12: FRED Macro Data
 server.tool(
   "get_fred_macro_data",
-  "Get FRED macro series with trend context: latest value, Δ vs previous, 3M change, 1Y change, YoY %, and rate-of-change acceleration (second derivative) per series. Categories: liquidity, rates/credit, growth/inflation, and markets (Broad USD, VIX, 10Y real yield, 10Y-3M, IG OAS, NFCI). Primary hard-data source for macro regime and bias analysis. Requires FRED_API_KEY.",
+  "Get FRED macro series with trend context: latest value, Δ vs previous, 3M change, 1Y change, YoY %, and direction-aware rate-of-change acceleration (rising/falling faster or slower) per series. The built-in growth set uses real GDP growth (QoQ SAAR), core CPI, Core PCE, and total payroll employment. Categories: liquidity, rates/credit, growth/inflation, and markets (Broad USD, VIX, 10Y real yield, 10Y-3M, IG OAS, NFCI). Primary hard-data source for macro regime and bias analysis. Requires FRED_API_KEY.",
   {
     category: z
       .enum(["all", "liquidity", "rates_credit", "growth_inflation", "markets"])
@@ -382,12 +382,12 @@ server.tool(
 // Tool 13: CFTC COT Positioning
 server.tool(
   "get_cot_positioning",
-  "Get CFTC Commitments of Traders (COT) non-commercial futures positioning for Gold, Euro FX, Japanese Yen, USD Index, Australian Dollar, E-mini S&P 500, and Nasdaq-100: net position, weekly change, % of open interest, and 52-week percentile (crowdedness — >=90 crowded long, <=10 crowded short). Free CFTC public API, no key required. Data as-of Tuesday, published Friday ~15:30 ET.",
+  "Get CFTC Commitments of Traders (COT) non-commercial futures positioning for Gold, Euro FX, Japanese Yen, USD Index, Australian Dollar, Swiss Franc, E-mini S&P 500, and Nasdaq-100: net position, weekly change, % of open interest, and 52-week percentile (crowdedness — >=90 crowded long, <=10 crowded short). Free CFTC public API, no key required. Data as-of Tuesday, published Friday ~15:30 ET.",
   {
     markets: z
       .string()
       .optional()
-      .describe('Optional comma-separated market filter, e.g. "gold,euro", "aud", or "s&p,nasdaq". Omit for all seven markets.'),
+      .describe('Optional comma-separated market filter, e.g. "gold,euro", "aud", "chf", or "s&p,nasdaq". Omit for all eight markets.'),
   },
   async ({ markets }) => {
     try {

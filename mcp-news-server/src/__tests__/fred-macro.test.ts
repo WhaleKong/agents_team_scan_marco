@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { summarizeSeries, formatFredSeriesSummaries } from "../tools/fred-macro.js";
+import {
+  summarizeSeries,
+  formatFredSeriesSummaries,
+  getFredSeriesDefinitions,
+  settleSeriesSummaries,
+} from "../tools/fred-macro.js";
 import type { FredSeriesDefinition, FredSeriesSummary } from "../tools/fred-macro.js";
 import type { FredObservation } from "../sources/fred.js";
 
@@ -106,6 +111,21 @@ test("rate of change classifies accelerating and decelerating", () => {
   assert.equal(decel.rateOfChange, "decelerating");
 });
 
+test("built-in growth definitions use real GDP growth and core CPI", () => {
+  const definitions = getFredSeriesDefinitions("growth_inflation");
+  const ids = definitions.map((definition) => definition.seriesId);
+
+  assert.ok(ids.includes("A191RL1Q225SBEA"));
+  assert.ok(ids.includes("CPILFESL"));
+  assert.ok(!ids.includes("GDP")); // GDP is nominal level, not real growth.
+  assert.ok(!ids.includes("CPIAUCSL")); // CPIAUCSL is headline CPI, not core CPI.
+
+  assert.equal(
+    definitions.find((definition) => definition.seriesId === "A191RL1Q225SBEA")?.unit,
+    "%"
+  );
+});
+
 test("percentage-point series: near-zero base suppresses the % artifact, keeps Δ", () => {
   const spreadDef: FredSeriesDefinition = {
     seriesId: "TEST_SPREAD",
@@ -148,6 +168,63 @@ test("short history yields n/a trend fields without throwing", () => {
   assert.equal(empty.rateOfChange, null);
 });
 
+test("one rejected series does not discard the summaries that succeeded", () => {
+  // Regression: a single bad series_id used to reject the whole Promise.all,
+  // so a request for 6 series returned nothing when 1 id was a typo.
+  const goodDef: FredSeriesDefinition = {
+    seriesId: "DGS10",
+    label: "10Y Treasury Yield",
+    category: "Rates & Credit",
+    unit: "%",
+    frequency: "daily",
+  };
+  const badDef: FredSeriesDefinition = {
+    seriesId: "INTDSRCHM193N",
+    label: "INTDSRCHM193N",
+    category: "Growth & Inflation",
+    unit: "value",
+    frequency: "daily",
+  };
+  const good = summarizeSeries(goodDef, [
+    { date: "2026-08-21", value: "4.74" },
+    { date: "2026-08-20", value: "4.69" },
+  ]);
+
+  const summaries = settleSeriesSummaries(
+    [goodDef, badDef],
+    [
+      { status: "fulfilled", value: good },
+      { status: "rejected", reason: new Error("FRED INTDSRCHM193N: 400 Bad Request") },
+    ]
+  );
+
+  assert.equal(summaries.length, 2);
+  assert.deepEqual(summaries[0], good); // the good series survives the sibling failure
+
+  assert.equal(summaries[1].seriesId, "INTDSRCHM193N");
+  assert.match(summaries[1].label, /fetch failed/);
+  assert.equal(summaries[1].latest, null);
+  assert.equal(summaries[1].change3m, null);
+  assert.equal(summaries[1].rateOfChange, null);
+});
+
+test("a failed series renders as an n/a row instead of breaking the table", () => {
+  const badDef: FredSeriesDefinition = {
+    seriesId: "NOPE",
+    label: "NOPE",
+    category: "Growth & Inflation",
+    unit: "value",
+    frequency: "daily",
+  };
+
+  const output = formatFredSeriesSummaries(
+    settleSeriesSummaries([badDef], [{ status: "rejected", reason: new Error("boom") }])
+  );
+
+  assert.match(output, /## FRED Macro Data/);
+  assert.match(output, /NOPE \(fetch failed\) \(NOPE\) \| n\/a \| n\/a \| n\/a \| n\/a \| n\/a \| n\/a \| n\/a \|/);
+});
+
 test("formats FRED summaries with trend columns and n/a rows", () => {
   const summaries: FredSeriesSummary[] = [
     {
@@ -186,7 +263,33 @@ test("formats FRED summaries with trend columns and n/a rows", () => {
 
   assert.match(output, /## FRED Macro Data/);
   assert.match(output, /\| Series \| Latest \| Date \| Δ Prev \| Δ 3M \| Δ 1Y \| YoY % \| RoC \|/);
-  assert.match(output, /\| 10Y Treasury Yield \(DGS10\) \| 4\.42% \| 2026-05-08 \| \+0\.07 \| \+0\.15 \(\+3\.51%\) \| -0\.30 \| -6\.36% \| decelerating \|/);
+  assert.match(output, /\| 10Y Treasury Yield \(DGS10\) \| 4\.42% \| 2026-05-08 \| \+0\.07 \| \+0\.15 \(\+3\.51%\) \| -0\.30 \| -6\.36% \| rising slower \|/);
   assert.match(output, /\| M2 Money Supply \(M2SL\) \| n\/a \| n\/a \| n\/a \| n\/a \| n\/a \| n\/a \| n\/a \|/);
   assert.match(output, /second derivative/);
+});
+
+test("formatted RoC disambiguates faster and slower declines", () => {
+  const base: FredSeriesSummary = {
+    seriesId: "TEST_FALL",
+    label: "Falling Series",
+    category: "Markets & Financial Conditions",
+    unit: "index",
+    latest: { date: "2026-06-01", value: 90 },
+    previous: { date: "2026-05-01", value: 91 },
+    change: -1,
+    percentChange: null,
+    change3m: -5,
+    pct3m: null,
+    change1y: -10,
+    yoyPct: -10,
+    rateOfChange: "accelerating",
+  };
+
+  const slower = formatFredSeriesSummaries([base]);
+  assert.match(slower, /\| falling slower \|/);
+
+  const faster = formatFredSeriesSummaries([
+    { ...base, rateOfChange: "decelerating" },
+  ]);
+  assert.match(faster, /\| falling faster \|/);
 });
