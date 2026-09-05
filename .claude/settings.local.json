@@ -20,7 +20,8 @@
       "mcp__macro-news-feed__get_market_news",
       "mcp__macro-news-feed__google_news_search",
       "mcp__macro-news-feed__get_release_calendar",
-      "mcp__macro-news-feed__get_cot_positioning"
+      "mcp__macro-news-feed__get_cot_positioning",
+      "mcp__macro-news-feed__get_rate_pricing"
     ]
   },
   "enableAllProjectMcpServers": true,

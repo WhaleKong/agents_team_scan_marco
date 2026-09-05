@@ -13,6 +13,7 @@ import { googleNewsSearch, googleMacroSearch } from "./tools/google-search.js";
 import { getGoogleFinanceQuote, getGoogleMarketOverview } from "./tools/google-finance.js";
 import { getFredMacroData } from "./tools/fred-macro.js";
 import { getCotPositioning } from "./tools/cot-positioning.js";
+import { getRatePricing } from "./tools/rate-pricing.js";
 
 const server = new McpServer({
   name: "macro-news-feed",
@@ -396,6 +397,33 @@ server.tool(
   async ({ markets }) => {
     try {
       const result = await getCotPositioning(markets);
+      return { content: [{ type: "text" as const, text: result }] };
+    } catch (err) {
+      return {
+        content: [{ type: "text" as const, text: `Error: ${err}` }],
+        isError: true,
+      };
+    }
+  }
+);
+
+// Tool 14: Kalshi Fed path pricing
+server.tool(
+  "get_rate_pricing",
+  "Get market-implied FOMC outcome probabilities (Hike >25bps / Hike 25bps / Hold / Cut 25bps / Cut >25bps) from the Kalshi event exchange, plus the 14-day daily path for the nearest meeting. Free CFTC-regulated public API, no key required. SECONDARY SOURCE: this is a prediction market, NOT fed funds futures or OIS — it supplies a priced baseline with a real as-of timestamp, but cannot on its own mark a pricing gap VERIFIED. Each row carries a data-quality grade; in practice only the nearest meeting has enough flow to grade OK.",
+  {
+    meetings: z
+      .number()
+      .optional()
+      .describe("How many upcoming FOMC meetings to price (default 1, max 8). Meetings beyond the nearest one typically have almost no flow and will be graded THIN or STALE."),
+    include_path: z
+      .boolean()
+      .optional()
+      .describe("Include the 14-day daily probability path for the nearest meeting's Hike 25bps leg (default true). The path shows whether the market was already repricing before a release."),
+  },
+  async ({ meetings, include_path }) => {
+    try {
+      const result = await getRatePricing(meetings ?? 1, include_path ?? true);
       return { content: [{ type: "text" as const, text: result }] };
     } catch (err) {
       return {

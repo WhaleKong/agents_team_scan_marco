@@ -215,13 +215,14 @@ ad-hoc:  /decide  → full pipeline เมื่อต้องการ deep di
 
 ### MCP Server: `macro-news-feed` (`mcp-news-server/`)
 
-Tools ที่มีจริง (13 ตัว):
+Tools ที่มีจริง (14 ตัว):
 
 | Tool | Backend | หมายเหตุ |
 |------|---------|----------|
 | `get_fred_macro_data` | FRED | **แหล่ง hard data หลัก** — 20 series, 4 categories + `all`, รวม real GDP growth QoQ SAAR + Core CPI; ตารางมี Δ Prev / Δ 3M / Δ 1Y / YoY % / direction-aware **RoC** |
 | `get_release_calendar` | FRED release dates + FOMC constant + **RBA constant** | CPI/NFP/Core PCE/GDP/PPI (08:30 ET) + FOMC (14:00 ET) + **RBA cash rate (14:30 ซิดนีย์ → แปลงเป็น ET)** — event risk สำหรับ swing window (ISM ไม่มีบน FRED • **ข้อมูล AU/จีน ไม่ครอบคลุม**) • `days_back` = รวม event ที่ออกไปแล้ว (คอลัมน์ Status: RELEASED/TODAY/UPCOMING) สำหรับตรวจ regime superseded |
 | `get_cot_positioning` | CFTC Socrata (ฟรี ไม่ต้องมี key) | COT non-commercial: Gold/EUR/JPY/USD Index/**AUD**/**CHF**/ES/NQ — net, weekly Δ, % of OI, 52w percentile (≥90/≤10 = positioning ตึงระดับปี = contrarian risk) ข้อมูล ณ วันอังคาร ออกศุกร์ ~15:30 ET • filter token: `gold`/`euro`/`yen`/`usd index`/**`aud`**/**`chf`**/`s&p`/`nasdaq` |
+| `get_rate_pricing` | Kalshi (ฟรี ไม่ต้องมี key) | **baseline ของ Fed path** — ความน่าจะเป็น Hike>25/Hike25/Hold/Cut25/Cut>25 ต่อการประชุม + เส้นทางรายวัน 14 วันของประชุมใกล้สุด • Δ คิดจาก candle ปิด session **ไม่ใช้** `previous_price_dollars` (lag หลัง session boundary) • ⚠️ **แหล่งรอง** — prediction market ไม่ใช่ fed funds futures/OIS → ทำให้ Fed path *มองเห็นได้* แต่ลำพังไม่พอยกเป็น VERIFIED • ทุกแถวมีเกรด OK/THIN/STALE/DEAD — จริงๆ มีแค่ประชุมใกล้สุดที่ได้ OK |
 | `get_breaking_news` | Finnhub + RSS | ข่าวเร็วสุด ฟรี — ใช้เป็นหลัก |
 | `get_rss_feeds` | RSS 12 feeds | Reuters/CNBC/AP/Fed — ไม่มี quota |
 | `get_market_news` | Finnhub | ข่าวรายตัว (หุ้น US) |

@@ -57,6 +57,9 @@ confirmation, entry/stop, payoff asymmetry, instrument liquidity, and portfolio 
      **Exception — BTCUSD:** the tool does not cover CME Bitcoin futures; skip this call, mark the
      positioning driver as Unknown (blind spot) on the card, and use ETF-flow headlines as the only
      positioning proxy (see the BTCUSD row in the bias-checker driver map).
+   - `get_rate_pricing` with `meetings: 1, include_path: false` — the live Fed-path baseline with a
+     real as-of stamp, used for the `PRICING CONTEXT` line. Free, no quota, one meeting only so the
+     speed contract holds. Never claim the market is wrong from this alone.
    - Exactly **ONE** `get_news_sentiment` call on the asset's proxy ticker(s).
    - **Single stocks only:** additionally `get_market_news` (company/sector headlines) and
      `get_earnings_calendar` (an earnings date inside the window counts as a HIGH-impact event).
@@ -84,8 +87,10 @@ Events affect sizing permission, not the macro verdict.
 ### Expectations / Mispricing Gate
 
 Macro support is not proof of mispricing. Inherit `Pricing status` and its sourced/as-of baseline
-from a fresh regime report. If the baseline is missing, stale, or only inferred from sentiment,
-stamp `PRICING: UNVERIFIED`; do not claim that the market is wrong. Pricing status feeds the
+from a fresh regime report, and refresh the Fed-path leg with the live `get_rate_pricing` number
+(quote it with its as-of stamp and quality grade). If the baseline is missing, stale, or only
+inferred from sentiment, stamp `PRICING: UNVERIFIED`; do not claim that the market is wrong. A
+prediction-market level on its own is a baseline, not a verified gap. Pricing status feeds the
 **CONCENTRATION** flag below; it does not gate the sizing permission.
 
 ### Macro Sizing Permission (apply exactly)

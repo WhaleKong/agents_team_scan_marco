@@ -16,9 +16,12 @@
       "mcp__macro-news-feed__google_market_overview",
       "mcp__macro-news-feed__google_finance_quote",
       "mcp__macro-news-feed__google_macro_search",
-      "mcp__macro-news-feed__get_fred_macro_data"
+      "mcp__macro-news-feed__get_fred_macro_data",
+      "mcp__macro-news-feed__get_rate_pricing"
     ]
   },
   "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": ["macro-news-feed"]
+  "enabledMcpjsonServers": [
+    "macro-news-feed"
+  ]
 }

@@ -56,6 +56,7 @@ after chart confirmation, entry/stop, payoff asymmetry, and portfolio exposure a
 | `get_market_news` (single names only) | Company/sector headlines                                    |
 | `get_earnings_calendar` (single names)| Next earnings date = HIGH event risk if inside the window   |
 | `get_cot_positioning` (market filter) | Weekly non-comm positioning + 52w percentile — extremes = fragility, not an automatic reversal |
+| `get_rate_pricing` (meetings:1, include_path:false) | Live Fed-path probabilities for `PRICING CONTEXT`. Secondary source — a baseline, never a verified gap on its own |
 
 ## Per-Asset Driver Map
 

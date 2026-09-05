@@ -45,7 +45,9 @@ Primary source is `get_fred_macro_data` (`category: "all"`, 20 series). The outp
 `| Series | Latest | Date | Δ Prev | Δ 3M | Δ 1Y | YoY % | RoC |`. `RoC` reports `rising
 faster`, `rising slower`, `falling faster`, `falling slower`, `stable`, or a turn. Always read it
 together with `Δ 3M`. The `"all"` set includes the Markets rows below. Use news/search only for what
-FRED lacks (ISM, EPS revisions, consensus expectations, policy pricing, COT, VIX term structure).
+FRED lacks (ISM, EPS revisions, consensus expectations, COT, VIX term structure). Fed-path pricing
+comes from `get_rate_pricing` (Kalshi), not from news: it is a secondary source, so quote it with its
+as-of stamp and quality grade and never let it alone mark a gap VERIFIED.
 
 ### Data Integrity Contract
 

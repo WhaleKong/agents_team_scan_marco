@@ -38,12 +38,19 @@ and payoff asymmetry can override them.
      BAMLC0A0CM (IG OAS), NFCI (financial conditions).
    - `get_release_calendar` (`days_ahead: 14`) -- upcoming CPI, NFP, Core PCE, GDP, PPI (08:30 ET)
      and FOMC decision dates (14:00 ET). (ISM is NOT on FRED — cover it via news below.)
+   - `get_rate_pricing` (`meetings: 3`) — market-implied FOMC outcome probabilities (Hike >25 /
+     Hike 25 / Hold / Cut 25 / Cut >25) plus the 14-day daily path for the nearest meeting. This is
+     the sourced, as-of baseline for the **Fed path** row in EXPECTATIONS & PRICING GAP — do not
+     reconstruct it from news. Secondary source (a prediction market, not fed funds futures): it
+     makes the Fed path observable, but on its own it never earns VERIFIED. Honour the per-row
+     data-quality grade; in practice only the nearest meeting grades OK.
    - `get_breaking_news` — CB policy shifts, liquidity events, geopolitical shocks
    - `get_rss_feeds` — latest wire-service news and Fed communications
    - `get_news_sentiment` (tickers: "SPY,TLT,GLD,UUP,QQQ") — cross-asset sentiment read
    - `search_news` — targeted queries only (sparingly, 100 req/day): "ISM PMI manufacturing services",
-     "Fed liquidity balance sheet", "earnings season EPS revisions", and sourced consensus/market
-     pricing needed to test a candidate mispricing
+     "Fed liquidity balance sheet", "earnings season EPS revisions", and sourced consensus needed
+     to test a candidate mispricing. **Fed-path pricing no longer comes from here** — use
+     `get_rate_pricing`, which carries a real as-of timestamp instead of a days-old news quote
    - `get_earnings_calendar` — upcoming/recent EPS for the earnings-cycle pillar
 2. Apply the data contract exactly:
    - M2 current = M2SL `YoY %`, not the latest stock level.
@@ -58,6 +65,9 @@ and payoff asymmetry can override them.
 5. Test expectations before claiming mispricing. For each candidate, record a sourced/as-of
    market or consensus baseline, the evidence path, the gap, catalyst, and invalidation. If the
    baseline is unavailable, label it **UNVERIFIED HYPOTHESIS**; RoC alone is not mispricing.
+   The **Fed-path** baseline must be the `get_rate_pricing` number with its as-of stamp and quality
+   grade. A prediction-market level by itself is a baseline, not a verdict: VERIFIED still requires a
+   second, independent evidence leg.
 6. **Build the Per-Asset Macro Bias Table** — this is what `/bias` reads when the regime is fresh.
 
 ### Output Format

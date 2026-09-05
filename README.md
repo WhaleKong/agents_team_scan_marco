@@ -234,6 +234,7 @@ MCP server `macro-news-feed` (`mcp-news-server/`) มี 13 tools:
 | `get_fred_macro_data` | FRED | **hard data หลัก** — 20 series, 4 categories + `all`, รวม real GDP growth QoQ SAAR + Core CPI; ตารางมี Δ Prev / Δ 3M / Δ 1Y / YoY % / direction-aware **RoC** |
 | `get_release_calendar` | FRED + FOMC + RBA schedules | CPI/NFP/Core PCE/GDP/PPI (08:30 ET) + FOMC (14:00 ET) + RBA cash rate (14:30 Sydney → ET) • `days_back` รวม event ที่ออกแล้ว (Status RELEASED/TODAY/UPCOMING) ใช้ตรวจ regime superseded |
 | `get_cot_positioning` | CFTC Socrata (ฟรี) | COT non-commercial: net, weekly Δ, % of OI, 52w percentile — Gold/EUR/JPY/USD Index/AUD/CHF/ES/NQ |
+| `get_rate_pricing` | Kalshi (ฟรี ไม่ต้องมี key) | Fed path baseline — โอกาส Hike/Hold/Cut ต่อการประชุม + path รายวัน 14 วัน • Δ จาก candle ปิด session • ⚠️ แหล่งรอง (prediction market) มีเกรดคุณภาพต่อแถว ลำพังไม่พอเป็น VERIFIED |
 | `get_breaking_news` | Finnhub + RSS | ข่าวเร็วสุด — ใช้เป็นหลัก |
 | `get_rss_feeds` | RSS 12 feeds | Reuters/CNBC/AP/Fed — ไม่มี quota |
 | `get_market_news` | Finnhub | ข่าวหุ้น US รายตัว |
