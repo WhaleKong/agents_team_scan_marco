@@ -120,3 +120,34 @@ test("empty window renders a no-releases note instead of an empty table", () => 
 
   assert.match(output, /No tracked releases inside this window/);
 });
+
+test("days_back extends the window into the past and labels rows RELEASED / TODAY / UPCOMING", () => {
+  const entries = [nfp("2026-09-04"), cpi("2026-09-05"), cpi("2026-09-11")];
+
+  const output = formatReleaseCalendar(entries, "2026-09-05", 10, undefined, [], 3);
+
+  assert.match(output, /2026-09-02 to 2026-09-15/);
+  assert.match(output, /\| 2026-09-04 \| Fri \| Employment Situation \(NFP\) \| 08:30 \| HIGH \| RELEASED \|/);
+  assert.match(output, /\| 2026-09-05 \| Sat \| CPI \| 08:30 \| HIGH \| TODAY \|/);
+  assert.match(output, /\| 2026-09-11 \| Fri \| CPI \| 08:30 \| HIGH \| UPCOMING \|/);
+  assert.match(output, /RELEASED rows occurred before 2026-09-05/);
+});
+
+test("without days_back, past rows stay excluded and no RELEASED note is printed", () => {
+  const entries = [nfp("2026-09-04"), cpi("2026-09-11")];
+
+  const output = formatReleaseCalendar(entries, "2026-09-05", 10);
+
+  assert.match(output, /2026-09-05 to 2026-09-15/);
+  assert.doesNotMatch(output, /2026-09-04/);
+  assert.match(output, /\| 2026-09-11 \| Fri \| CPI \| 08:30 \| HIGH \| UPCOMING \|/);
+  assert.doesNotMatch(output, /RELEASED rows occurred/);
+});
+
+test("days_back cannot look further back than the entry list allows without dropping future rows", () => {
+  // A past FOMC inside the look-back is RELEASED; the next one is still UPCOMING.
+  const output = formatReleaseCalendar(fomcEntries(), "2026-08-01", 60, "fomc", [], 7);
+
+  assert.match(output, /\| 2026-07-29 \| Wed \| FOMC Rate Decision \| 14:00 \(press conf 14:30\) \| HIGH \| RELEASED \|/);
+  assert.match(output, /\| 2026-09-16 \| Wed \| FOMC Rate Decision \| 14:00 \(press conf 14:30\) \| HIGH \| UPCOMING \|/);
+});

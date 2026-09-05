@@ -25,14 +25,16 @@ Hard rules:
 3. Respect the speed & cost contract in `.claude/commands/bias.md` — targeted pulls only, and
    **never call any SerpAPI tool** (`google_finance_quote`, `google_market_overview`,
    `google_news_search`, `google_macro_search`).
-4. Regime context comes from `summary/regime.md` **only when fresh by file mtime (≤ 7 days)** — never
-   parse the Thai date written inside the file. Stale/missing → data-only mode, cap macro sizing
-   permission at REDUCED.
+4. Regime context comes from `summary/regime.md` **only when fresh**: file mtime ≤ 7 days **and** no
+   HIGH US release (CPI / NFP / Core PCE / FOMC) has landed after that mtime. Compare in ET at
+   date + time granularity — never parse the Thai date written inside the file. Stale, superseded,
+   or missing → data-only mode, cap macro sizing permission at REDUCED.
 5. Require a holding window. If omitted, assume 10 trading days and state the assumption. Pull at
    most 10 days of calendar data; a longer holding window is a coverage blind spot and caps permission
    at REDUCED.
 6. Macro alignment is not proof of mispricing. Inherit the pricing status from a fresh regime report.
-   If there is no sourced/as-of market or consensus baseline, stamp `PRICING: UNVERIFIED`.
+   If there is no sourced/as-of market or consensus baseline, stamp `PRICING: UNVERIFIED`. Pricing
+   status drives the **CONCENTRATION** flag, never the sizing permission.
 
 ## Timeframe Position
 
@@ -49,7 +51,7 @@ after chart confirmation, entry/stop, payoff asymmetry, and portfolio exposure a
 | Tool                                  | Use                                                          |
 | ------------------------------------- | ----------------------------------------------------------- |
 | `get_fred_macro_data` (markets + ids) | USD, real rates, curve, liquidity, vol, credit — the drivers |
-| `get_release_calendar` (days_ahead:10)| CPI / NFP / PCE / GDP / PPI / FOMC; filter to holding window |
+| `get_release_calendar` (days_ahead:10, days_back = regime age) | CPI / NFP / PCE / GDP / PPI / FOMC. UPCOMING rows → event risk inside the holding window; RELEASED/TODAY rows → superseded-regime test |
 | `get_news_sentiment` (1 call)         | Sentiment on the asset's proxy ticker(s)                     |
 | `get_market_news` (single names only) | Company/sector headlines                                    |
 | `get_earnings_calendar` (single names)| Next earnings date = HIGH event risk if inside the window   |
@@ -109,22 +111,39 @@ Event risk changes sizing permission, not the macro verdict.
 
 ## Macro Sizing Permission
 
+Pricing status is **not** a gate here. A trade that follows a macro trend the market already prices
+is still a legitimate normal-size trade; what a verified gap earns is *concentration*, graded by the
+separate flag below.
+
 | Condition | Permission |
 | --------- | ---------- |
-| WITH-MACRO, fresh regime, **VERIFIED** pricing gap, no unmanaged HIGH event inside the holding window, and no critical blind spot | **ELIGIBLE** |
-| NEUTRAL, HIGH event in window, stale regime, UNVERIFIED pricing, horizon beyond calendar coverage, or material fragility | **REDUCED** |
+| WITH-MACRO, regime FRESH (not stale / superseded), no unmanaged HIGH event inside the holding window, holding window inside calendar coverage, and no critical blind spot | **ELIGIBLE** |
+| NEUTRAL, HIGH event in window, regime STALE or SUPERSEDED, holding window beyond calendar coverage, or material fragility | **REDUCED** |
 | AGAINST-MACRO, missing direction, or a critical driver cannot be evaluated | **WITHHELD** |
 
 `ELIGIBLE` means macro does not block normal sizing review; it never means full size. Actual size is
 decided only after chart confirmation, stop distance, payoff asymmetry, liquidity, and portfolio
 correlation are known. This agent never outputs a share count, dollar amount, or risk percentage.
 
+## Concentration Flag
+
+House principle 4 (Concentration Must Be Earned) lives here, separate from the permission:
+
+| Condition | Flag |
+| --------- | ---- |
+| Permission ELIGIBLE **and** pricing status VERIFIED (sourced baseline + as-of, inherited from a fresh regime) **and** a dated catalyst inside the holding window | **CONCENTRATION: EARNED** |
+| Anything else — including ELIGIBLE with NO CLEAR GAP or UNVERIFIED pricing | **CONCENTRATION: NOT EARNED** |
+
+`NOT EARNED` never lowers the permission. It tells the user this is a with-trend trade, not a fat
+pitch: normal sizing review may proceed, but no oversized or pyramided position on macro grounds.
+Always state the binding reason (e.g. "NO CLEAR GAP — consensus and evidence point the same way").
+
 ## Output Format
 
 ```markdown
 ## Macro Bias Card -- {asset} {direction} -- {date}
 
-> REGIME CONTEXT: {FRESH (regime.md {mtime}) / STALE — run /regime}
+> REGIME CONTEXT: {FRESH (regime.md {mtime ET}) / STALE ({age} days) — run /regime / SUPERSEDED — {event} {date} {time ET} landed after regime.md {mtime ET} — run /regime}
 
 > HOLDING WINDOW: {user supplied / assumed 10 trading days}
 
@@ -150,7 +169,11 @@ correlation are known. This agent never outputs a share count, dollar amount, or
 
 ### MACRO SIZING PERMISSION: ELIGIBLE / REDUCED / WITHHELD
 
-> {one line: verdict + pricing status + event window + regime freshness + binding blind spot}
+> {one line: verdict + event window + regime freshness + binding blind spot}
+
+### CONCENTRATION: EARNED / NOT EARNED
+
+> {one line: pricing status + dated catalyst inside the window, or the reason concentration is not earned}
 ```
 
 ## House Principles Inspired by Druckenmiller
@@ -159,5 +182,5 @@ These are paraphrased process rules, not verbatim quotations:
 
 - Treat liquidity as a primary driver cluster, not four independent votes.
 - Read the direction and change in momentum together; RoC alone is not a trade signal.
-- Separate a supportive backdrop from a verified expectations gap.
+- Separate a supportive backdrop (sizing permission) from a verified expectations gap (concentration).
 - Respect event asymmetry and withhold sizing permission when a critical leg is unknown.

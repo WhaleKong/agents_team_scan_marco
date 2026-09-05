@@ -77,7 +77,7 @@ server.tool(
 // Tool 3: US Economic Release Calendar (FRED release dates + FOMC schedule)
 server.tool(
   "get_release_calendar",
-  "Get upcoming economic release dates with times (ET): US releases (CPI, NFP/Employment Situation, Core PCE, GDP, PPI) from the FRED release calendar, scheduled FOMC decisions, and RBA (Australia) cash rate decisions. Use to check event risk inside a swing-trade holding window. RBA announces 14:30 Sydney, which converts to the PREVIOUS ET day when Sydney is on daylight saving. Australian data (jobs, CPI) and Chinese data are NOT covered. Requires FRED_API_KEY.",
+  "Get economic release dates with times (ET): US releases (CPI, NFP/Employment Situation, Core PCE, GDP, PPI) from the FRED release calendar, scheduled FOMC decisions, and RBA (Australia) cash rate decisions. Use to check event risk inside a swing-trade holding window. Pass days_back to also list recently RELEASED events (rows are labelled RELEASED / TODAY / UPCOMING) so a HIGH event that landed after the regime report's mtime can mark that report SUPERSEDED. RBA announces 14:30 Sydney, which converts to the PREVIOUS ET day when Sydney is on daylight saving. Australian data (jobs, CPI) and Chinese data are NOT covered. Requires FRED_API_KEY.",
   {
     days_ahead: z
       .number()
@@ -87,10 +87,14 @@ server.tool(
       .string()
       .optional()
       .describe('Optional comma-separated event filter, e.g. "CPI,FOMC" or "NFP". Omit for all tracked events.'),
+    days_back: z
+      .number()
+      .optional()
+      .describe("How many days back to include already-RELEASED events (default: 0, max: 30). Use the age of summary/regime.md to detect a superseded regime."),
   },
-  async ({ days_ahead, events }) => {
+  async ({ days_ahead, events, days_back }) => {
     try {
-      const result = await getReleaseCalendar(days_ahead ?? 14, events);
+      const result = await getReleaseCalendar(days_ahead ?? 14, events, days_back ?? 0);
       return { content: [{ type: "text" as const, text: result }] };
     } catch (err) {
       return {

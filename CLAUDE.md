@@ -92,8 +92,10 @@ goal: |
   ตอบเร็วและถูก: "macro backdrop หนุน trade นี้ในหน้าต่างถือ position ไหม
   และมี event risk อะไร"
 speed_contract:
-  - เช็คความสด summary/regime.md ด้วย file mtime (สด = ≤ 7 วัน)
-  - stale/missing → data-only mode + PRICING UNVERIFIED + cap sizing permission ที่ REDUCED
+  - เช็คความสด summary/regime.md ด้วย file mtime (ET): สด = อายุ ≤ 7 วัน **และ** ไม่มี HIGH US event
+    (CPI/NFP/Core PCE/FOMC) ออกหลัง mtime — ใช้ get_release_calendar(days_back = อายุ regime)
+    แล้วเทียบ date + time ET ของแถว RELEASED/TODAY กับ mtime
+  - stale/superseded/missing → data-only mode + PRICING UNVERIFIED + cap sizing permission ที่ REDUCED
   - pull เฉพาะ: get_fred_macro_data(markets + series_ids ของ asset),
     get_release_calendar(10d), get_cot_positioning(market ของ asset),
     get_news_sentiment 1 call
@@ -102,10 +104,14 @@ output: |
   Macro Bias Card: VERDICT (WITH-MACRO/NEUTRAL/AGAINST-MACRO)
   + hierarchical evidence clusters (Δ3M + direction-aware RoC) + pricing status
   + event risk ใน holding window + invalidation triggers
-  + Macro Sizing Permission:
-    ELIGIBLE = WITH-MACRO + regime สด + VERIFIED pricing gap + no unmanaged HIGH event/blind spot
-    REDUCED  = NEUTRAL/event/stale/unverified/fragile
+  + Macro Sizing Permission (pricing status ไม่ใช่ gate ของข้อนี้):
+    ELIGIBLE = WITH-MACRO + regime สด (ไม่ stale/superseded) + no unmanaged HIGH event
+               + horizon อยู่ใน calendar coverage + no critical blind spot
+    REDUCED  = NEUTRAL/event/stale/superseded/horizon เกิน coverage/fragile
     WITHHELD = AGAINST-MACRO/missing direction/critical driver unavailable
+  + CONCENTRATION flag (หลักข้อ 4 "Concentration Must Be Earned" อยู่ตรงนี้):
+    EARNED     = ELIGIBLE + pricing VERIFIED (baseline มี source + as-of) + catalyst มีวันที่ในหน้าต่าง
+    NOT EARNED = อย่างอื่นทั้งหมด → เทรดตาม trend ขนาดปกติได้ แต่ห้าม oversize/pyramid ด้วยเหตุผล macro
   ELIGIBLE ไม่ได้แปลว่า full size; actual size ต้องผ่าน chart, stop, asymmetry และ portfolio risk
 ```
 
@@ -158,7 +164,8 @@ verdict: GO / REDUCE / NO-GO   (หลักฐานไม่พอเป็น
 ### Weekly
 ```
 จันทร์:   /regime  → classify regime + Per-Asset Macro Bias Table
-                    (/bias ใช้ตารางนี้ทั้งสัปดาห์ — ถ้าเกิน 7 วันจะโดน stale cap)
+                    (/bias ใช้ตารางนี้ทั้งสัปดาห์ — เกิน 7 วัน = stale cap;
+                     มี CPI/NFP/Core PCE/FOMC ออกหลังไฟล์ = superseded cap → รัน /regime ใหม่)
 ad-hoc:  /decide  → full pipeline เมื่อต้องการ deep dive ทั้งระบบ
 ```
 
@@ -213,7 +220,7 @@ Tools ที่มีจริง (13 ตัว):
 | Tool | Backend | หมายเหตุ |
 |------|---------|----------|
 | `get_fred_macro_data` | FRED | **แหล่ง hard data หลัก** — 20 series, 4 categories + `all`, รวม real GDP growth QoQ SAAR + Core CPI; ตารางมี Δ Prev / Δ 3M / Δ 1Y / YoY % / direction-aware **RoC** |
-| `get_release_calendar` | FRED release dates + FOMC constant + **RBA constant** | CPI/NFP/Core PCE/GDP/PPI (08:30 ET) + FOMC (14:00 ET) + **RBA cash rate (14:30 ซิดนีย์ → แปลงเป็น ET)** — event risk สำหรับ swing window (ISM ไม่มีบน FRED • **ข้อมูล AU/จีน ไม่ครอบคลุม**) |
+| `get_release_calendar` | FRED release dates + FOMC constant + **RBA constant** | CPI/NFP/Core PCE/GDP/PPI (08:30 ET) + FOMC (14:00 ET) + **RBA cash rate (14:30 ซิดนีย์ → แปลงเป็น ET)** — event risk สำหรับ swing window (ISM ไม่มีบน FRED • **ข้อมูล AU/จีน ไม่ครอบคลุม**) • `days_back` = รวม event ที่ออกไปแล้ว (คอลัมน์ Status: RELEASED/TODAY/UPCOMING) สำหรับตรวจ regime superseded |
 | `get_cot_positioning` | CFTC Socrata (ฟรี ไม่ต้องมี key) | COT non-commercial: Gold/EUR/JPY/USD Index/**AUD**/**CHF**/ES/NQ — net, weekly Δ, % of OI, 52w percentile (≥90/≤10 = positioning ตึงระดับปี = contrarian risk) ข้อมูล ณ วันอังคาร ออกศุกร์ ~15:30 ET • filter token: `gold`/`euro`/`yen`/`usd index`/**`aud`**/**`chf`**/`s&p`/`nasdaq` |
 | `get_breaking_news` | Finnhub + RSS | ข่าวเร็วสุด ฟรี — ใช้เป็นหลัก |
 | `get_rss_feeds` | RSS 12 feeds | Reuters/CNBC/AP/Fed — ไม่มี quota |

@@ -48,6 +48,15 @@ function dayName(date: string): string {
   return DAY_NAMES[new Date(`${date}T00:00:00Z`).getUTCDay()];
 }
 
+type ReleaseStatus = "RELEASED" | "TODAY" | "UPCOMING";
+
+/** Where a row sits relative to asOf. TODAY rows may or may not be out yet — compare the time. */
+function releaseStatus(date: string, asOf: string): ReleaseStatus {
+  if (date < asOf) return "RELEASED";
+  if (date === asOf) return "TODAY";
+  return "UPCOMING";
+}
+
 function parseEventFilter(events?: string): string[] {
   if (!events) return [];
   return events
@@ -146,14 +155,16 @@ export function formatReleaseCalendar(
   asOf: string,
   daysAhead: number,
   events?: string,
-  notes: string[] = []
+  notes: string[] = [],
+  daysBack: number = 0
 ): string {
+  const windowStart = addDays(asOf, -daysBack);
   const windowEnd = addDays(asOf, daysAhead);
   const tokens = parseEventFilter(events);
 
   const seen = new Set<string>();
   const rows = entries
-    .filter((e) => e.date >= asOf && e.date <= windowEnd)
+    .filter((e) => e.date >= windowStart && e.date <= windowEnd)
     .filter((e) => matchesFilter(e.event, tokens))
     .filter((e) => {
       const key = `${e.date}|${e.event}`;
@@ -163,15 +174,15 @@ export function formatReleaseCalendar(
     })
     .sort((a, b) => (a.date === b.date ? a.event.localeCompare(b.event) : a.date.localeCompare(b.date)));
 
-  let output = `## Economic Release Calendar — ${asOf} to ${windowEnd}\n\n`;
+  let output = `## Economic Release Calendar — ${windowStart} to ${windowEnd}\n\n`;
 
   if (rows.length === 0) {
     output += `No tracked releases inside this window.\n`;
   } else {
-    output += `| Date | Day | Event | Time (ET) | Importance |\n`;
-    output += `|------|-----|-------|-----------|------------|\n`;
+    output += `| Date | Day | Event | Time (ET) | Importance | Status |\n`;
+    output += `|------|-----|-------|-----------|------------|--------|\n`;
     for (const r of rows) {
-      output += `| ${r.date} | ${dayName(r.date)} | ${r.event} | ${r.timeEt} | ${r.importance} |\n`;
+      output += `| ${r.date} | ${dayName(r.date)} | ${r.event} | ${r.timeEt} | ${r.importance} | ${releaseStatus(r.date, asOf)} |\n`;
     }
   }
 
@@ -183,6 +194,12 @@ export function formatReleaseCalendar(
   const lastRba = lastRbaEtDate();
   if (windowEnd > lastRba) {
     output += `\nWARNING: RBA schedule constant ends ${lastRba} (ET) — update src/config/rba-schedule.ts from rba.gov.au/schedules-events/board-meeting-schedules.html\n`;
+  }
+
+  if (daysBack > 0) {
+    output += `\nRELEASED rows occurred before ${asOf} (look-back ${daysBack} days). `;
+    output += `Compare each RELEASED/TODAY row's date + time (ET) with the regime report's mtime in ET: `;
+    output += `a HIGH row that landed after that mtime means the regime report is SUPERSEDED.\n`;
   }
 
   for (const note of notes) {
@@ -198,10 +215,13 @@ export function formatReleaseCalendar(
 
 export async function getReleaseCalendar(
   daysAhead: number = 14,
-  events?: string
+  events?: string,
+  daysBack: number = 0
 ): Promise<string> {
   const clampedDays = Math.min(Math.max(Math.floor(daysAhead), 1), 90);
+  const clampedBack = Math.min(Math.max(Math.floor(daysBack), 0), 30);
   const asOf = new Date().toISOString().slice(0, 10);
+  const windowStart = addDays(asOf, -clampedBack);
   const windowEnd = addDays(asOf, clampedDays);
   const tokens = parseEventFilter(events);
 
@@ -211,7 +231,7 @@ export async function getReleaseCalendar(
   const results = await Promise.allSettled(
     wanted.map(async (release) => {
       const dates = await getFredReleaseDates(release.releaseId, {
-        realtimeStart: asOf,
+        realtimeStart: windowStart,
         realtimeEnd: windowEnd,
       });
       return dates.map((date) => ({
@@ -235,5 +255,5 @@ export async function getReleaseCalendar(
 
   entries.push(...fomcEntries(), ...rbaEntries());
 
-  return formatReleaseCalendar(entries, asOf, clampedDays, events, notes);
+  return formatReleaseCalendar(entries, asOf, clampedDays, events, notes, clampedBack);
 }

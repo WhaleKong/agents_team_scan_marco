@@ -127,7 +127,7 @@ claude
 /regime
 ```
 
-**Output:** Regime classification + data dates + dashboards + KEY THESIS + expectations/pricing gap + **Per-Asset Macro Bias Table** — ตารางนี้คือสิ่งที่ `/bias` ใช้ทั้งสัปดาห์ (เกิน 7 วัน = stale) RoC อย่างเดียวไม่ถือเป็นหลักฐานว่าตลาด mispriced
+**Output:** Regime classification + data dates + dashboards + KEY THESIS + expectations/pricing gap + **Per-Asset Macro Bias Table** — ตารางนี้คือสิ่งที่ `/bias` ใช้ทั้งสัปดาห์ (เกิน 7 วัน = stale; มี CPI/NFP/Core PCE/FOMC ออกหลังไฟล์ = superseded) RoC อย่างเดียวไม่ถือเป็นหลักฐานว่าตลาด mispriced
 
 | Regime | สภาวะ | Strategy |
 |--------|--------|----------|
@@ -153,12 +153,19 @@ claude
 
 | Permission | เงื่อนไข |
 |------------|---------|
-| ELIGIBLE | WITH-MACRO + regime สด + pricing gap VERIFIED + ไม่มี unmanaged HIGH event/blind spot |
-| REDUCED | NEUTRAL, event risk, regime stale, pricing UNVERIFIED, หรือ fragility สำคัญ |
+| ELIGIBLE | WITH-MACRO + regime สด (ไม่ stale/superseded) + ไม่มี unmanaged HIGH event + horizon อยู่ใน coverage + ไม่มี critical blind spot |
+| REDUCED | NEUTRAL, event risk, regime stale/superseded, horizon เกิน coverage, หรือ fragility สำคัญ |
 | WITHHELD | AGAINST-MACRO, ไม่มี direction, หรือ driver หลักตรวจไม่ได้ |
 
 `ELIGIBLE` ไม่ได้แปลว่า full size; ขนาดจริงต้องผ่าน chart confirmation, stop, payoff asymmetry,
 instrument liquidity และ portfolio exposure ก่อน
+
+- **CONCENTRATION flag** (แยกจาก permission — pricing gap ไม่ใช่ gate ของ sizing):
+
+| Flag | เงื่อนไข |
+|------|---------|
+| EARNED | ELIGIBLE + pricing VERIFIED (baseline มี source + as-of) + catalyst มีวันที่ในหน้าต่าง |
+| NOT EARNED | อย่างอื่นทั้งหมด → เทรดตาม trend ขนาดปกติได้ แต่ห้าม oversize/pyramid ด้วยเหตุผล macro |
 
 ### `/signal {asset?}` — Macro Tape Confirmation
 
@@ -225,7 +232,7 @@ MCP server `macro-news-feed` (`mcp-news-server/`) มี 13 tools:
 | Tool | Backend | หมายเหตุ |
 |------|---------|----------|
 | `get_fred_macro_data` | FRED | **hard data หลัก** — 20 series, 4 categories + `all`, รวม real GDP growth QoQ SAAR + Core CPI; ตารางมี Δ Prev / Δ 3M / Δ 1Y / YoY % / direction-aware **RoC** |
-| `get_release_calendar` | FRED + FOMC + RBA schedules | CPI/NFP/Core PCE/GDP/PPI (08:30 ET) + FOMC (14:00 ET) + RBA cash rate (14:30 Sydney → ET) |
+| `get_release_calendar` | FRED + FOMC + RBA schedules | CPI/NFP/Core PCE/GDP/PPI (08:30 ET) + FOMC (14:00 ET) + RBA cash rate (14:30 Sydney → ET) • `days_back` รวม event ที่ออกแล้ว (Status RELEASED/TODAY/UPCOMING) ใช้ตรวจ regime superseded |
 | `get_cot_positioning` | CFTC Socrata (ฟรี) | COT non-commercial: net, weekly Δ, % of OI, 52w percentile — Gold/EUR/JPY/USD Index/AUD/CHF/ES/NQ |
 | `get_breaking_news` | Finnhub + RSS | ข่าวเร็วสุด — ใช้เป็นหลัก |
 | `get_rss_feeds` | RSS 12 feeds | Reuters/CNBC/AP/Fed — ไม่มี quota |

@@ -19,23 +19,38 @@ confirmation, entry/stop, payoff asymmetry, instrument liquidity, and portfolio 
 
 ### Speed & Cost Contract (follow exactly)
 
-1. **Regime freshness check — use file mtime, never the Thai date inside the file:**
+1. **Regime freshness check — use file mtime in ET, never the Thai date inside the file:**
 
    ```bash
-   stat -f "%Sm" -t "%Y-%m-%d" summary/regime.md
+   TZ=America/New_York stat -f "%Sm" -t "%Y-%m-%d %H:%M %Z" summary/regime.md
    ```
 
-   - **Fresh** (file exists AND mtime is within the last 7 days) → read it and use its
-     **Per-Asset Macro Bias Table** as regime context for this asset.
-   - **Stale** (mtime > 7 days) or **missing** → run in **data-only mode**: stamp
-     `REGIME CONTEXT: STALE — run /regime` at the top of the card, stamp `PRICING: UNVERIFIED`,
-     and cap macro sizing permission at **REDUCED**.
+   The regime is **FRESH** only when both tests pass:
+
+   - **Age:** the file exists and its mtime is within the last 7 days.
+   - **Not superseded:** no HIGH US release landed after the mtime. Take this from the
+     `get_release_calendar` pull in step 2 (`days_back` = days since the mtime, rounded up, max 7).
+     For every row with Status `RELEASED` or `TODAY` whose event is **CPI, NFP, Core PCE, or FOMC**,
+     compare its `date + time (ET)` with the mtime in ET. A row that landed **after** the mtime is a
+     print the regime report never saw → **SUPERSEDED**. GDP / PPI / RBA rows never supersede
+     (mention an RBA row only for AUD trades).
+
+   Outcomes:
+
+   - **FRESH** → read `summary/regime.md` and use its **Per-Asset Macro Bias Table** as regime
+     context for this asset.
+   - **STALE** (age > 7 days), **SUPERSEDED**, or **missing** → run in **data-only mode**: stamp
+     `REGIME CONTEXT: STALE — run /regime` or
+     `REGIME CONTEXT: SUPERSEDED — {event} {date} {time ET} landed after regime.md {mtime ET} — run /regime`
+     at the top of the card, stamp `PRICING: UNVERIFIED`, and cap macro sizing permission at **REDUCED**.
 
 2. **Targeted parallel pulls only** (one round, all in parallel — do NOT fan out further):
    - `get_fred_macro_data` with `category: "markets"` PLUS the `series_ids` specific to this asset
      (see the bias-checker Per-Asset Driver Map).
-   - `get_release_calendar` with `days_ahead: 10` — then filter events to the stated holding window.
-     If the holding window exceeds 10 trading days, flag incomplete coverage and cap permission at REDUCED.
+   - `get_release_calendar` with `days_ahead: 10` and `days_back: {days since regime mtime, rounded up, max 7}`
+     (0 if regime.md is missing). `UPCOMING` / `TODAY` rows → filter to the stated holding window for
+     event risk. `RELEASED` / `TODAY` rows → the superseded test in step 1. If the holding window
+     exceeds 10 trading days, flag incomplete coverage and cap permission at REDUCED.
    - `get_cot_positioning` with the asset's market filter (gold / euro / yen / usd index / s&p /
      nasdaq) — positioning at a 1Y extreme in the user's direction is a **fragility warning**, not
      automatically an Against driver. It lowers confidence only with confirming divergence.
@@ -70,34 +85,52 @@ Events affect sizing permission, not the macro verdict.
 
 Macro support is not proof of mispricing. Inherit `Pricing status` and its sourced/as-of baseline
 from a fresh regime report. If the baseline is missing, stale, or only inferred from sentiment,
-stamp `PRICING: UNVERIFIED`; do not claim that the market is wrong.
+stamp `PRICING: UNVERIFIED`; do not claim that the market is wrong. Pricing status feeds the
+**CONCENTRATION** flag below; it does not gate the sizing permission.
 
 ### Macro Sizing Permission (apply exactly)
 
+Pricing status is **not** a gate here — a with-trend trade the market already prices is still a
+legitimate normal-size trade. A verified gap earns *concentration*, graded separately below.
+
 | Condition | Permission |
 | --------- | ---------- |
-| WITH-MACRO, fresh regime, VERIFIED pricing gap, no unmanaged HIGH event inside the holding window, and no critical blind spot | **ELIGIBLE** |
-| NEUTRAL, HIGH event in window, stale regime, UNVERIFIED pricing, horizon beyond coverage, or material fragility | **REDUCED** |
+| WITH-MACRO, regime FRESH (not stale / superseded), no unmanaged HIGH event inside the holding window, holding window inside calendar coverage, and no critical blind spot | **ELIGIBLE** |
+| NEUTRAL, HIGH event in window, regime STALE or SUPERSEDED, holding window beyond coverage, or material fragility | **REDUCED** |
 | AGAINST-MACRO, missing direction, or critical driver unavailable | **WITHHELD** |
 
 `ELIGIBLE` never means full size. The user/risk-manager determines actual size after chart
 confirmation, stop distance, payoff asymmetry, liquidity, and portfolio correlation are known.
 
+### Concentration Flag (apply exactly)
+
+| Condition | Flag |
+| --------- | ---- |
+| Permission ELIGIBLE **and** pricing VERIFIED (sourced baseline + as-of from a fresh regime) **and** a dated catalyst inside the holding window | **CONCENTRATION: EARNED** |
+| Anything else — including ELIGIBLE with NO CLEAR GAP or UNVERIFIED pricing | **CONCENTRATION: NOT EARNED** |
+
+`NOT EARNED` never lowers the permission. It tells the user the trade is with-trend, not a fat pitch:
+normal sizing review may proceed, but no oversized or pyramided position on macro grounds. Always
+state the binding reason.
+
 ### Process
 
-1. Run the freshness check (step 1).
+1. Read the regime mtime in ET (step 1) and derive `days_back` from its age.
 2. Fire the targeted pulls (step 2) in parallel.
-3. Map hierarchical evidence clusters to For / Against / Neutral / Unknown; set the VERDICT.
-4. List releases / earnings / FOMC events inside the holding window with date + time ET; flag HIGH.
-5. Write measurable macro invalidation triggers (levels/flips on macro **series**, not on the asset's price).
-6. Apply macro sizing permission without suggesting an actual position size.
+3. Settle regime freshness: age ≤ 7 days **and** no superseding HIGH row after the mtime → FRESH;
+   otherwise data-only mode with the STALE / SUPERSEDED stamp.
+4. Map hierarchical evidence clusters to For / Against / Neutral / Unknown; set the VERDICT.
+5. List releases / earnings / FOMC events inside the holding window with date + time ET; flag HIGH.
+6. Write measurable macro invalidation triggers (levels/flips on macro **series**, not on the asset's price).
+7. Apply macro sizing permission without suggesting an actual position size.
+8. Set the CONCENTRATION flag from pricing status + catalyst.
 
 ### Output Format
 
 ```markdown
 ## Macro Bias Card -- {asset} {direction} -- {date}
 
-> REGIME CONTEXT: {FRESH (regime.md {mtime})  /  STALE — run /regime}
+> REGIME CONTEXT: {FRESH (regime.md {mtime ET}) / STALE ({age} days) — run /regime / SUPERSEDED — {event} {date} {time ET} landed after regime.md {mtime ET} — run /regime}
 
 > HOLDING WINDOW: {user supplied / assumed 10 trading days}
 
@@ -125,7 +158,11 @@ confirmation, stop distance, payoff asymmetry, liquidity, and portfolio correlat
 
 ### MACRO SIZING PERMISSION: ELIGIBLE / REDUCED / WITHHELD
 
-> {one line: verdict + pricing status + event window + regime freshness + binding blind spot}
+> {one line: verdict + event window + regime freshness + binding blind spot}
+
+### CONCENTRATION: EARNED / NOT EARNED
+
+> {one line: pricing status + dated catalyst inside the window, or the reason concentration is not earned}
 ```
 
 After running success : สร้างเป็น Report version Thai Language after that export file summary/bias.md
